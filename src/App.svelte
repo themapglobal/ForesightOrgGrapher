@@ -7,7 +7,7 @@
 			kind: 'node',
             label: "Algebra",
             children: [],
-            pos: {x: 300, y: 200},
+            pos: {x: 700, y: 500},
             fill: "orange",
             stroke: "red"
         },{
@@ -15,26 +15,26 @@
             kind: 'node',
             label: "Arithmetic",
             children: [],
-            pos: {x: 500, y: 500},
+            pos: {x: 300, y: 200},
             fill: "white",
             stroke: "red"
         },{
             id: 3,
             kind: 'edge',
-            label: "is friend of",
+            label: "is a prerequisite of",
             stroke: "black",
             strokeType: "dashed",
             directed: true, 
             weight: 5, 
-            fromId: 1, 
-            toId: 2, 
+            fromId: 2, 
+            toId: 1, 
             fromHandle: 23, 
-            toHandle: 31,
+            toHandle: 21,
             shape: 'curved',
         }],
         grid: 'cartesian',
         fill: "#ffffce",
-        debugger: true
+        debugger: false
     };
 </script>
 

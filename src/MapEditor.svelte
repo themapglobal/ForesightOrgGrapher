@@ -94,7 +94,7 @@
 	
 	function getViewBox(){
 		//TODO: Should change for zooming/panning
-		return "0 0 1700 900";
+		return "0 0 1700 1200";
 	}
 
 	function handleContextMenu(e){
@@ -175,7 +175,7 @@
 <style>
 	svg {
 		width: 1700px;
-		height: 900px;
+		height: 1200px;
 		background-color: var(--color);
 	}
 	
