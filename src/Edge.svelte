@@ -81,8 +81,7 @@
         on:click|stopPropagation
     >
     </path>
-	<text 
-        x={getEdgeLabelLocation(graph).x} y={getEdgeLabelLocation(graph).y} 
+	<text>
         font-family="Verdana"
         font-size={4*item.weight} 
         fill={item.stroke} 
@@ -90,7 +89,22 @@
         on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item})}
         on:click|stopPropagation
     >
-			{item.label}
+			<textPath 
+                path={getEdgePath(graph)} 
+                startOffset="50%" 
+                lengthAdjust="spacingAndGlyphs" 
+                side="left">
+                    {item.label}
+            </textPath>
+            <textPath 
+                path={getEdgePath(graph)} 
+                startOffset="25%" 
+                lengthAdjust="spacingAndGlyphs" 
+                stroke={item.stroke || 'red'}
+                fill={item.stroke || 'red'}
+                side="left">
+                ----&gt;
+            </textPath>
 	</text>
 </g>
 
