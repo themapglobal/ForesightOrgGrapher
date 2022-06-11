@@ -1,6 +1,6 @@
 <script>
 	import { styles } from "./styles.js";
-	import {getGraphNode, moveGraphNode, resizeGraphNode, layout, deleteGraphItem, createGraphNode} from "./graphutil.js"
+	import {getGraphNode, moveGraphNode, resizeGraphNode, layout, deleteGraphItem, createGraphNode, exportCytoscape} from "./graphutil.js"
 	import Node from "./Node.svelte";
 	import Edge from "./Edge.svelte";
 	import Grid from "./Grid.svelte";
@@ -19,6 +19,7 @@
 	let draggingFrom = null;
 	let contextMenuPosition = null;
 	let showJson = false;
+	let showCytoscape = false;
 
     // $: fetch('/getgraph.json').then(r => r.json()).then(d => {data = d;});
 
@@ -42,7 +43,7 @@
 	}
 
 	function deleteItem(item, deleteDependents){
-		deleteGraphItem(item, deleteDependents);
+		deleteGraphItem(item, graph, deleteDependents);
 		selectedItem = null;
 		graph = graph;
 		dispatch('graphchanged', graph);
@@ -136,6 +137,8 @@
 {#if graph.sidepanel}
 <section class="sidepanel">
 	<button on:click={(e) => showJson = true}>View/Modify JSON</button>
+	<button on:click={(e) => showCytoscape = true}>View Cytoscape JSON</button>
+
 	<ItemEditor {selectedItem} {graph} on:graphchanged="{e => {graph = e.detail; dispatch('graphchanged', graph); }}"/>
 
 	{#if graph.debugger}
@@ -150,9 +153,9 @@
 {#if contextMenuPosition}
 <sl-menu style={`left: ${contextMenuPosition[0]}px; top: ${contextMenuPosition[1]}px;`}>
   {#if selectedItem}
-  	<sl-menu-item value="deleteitem" on:click={(e) => deleteItem(selectedItem, false)}>Delete {selectedItem.label}</sl-menu-item>
+  	<sl-menu-item value="deleteitem" on:click={(e) => deleteItem(selectedItem, false)}>Delete {selectedItem.label} leaving orphans</sl-menu-item>
 	{#if selectedItem.kind === 'node'}
-  		<sl-menu-item value="deleteitemwithdependents" on:click={(e) => deleteItem(selectedItem, true)}>Delete {selectedItem.label} with dependents</sl-menu-item>
+  		<sl-menu-item value="deleteitemwithdependents" on:click={(e) => deleteItem(selectedItem, true)}>Delete {selectedItem.label} including dependents</sl-menu-item>
 	{/if}
   {:else}
   <sl-menu-item value="createnode" on:click={createNode}>Create new node</sl-menu-item>
@@ -171,6 +174,15 @@
   <sl-button on:click={(e) => showJson = false} slot="footer" variant="primary">Close</sl-button>
 </sl-dialog>
 {/if}
+
+<!-- textarea for exporting Cytoscape compatible json -->
+<sl-dialog style="--width: 35vw;" open={showCytoscape} label="View Cytoscape-compatible JSON" class="dialog-overview" on:sl-hide={(e) => showCytoscape = false}>
+  <textarea 
+  	cols="54" rows="20" autofocus
+  >{exportCytoscape(graph)}</textarea>
+  
+  <sl-button on:click={(e) => showCytoscape = false} slot="footer" variant="primary">Close</sl-button>
+</sl-dialog>
 
 <style>
 	svg {
@@ -194,7 +206,7 @@
 	sl-menu {
 		position: fixed;
 		z-index: 20;
-		max-width: 300px;
+		max-width: 320px;
 	}
 
 	sl-dialog textarea {

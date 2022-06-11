@@ -85,14 +85,24 @@ export function layout(graph){
     return graph;
 }
 
-export function deleteGraphItem(item, deleteDependents){
-    console.log("deleteItem");
+export function deleteGraphItem(item, graph, deleteDependents){
+    console.log("deleteItem", item.label);
     if(item.kind === 'edge'){
         // can be deleted safely
         graph.items = graph.items.filter(i => i != item);
     } else if(item.kind === 'node'){
         if(deleteDependents){
-            // delete children and all their edges recursively?
+            // delete all connected edges
+            graph.items.filter(i => i.kind === 'edge' && [i.fromId, i.toId].includes(item.id)).forEach(edge => {
+                deleteGraphItem(edge, graph, false)
+            })
+
+            // delete children and all their edges recursively
+            graph.items.filter(i => i.kind === 'node' && i.parent === item.id).forEach(child => {
+                deleteGraphItem(child, graph, true)
+            });
+
+            graph.items = graph.items.filter(i => i != item);
         } else {
             // make dependents (children, edges) orphans
             graph.items.filter(i => i.kind === 'node' && i.parent === item.id).forEach(child => {
@@ -137,4 +147,8 @@ export function createGraphNode(e){
         fill: 'yellow',
         stroke: 'black'
     })
+}
+
+export function exportCytoscape(graph){
+    return JSON.stringify({}, null, 2);
 }
