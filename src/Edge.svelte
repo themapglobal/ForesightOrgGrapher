@@ -8,33 +8,51 @@
 	export let isSelected;
 	
 	function getEdgePath(graph){
-        let fromNode = graph.items.find(i => i.id === item.fromId);
-        let toNode = graph.items.find(i => i.id === item.toId);
-        
-        // convert handleIndex like 23 or 31 into -1,0,1 for both x and y
-        let fromXHandleIndex = Math.round(item.fromHandle / 10) - 2;
-        let fromYHandleIndex = item.fromHandle % 10 - 2;
-        let toXHandleIndex = Math.round(item.toHandle / 10) - 2;
-        let toYHandleIndex = item.toHandle % 10 - 2;
-        
-        // coordinates of the handle
-        let fromX = fromNode.pos.x + fromXHandleIndex * (fromNode.width / 2);
-        let fromY = fromNode.pos.y + fromYHandleIndex * (fromNode.height / 2);
-        let toX = toNode.pos.x + toXHandleIndex * (toNode.width / 2);
-        let toY = toNode.pos.y + toYHandleIndex * (toNode.height / 2);
+        let fromX, fromY, toX, toY;
+        let fromControlPointX, fromControlPointY, toControlPointX, toControlPointY;
 
-        if(item.shape === 'straight'){
+        if(item.fromOrphan){
+            fromX = item.fromOrphan.pos.x;
+            fromY = item.fromOrphan.pos.y;
+        } else {
+            let fromNode = graph.items.find(i => i.id === item.fromId);
+            
+            // convert handleIndex like 23 or 31 into -1,0,1 for both x and y
+            let fromXHandleIndex = Math.round(item.fromHandle / 10) - 2;
+            let fromYHandleIndex = item.fromHandle % 10 - 2;
+
+            // coordinates of the handle
+            fromX = fromNode.pos.x + fromXHandleIndex * (fromNode.width / 2);
+            fromY = fromNode.pos.y + fromYHandleIndex * (fromNode.height / 2);
+
+            if(item.shape === 'curved'){
+                // control points for bezier curve: center + 3*(handle - center)
+                fromControlPointX = fromNode.pos.x + 3*(fromX - fromNode.pos.x);
+                fromControlPointY = fromNode.pos.y + 6*(fromY - fromNode.pos.y);
+            }
+        }
+
+        if(item.toOrphan){
+            toX = item.toOrphan.pos.x;
+            toY = item.toOrphan.pos.y;
+        } else {
+            let toNode = graph.items.find(i => i.id === item.toId);
+            
+            let toXHandleIndex = Math.round(item.toHandle / 10) - 2;
+            let toYHandleIndex = item.toHandle % 10 - 2;
+            
+            toX = toNode.pos.x + toXHandleIndex * (toNode.width / 2);
+            toY = toNode.pos.y + toYHandleIndex * (toNode.height / 2);
+            
+            if(item.shape === 'curved'){
+                toControlPointX = toNode.pos.x + 3*(toX - toNode.pos.x);
+                toControlPointY = toNode.pos.y + 6*(toY - toNode.pos.y);
+            }
+        }
+
+        if(item.shape === 'straight' || item.fromOrphan || item.toOrphan){
             return `M ${fromX},${fromY} L ${toX},${toY}`;
         } else if(item.shape === 'curved'){
-            // control points for bezier curve: center + 3*(handle - center)
-            // console.log({fh: fromNode.height})
-            // console.log({th: toNode.height})
-            let fromControlPointX = fromNode.pos.x + 3*(fromX - fromNode.pos.x);
-            let fromControlPointY = fromNode.pos.y + 6*(fromY - fromNode.pos.y);
-            let toControlPointX = toNode.pos.x + 3*(toX - toNode.pos.x);
-            let toControlPointY = toNode.pos.y + 6*(toY - toNode.pos.y);
-            // console.log({control: [[fromControlPointX,fromControlPointY], [toControlPointX,toControlPointY]]});
-
             return `M ${fromX},${fromY} C ${fromControlPointX},${fromControlPointY} ${toControlPointX},${toControlPointY} ${toX},${toY}`
         } else if(item.shape === 'ortho'){ //TODO
             return `M ${fromX},${fromY} L ${toX},${toY}`;
@@ -42,8 +60,8 @@
 	}
 	
 	function getEdgeLabelLocation(graph){
-        let fromNode = graph.items.find(i => i.id === item.fromId);
-        let toNode = graph.items.find(i => i.id === item.toId);
+        let fromNode = item.fromOrphan || graph.items.find(i => i.id === item.fromId);
+        let toNode = item.toOrphan || graph.items.find(i => i.id === item.toId);
 
         // mid-point of fromNode and toNode
         return {x: (fromNode.pos.x + toNode.pos.x)/2, y: (fromNode.pos.y + toNode.pos.y)/2};
@@ -86,7 +104,11 @@
 	}
 	
 	text {
-		cursor: default;
+		cursor: pointer;
 		user-select: none;
 	}
+
+    path {
+        cursor: pointer;
+    }
 </style>
