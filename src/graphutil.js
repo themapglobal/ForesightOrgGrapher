@@ -156,10 +156,11 @@ export function createGraphNodeEdge(from, fromHandle){
         id: newId,
         kind: 'node',
         label: 'new node',
+        parent: from.parent,
         children: [],
         pos: {
-            x: (from.pos.x + 200 * (Math.floor(fromHandle / 10) - 2)),
-            y: (from.pos.y + 200 * ((fromHandle % 10) - 2)),
+            x: (from.pos.x + (100 + from.width/2 + Math.random()*100) * (Math.floor(fromHandle / 10) - 2)),
+            y: (from.pos.y + (100 + from.height/2 + Math.random()*100) * ((fromHandle % 10) - 2)),
         },
         fill: from.fill,
         stroke: from.stroke

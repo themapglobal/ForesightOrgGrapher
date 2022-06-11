@@ -161,9 +161,9 @@
 {#if contextMenuPosition}
 <sl-menu style={`left: ${contextMenuPosition[0]}px; top: ${contextMenuPosition[1]}px;`}>
   {#if selectedItem}
-  	<sl-menu-item value="deleteitem" on:click={(e) => deleteItem(selectedItem, false)}>Delete {selectedItem.label} leaving orphans</sl-menu-item>
+  	<sl-menu-item value="deleteitem" on:click={(e) => deleteItem(selectedItem, false)}>Delete &quot;{selectedItem.label}&quot; leaving orphans</sl-menu-item>
 	{#if selectedItem.kind === 'node'}
-  		<sl-menu-item value="deleteitemwithdependents" on:click={(e) => deleteItem(selectedItem, true)}>Delete {selectedItem.label} including dependents</sl-menu-item>
+  		<sl-menu-item value="deleteitemwithdependents" on:click={(e) => deleteItem(selectedItem, true)}>Delete &quot;{selectedItem.label}&quot; including dependents</sl-menu-item>
 	{/if}
   {:else}
   <sl-menu-item value="createnode" on:click={createNode}>Create new node</sl-menu-item>
