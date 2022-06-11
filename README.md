@@ -4,8 +4,6 @@ This is an SVG-based interactive graph editor that allows you to manually lay ou
 
 ## TODO
 
-- Children nodes' layout
-- Export SVG
-- Dashed edges
+- Attaching/Detaching edges
 - Dropping one need on another to create it as a child
-- Delete node (with/without dependents)
+- Keystrokes for delete

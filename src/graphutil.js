@@ -174,7 +174,7 @@ export function createGraphNodeEdge(from, fromHandle){
         shape: 'curved',
         label: '',
         stroke: "grey",
-        strokeType: "dashed",
+        strokeType: "solid",
         directed: true, 
         weight: 5,
         fromHandle: fromHandle,

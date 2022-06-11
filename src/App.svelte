@@ -7,30 +7,30 @@
             kind: 'node',
             label: "Algebra",
             pos: {x: 700, y: 500},
-            fill: "orange",
-            stroke: "red"
+            fill: "#ffe6d6",
+            stroke: "#ff0000"
         },{
             id: 2,
             kind: 'node',
             label: "Arithmetic",
             pos: {x: 300, y:200},
-            fill: "white",
-            stroke: "red"
+            fill: "#ffffff",
+            stroke: "#ff0000"
         },{
             id: 3,
             kind: 'node',
             label: "Subtraction",
             pos: {x: 200, y: 100},
-            fill: "yellow",
-            stroke: "black",
+            fill: "#f5f854",
+            stroke: "#103320",
             parent: 2,
         },{
             id: 4,
             kind: 'edge',
             label: "is a prerequisite of",
-            stroke: "grey",
-            strokeType: "dashed",
-            directed: true, 
+            stroke: "#f94fc3",
+            strokeType: "solid",
+            directed: false, 
             weight: 5, 
             fromId: 3, 
             toId: 1, 

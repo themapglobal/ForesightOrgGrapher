@@ -1,6 +1,7 @@
 <script>
 	import { styles } from "./styles.js";
-	import {getGraphNode, moveGraphNode, createGraphNodeEdge, layout, deleteGraphItem, createGraphNode, exportCytoscape} from "./graphutil.js"
+	import {getGraphNode, moveGraphNode, createGraphNodeEdge, layout, 
+		deleteGraphItem, createGraphNode, exportCytoscape} from "./graphutil.js"
 	import Node from "./Node.svelte";
 	import Edge from "./Edge.svelte";
 	import Grid from "./Grid.svelte";
@@ -20,6 +21,8 @@
 	let contextMenuPosition = null;
 	let showJson = false;
 	let showCytoscape = false;
+	let showSvgExport = false;
+	let svgElement;
 
     // $: fetch('/getgraph.json').then(r => r.json()).then(d => {data = d;});
 
@@ -103,19 +106,20 @@
 
 </script>
  
-<svg viewBox={getViewBox()}
+<svg id="mysvg" viewBox={getViewBox()}
 		on:mousemove="{e => handleMouseMove(e.clientX, e.clientY)}"
 	    on:mousedown="{e => draggingFrom = {x: e.clientX, y: e.clientY}}"
 	    on:mouseup="{() => draggingFrom = null}"
 		on:click={handleSvgClick}
 		on:contextmenu|preventDefault={handleContextMenu}
 		use:styles={{color: graph.fill}}
+		bind:this={svgElement}
 >
   <defs>
 	<marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5"
-        markerWidth="6" markerHeight="6"
+        markerWidth="4" markerHeight="4"
         orient="auto-start-reverse">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#f00" />
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="grey" />
     </marker>
   </defs>
 	
@@ -146,6 +150,7 @@
 <section class="sidepanel">
 	<button on:click={(e) => showJson = true}>View/Modify JSON</button>
 	<button on:click={(e) => showCytoscape = true}>View Cytoscape JSON</button>
+	<button on:click={(e) => showSvgExport = true}>Export as SVG</button>
 
 	<ItemEditor {selectedItem} {graph} on:graphchanged="{e => {graph = e.detail; dispatch('graphchanged', graph); }}"/>
 
@@ -191,6 +196,15 @@
   
   <sl-button on:click={(e) => showCytoscape = false} slot="footer" variant="primary">Close</sl-button>
 </sl-dialog>
+
+<!-- textarea for SVG export -->
+<sl-dialog style="--width: 35vw;" open={showSvgExport} label="Export SVG" class="dialog-overview" on:sl-hide={(e) => showSvgExport = false}>
+	<textarea 
+		cols="54" rows="20" autofocus
+	>{svgElement?.outerHTML}</textarea>
+	
+	<sl-button on:click={(e) => showSvgExport = false} slot="footer" variant="primary">Close</sl-button>
+  </sl-dialog>
 
 <style>
 	svg {

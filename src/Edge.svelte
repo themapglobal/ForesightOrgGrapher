@@ -54,8 +54,8 @@
             return `M ${fromX},${fromY} L ${toX},${toY}`;
         } else if(item.shape === 'curved'){
             return `M ${fromX},${fromY} C ${fromControlPointX},${fromControlPointY} ${toControlPointX},${toControlPointY} ${toX},${toY}`
-        } else if(item.shape === 'ortho'){ //TODO
-            return `M ${fromX},${fromY} L ${toX},${toY}`;
+        } else if(item.shape === 'ortho'){
+            return `M ${fromX},${fromY} h ${(toX - fromX)/2} v ${toY - fromY} L ${toX},${toY}`;
         };
 	}
 	
@@ -74,7 +74,8 @@
         fill="none"
         stroke={isSelected ? 'blue' : (item.stroke || 'red')}
         stroke-width={item.weight}
-        marker-mid="url(#arrow)"
+        stroke-dasharray={item.strokeType === 'dashed' ? '8,5' : false}
+        marker-end={item.directed ? "url(#arrow)" : false}
         on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
         on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item})}
         on:click|stopPropagation
