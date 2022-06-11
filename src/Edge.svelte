@@ -75,13 +75,14 @@
         stroke={isSelected ? 'blue' : (item.stroke || 'red')}
         stroke-width={item.weight}
         stroke-dasharray={item.strokeType === 'dashed' ? '8,5' : false}
-        marker-end={item.directed ? "url(#arrow)" : false}
+        marker-end={(item.directed && false) ? "url(#arrow)" : false}
         on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
         on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item})}
         on:click|stopPropagation
+        id={`edgepath${item.id}`}
     >
     </path>
-	<text>
+	<text
         font-family="Verdana"
         font-size={4*item.weight} 
         fill={item.stroke} 
@@ -90,26 +91,40 @@
         on:click|stopPropagation
     >
 			<textPath 
-                path={getEdgePath(graph)} 
-                startOffset="50%" 
+                href={`#edgepath${item.id}`}
+                startOffset="40%" 
                 lengthAdjust="spacingAndGlyphs" 
+                font-family="Verdana"
+                font-size={4*item.weight} 
+                fill={isSelected ? 'blue' : (item.stroke || 'red')}
+                stroke={isSelected ? 'blue' : (item.stroke || 'red')}
+                on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
+                on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item})}
+                on:click|stopPropagation
                 side="left">
                     {item.label}
             </textPath>
+            {#if item.directed}
             <textPath 
-                path={getEdgePath(graph)} 
-                startOffset="25%" 
+                href={`#edgepath${item.id}`}
+                startOffset="20%" 
                 lengthAdjust="spacingAndGlyphs" 
-                stroke={item.stroke || 'red'}
-                fill={item.stroke || 'red'}
+                font-family="Verdana"
+                font-size={4*item.weight} 
+                fill={isSelected ? 'blue' : (item.stroke || 'red')}
+                stroke={isSelected ? 'blue' : (item.stroke || 'red')}
+                on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
+                on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item})}
+                on:click|stopPropagation
                 side="left">
                 ----&gt;
             </textPath>
+            {/if}
 	</text>
 </g>
 
 <style>
-	g:hover text {
+	g:hover text, g:hover textPath {
 		fill: blue;
 		stroke: blue;
 	}
