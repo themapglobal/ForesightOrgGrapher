@@ -1,6 +1,6 @@
 <script>
 	import { styles } from "./styles.js";
-	import {getGraphNode, moveGraphNode, resizeGraphNode, layout, deleteGraphItem, createGraphNode, exportCytoscape} from "./graphutil.js"
+	import {getGraphNode, moveGraphNode, createGraphNodeEdge, layout, deleteGraphItem, createGraphNode, exportCytoscape} from "./graphutil.js"
 	import Node from "./Node.svelte";
 	import Edge from "./Edge.svelte";
 	import Grid from "./Grid.svelte";
@@ -88,6 +88,13 @@
 		contextMenuPosition = [e.clientX, e.clientY];
 	}
 
+	function handleCreateNode(e){
+		console.log("createnode", e.detail)
+		createGraphNodeEdge(e.detail.from, e.detail.handle)
+		graph = graph; 
+		dispatch('graphchanged', graph);
+	}
+
 	// $: console.log('arithmetic pos', graph.items.find(i => i.label === 'Arithmetic').pos)
 	// $: console.log('subtraction pos', graph.items.find(i => i.label === 'Subtraction').pos)
 	$: window.graph = graph;
@@ -124,6 +131,7 @@
 					on:itemMouseUp={handleItemMouseUp}
 					isSelected={item.id === selectedItem?.id}
 					on:nodeChanged={handleNodeChanged}
+					on:createnode={handleCreateNode}
 			/>
 		{:else if item.kind === 'edge'}
 			<Edge {item} {graph}

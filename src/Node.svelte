@@ -5,6 +5,12 @@
     export let item;
 	export let isSelected;
 
+	function handleControlClicked(e){
+		let handle = parseInt(e.target.getAttribute('data-handle'));
+		console.log(handle)
+		dispatch('createnode', {from: item, handle: handle})
+	}
+
 </script>
 
 <g>
@@ -35,6 +41,19 @@
 			{item.label}
 	</text>
 
+	{#if isSelected}
+	  {#each [[1,0],[0,1],[-1,0],[0,-1]] as control}
+	  	<circle 
+			class="control"
+			data-handle={22 + control[1] + 10*control[0]}
+			on:click={handleControlClicked}
+			cx={item.pos.x + control[0] * item.width/2} 
+			cy={item.pos.y + control[1] * item.height/2}
+			r={5}>
+		</circle>
+	  {/each}
+	{/if}
+
 </g>
 
 <style>
@@ -58,5 +77,16 @@
 		opacity: 0.5;
 		filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
 		cursor: pointer;
+	}
+
+	circle.control {
+		fill: white;
+		stroke: black;
+		cursor: pointer;
+	}
+
+	circle.control:hover {
+		fill: magenta;
+		stroke: red;
 	}
 </style>
