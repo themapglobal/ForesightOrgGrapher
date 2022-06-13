@@ -135,17 +135,6 @@
             {/if}
 	</text>
 
-    {#if isSelected}
-
-	  	<circle 
-			class="control"
-			on:click={handleControlClicked}
-			cx={item.pos.x + control[0] * item.width/2} 
-			cy={item.pos.y + control[1] * item.height/2}
-			title="Create new connected node"
-			r={5}>
-		</circle>
-	{/if}
 </g>
 
 <style>
