@@ -30,7 +30,7 @@
             label: "is a prerequisite of",
             stroke: "#f94fc3",
             strokeType: "solid",
-            directed: false, 
+            directed: true, 
             weight: 5, 
             fromId: 3, 
             toId: 1, 

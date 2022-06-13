@@ -1,5 +1,5 @@
 <script>
-	import { styles } from "./styles.js";
+	import {getGraphNode} from "./graphutil.js"
     import { createEventDispatcher } from 'svelte';
     const dispatch = createEventDispatcher();
 
@@ -66,6 +66,19 @@
         // mid-point of fromNode and toNode
         return {x: (fromNode.pos.x + toNode.pos.x)/2, y: (fromNode.pos.y + toNode.pos.y)/2};
 	}
+
+    function getLabelDirection(edge, graph){
+        let fromNode = edge.fromOrphan || getGraphNode(edge.fromId, graph);
+        let toNode = edge.toOrphan || getGraphNode(edge.toId, graph);
+
+        let angle = Math.atan2(toNode.pos.y - fromNode.pos.y, toNode.pos.x - fromNode.pos.x) * 180 / Math.PI;
+
+        return (angle > 90 || angle < -120) ? 'right' : 'left';
+    }
+
+    function handleControlClicked(e){
+        
+    }
 </script>
 
 <g>
@@ -101,7 +114,7 @@
                 on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
                 on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item})}
                 on:click|stopPropagation
-                side="left">
+                side={getLabelDirection(item, graph)}>
                     {item.label}
             </textPath>
             {#if item.directed}
@@ -121,6 +134,18 @@
             </textPath>
             {/if}
 	</text>
+
+    {#if isSelected}
+
+	  	<circle 
+			class="control"
+			on:click={handleControlClicked}
+			cx={item.pos.x + control[0] * item.width/2} 
+			cy={item.pos.y + control[1] * item.height/2}
+			title="Create new connected node"
+			r={5}>
+		</circle>
+	{/if}
 </g>
 
 <style>
@@ -141,4 +166,15 @@
     path {
         cursor: pointer;
     }
+
+	circle.control {
+		fill: white;
+		stroke: black;
+		cursor: pointer;
+	}
+
+	circle.control:hover {
+		fill: magenta;
+		stroke: red;
+	}
 </style>
