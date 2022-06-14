@@ -39,16 +39,11 @@
             shape: 'curved',
         }],
         grid: 'cartesian',
-<<<<<<< HEAD
-        fill: "#f5f5f4",
-        debugger: false
-=======
         fill: "#ffffce",
         debugger: false,
         sidepanel: true,
         jsonview: true,
         contextmenu: true
->>>>>>> 5e4eea627385465945b7dc2f8e58641d3cd5d5ca
     };
 </script>
 
