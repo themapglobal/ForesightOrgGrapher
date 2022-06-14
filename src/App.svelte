@@ -8,16 +8,16 @@
             label: "Algebra",
             children: [],
             pos: {x: 700, y: 500},
-            fill: "orange",
-            stroke: "red"
+            fill: "#7c2d12",
+            stroke: "#eff6ff"
         },{
             id: 2,
             kind: 'node',
             label: "Arithmetic",
             children: [],
             pos: {x: 300, y: 200},
-            fill: "white",
-            stroke: "red"
+            fill: "#1e3a8a",
+            stroke: "#fff7ed"
         },{
             id: 3,
             kind: 'edge',
@@ -33,7 +33,7 @@
             shape: 'curved',
         }],
         grid: 'cartesian',
-        fill: "#ffffce",
+        fill: "#f5f5f4",
         debugger: false
     };
 </script>
