@@ -1,42 +1,56 @@
 <script>
-  import MapEditor from "./MapEditor.svelte"
+    import MapEditor from "./MapEditor.svelte"
 	
-	let graph = {
+    let graph = {
         items: [{
             id: 1,
-			kind: 'node',
+            kind: 'node',
             label: "Algebra",
-            children: [],
             pos: {x: 700, y: 500},
-            fill: "#7c2d12",
-            stroke: "#eff6ff"
+            fill: "#ffe6d6",
+            stroke: "#ff0000"
         },{
             id: 2,
             kind: 'node',
             label: "Arithmetic",
-            children: [],
-            pos: {x: 300, y: 200},
-            fill: "#1e3a8a",
-            stroke: "#fff7ed"
+            pos: {x: 300, y:200},
+            fill: "#ffffff",
+            stroke: "#ff0000"
         },{
             id: 3,
+            kind: 'node',
+            label: "Subtraction",
+            pos: {x: 200, y: 100},
+            fill: "#f5f854",
+            stroke: "#103320",
+            parent: 2,
+        },{
+            id: 4,
             kind: 'edge',
             label: "is a prerequisite of",
-            stroke: "black",
-            strokeType: "dashed",
+            stroke: "#f94fc3",
+            strokeType: "solid",
             directed: true, 
             weight: 5, 
-            fromId: 2, 
+            fromId: 3, 
             toId: 1, 
-            fromHandle: 23, 
-            toHandle: 21,
+            fromHandle: 13, 
+            toHandle: 23,
             shape: 'curved',
         }],
         grid: 'cartesian',
+<<<<<<< HEAD
         fill: "#f5f5f4",
         debugger: false
+=======
+        fill: "#ffffce",
+        debugger: false,
+        sidepanel: true,
+        jsonview: true,
+        contextmenu: true
+>>>>>>> 5e4eea627385465945b7dc2f8e58641d3cd5d5ca
     };
 </script>
 
-<MapEditor {graph} on:graphchanged="{e => graph = e.detail}"/>
+<MapEditor unsizedGraph={graph} on:graphchanged="{e => graph = e.detail}"/>
 

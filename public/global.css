@@ -40,8 +40,9 @@ input, button, select, textarea {
 	border-radius: 2px;
 }
 
-input:disabled {
+input:disabled, input:read-only {
 	color: #ccc;
+	cursor: default;
 }
 
 button {
