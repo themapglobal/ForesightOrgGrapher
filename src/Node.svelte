@@ -22,8 +22,7 @@
 		fill={item.fill}
 		stroke={isSelected ? 'blue' : 'none'}
 		stroke-width={isSelected ? '3px' : '0px'}
-		rx='8'
-		
+		rx='8'		
 		on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
 		on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item})}
 		on:click|stopPropagation

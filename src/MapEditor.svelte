@@ -92,6 +92,13 @@
 		dispatch('graphchanged', graph);
 	}
 
+	function handleKeydown(e){
+		// console.log(e.key, e.keyCode, e.target)
+		if(selectedItem && (e.key === 'Backspace' || e.key === 'Delete')){
+			deleteItem(selectedItem, false)
+		}
+	}
+
 	// $: console.log('arithmetic pos', graph.items.find(i => i.label === 'Arithmetic').pos)
 	// $: console.log('subtraction pos', graph.items.find(i => i.label === 'Subtraction').pos)
 	$: window.graph = graph;
@@ -99,8 +106,8 @@
 	$: window.getnode = getGraphNode;
 
 </script>
- 
-<svg id="mysvg" viewBox={graph.viewBox.join(" ")}
+
+<svg tabindex="0" id="mysvg" viewBox={graph.viewBox.join(" ")}
 		on:mousemove="{e => handleMouseMove(e.clientX, e.clientY)}"
 	    on:mousedown="{e => draggingFrom = {x: e.clientX, y: e.clientY}}"
 	    on:mouseup="{() => draggingFrom = null}"
@@ -108,6 +115,7 @@
 		on:contextmenu|preventDefault={handleContextMenu}
 		use:styles={{color: graph.fill}}
 		bind:this={svgElement}
+		on:keydown={handleKeydown}
 >
   <defs>
 	<marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5"
@@ -202,8 +210,8 @@
 
 <style>
 	svg {
-		width: 1700px;
-		height: 1200px;
+		width: 100vw;
+		height: 100vh;
 		background-color: var(--color);
 	}
 	

@@ -44,7 +44,7 @@
         sidepanel: true,
         jsonview: true,
         contextmenu: true,
-        viewBox: [0, 0, 1700, 1200]
+        viewBox: [0, 0, 1000, 1000]
     };
 </script>
 

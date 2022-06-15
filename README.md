@@ -6,6 +6,8 @@ This is an SVG-based interactive graph editor that allows you to manually lay ou
 
 ## TODO
 
-- Attaching/Detaching edges
-- Dropping one need on another to create it as a child
-- Keystrokes for delete
+- Zooming and panning
+- Attaching/Detaching edges via control handles
+- Dropping one node on another to create it as a child
+- Keystroke handling for deleting selected item
+- Polar grid

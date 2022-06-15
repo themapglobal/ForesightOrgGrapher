@@ -86,7 +86,7 @@ export function layout(graph){
 }
 
 export function deleteGraphItem(item, graph, deleteDependents){
-    console.log("deleteItem", item.label);
+    // console.log("deleteItem", item.label);
     if(item.kind === 'edge'){
         // can be deleted safely
         graph.items = graph.items.filter(i => i != item);
