@@ -22,6 +22,8 @@
 		fill={item.fill}
 		stroke={isSelected ? 'blue' : 'none'}
 		stroke-width={isSelected ? '3px' : '0px'}
+		rx='8'
+		
 		on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
 		on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item})}
 		on:click|stopPropagation
@@ -59,14 +61,9 @@
 
 <style>
 	g:hover rect {
-		fill: pink;
-		stroke: blue;
-		stroke-width: 3px;
-	}
-	
-	g:hover text {
-		fill: blue;
-		stroke: blue;
+		fill-opacity: 0.7;
+		stroke: black;
+		stroke-width: 1px;
 	}
 	
 	text {
