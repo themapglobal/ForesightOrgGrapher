@@ -43,7 +43,8 @@
         debugger: false,
         sidepanel: true,
         jsonview: true,
-        contextmenu: true
+        contextmenu: true,
+        viewBox: [0, 0, 1700, 1200]
     };
 </script>
 

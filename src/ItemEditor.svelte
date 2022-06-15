@@ -1,6 +1,7 @@
 <script>
     export let selectedItem;
     export let graph;
+	import { JSONEditor } from 'svelte-jsoneditor';
     import { createEventDispatcher } from 'svelte';
 	const dispatch = createEventDispatcher();
 
@@ -15,13 +16,19 @@
         graph = graph;
         dispatch('graphchanged', graph);
     }
+
+	function handleJsonChange(updatedContent, previousContent, patchResult){
+		selectedItem.custom = updatedContent.json;
+		graph = graph;
+		dispatch('graphchanged', graph);
+	}
 </script>
 
 {#if selectedItem}
 	<h1>{selectedItem.kind}: {selectedItem.label}</h1>
 
 	<div class="table">
-	{#each ['number_id','text_label', 'number_parent', 'color_fill', 'color_stroke', 'text_strokeType', 'checkbox_directed', 'number_weight', 'number_fromHandle', 'number_toHandle', 'text_shape'].filter(f => Object.keys(selectedItem).includes(f.split("_")[1])) as field (field)}
+	{#each ['number_id','text_label', 'number_parent', 'color_fill', 'color_stroke', 'text_strokeType', 'checkbox_directed', 'number_weight', 'number_fromHandle', 'number_toHandle', 'text_shape', 'json_custom'].filter(f => f === 'json_custom' || Object.keys(selectedItem).includes(f.split("_")[1])) as field (field)}
 	<div class="row">
 		<span><strong>{field.split("_")[1]}</strong></span>
 		{#if field === 'text_strokeType'}
@@ -53,6 +60,8 @@
 			on:change={e => handleInputChange(e, field)}
 			checked={selectedItem[field.split("_")[1]]}
 		>
+		{:else if field.startsWith('json')}
+			<JSONEditor content={{json: selectedItem[field.split("_")[1]] || {}}} onChange={handleJsonChange} />
 		{:else}
 		<input 
 			type={field.split("_")[0]} 

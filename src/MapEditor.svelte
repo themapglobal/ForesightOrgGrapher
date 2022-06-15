@@ -80,12 +80,6 @@
 		contextMenuPosition = null;
 	}
 
-	
-	function getViewBox(){
-		//TODO: Should change for zooming/panning
-		return "0 0 1700 1200";
-	}
-
 	function handleContextMenu(e){
 		if(!graph.contextmenu) return;
 		contextMenuPosition = [e.clientX, e.clientY];
@@ -106,7 +100,7 @@
 
 </script>
  
-<svg id="mysvg" viewBox={getViewBox()}
+<svg id="mysvg" viewBox={graph.viewBox.join(" ")}
 		on:mousemove="{e => handleMouseMove(e.clientX, e.clientY)}"
 	    on:mousedown="{e => draggingFrom = {x: e.clientX, y: e.clientY}}"
 	    on:mouseup="{() => draggingFrom = null}"
