@@ -78,6 +78,8 @@
 		// move selectedItem along with all its children
 		moveGraphNode(selectedItem, graph, (currentMouse.x - draggingFrom.x), (currentMouse.y - draggingFrom.y))
 
+		// TODO: if moved on top of another node, create parent-child relationship
+
 		draggingFrom.x = currentMouse.x;
 		draggingFrom.y = currentMouse.y;
 		// console.log("handleMouseMove");
@@ -98,7 +100,7 @@
 	}
 
 	function handleCreateNode(e){
-		console.log("createnode", e.detail)
+		// console.log("createnode", e.detail)
 		createGraphNodeEdge(e.detail.from, e.detail.handle)
 		graph = graph; 
 		dispatch('graphchanged', graph);
@@ -111,11 +113,16 @@
 		}
 	}
 
+	function handleEdgeChanged(e){
+		graph = graph;
+		dispatch('graphchanged', graph);
+	}
+
 	// $: console.log('arithmetic pos', graph.items.find(i => i.label === 'Arithmetic').pos)
 	// $: console.log('subtraction pos', graph.items.find(i => i.label === 'Subtraction').pos)
-	$: window.graph = graph;
-	$: window.move = moveGraphNode;
-	$: window.getnode = getGraphNode;
+	// $: window.graph = graph;
+	// $: window.move = moveGraphNode;
+	// $: window.getnode = getGraphNode;
 
 </script>
 
@@ -140,11 +147,8 @@
   
   <g bind:this={topGroupElem}>
 	<Grid kind={graph.grid}/> 
-	
-	<!-- draw edges first, then parent nodes, then child nodes, then selectedItem -->
-	<!-- Edges need nodes' width and height for path calculation -->
 
-    {#each graph.items.sort((a,b) => a.kind.localeCompare(b.kind)) as item (item.id)}
+    {#each graph.items.sort((a,b) => a.level - b.level) as item (item.id)}
 		{#if item.kind === 'node'}
     		<Node {item}
 					on:itemMouseDown={handleItemMouseDown} 
@@ -157,6 +161,7 @@
 			<Edge {item} {graph}
 					on:itemMouseDown={handleItemMouseDown} 
 					on:itemMouseUp={handleItemMouseUp}
+					on:edgeChanged={handleEdgeChanged}
 					isSelected={item.id === selectedItem?.id}/>
 		{/if}
     {/each}    

@@ -6,6 +6,8 @@
     export let item;
 	export let graph; // is useful when drawing edges
 	export let isSelected;
+
+    let fromPos, toPos;
 	
 	function getEdgePath(graph){
         let fromX, fromY, toX, toY;
@@ -50,10 +52,19 @@
             }
         }
 
-        if(item.shape === 'straight' || item.fromOrphan || item.toOrphan){
+        fromPos = {x: fromX, y: fromY};
+        toPos = {x: toX, y: toY};
+
+        if(item.shape === 'straight'){
             return `M ${fromX},${fromY} L ${toX},${toY}`;
         } else if(item.shape === 'curved'){
-            return `M ${fromX},${fromY} C ${fromControlPointX},${fromControlPointY} ${toControlPointX},${toControlPointY} ${toX},${toY}`
+            return [
+                `M ${fromX},${fromY}`,
+                ...[fromControlPointX && toControlPointX ? `C` : (fromControlPointX || toControlPointX ? `Q` : ``)], 
+                ...[fromControlPointX && `${fromControlPointX},${fromControlPointY}`], 
+                ...[toControlPointX && `${toControlPointX},${toControlPointY}`], 
+                `${toX},${toY}`
+            ].join(' ');
         } else if(item.shape === 'ortho'){
             return `M ${fromX},${fromY} h ${(toX - fromX)/2} v ${toY - fromY} L ${toX},${toY}`;
         };
@@ -76,8 +87,18 @@
         return (angle > 90 || angle < -120) ? 'right' : 'left';
     }
 
-    function handleControlClicked(e){
-        
+    function handleControlClicked(e, control){
+        console.log("handleControlClicked", control)
+        if(control === 'from' && item.fromId){
+            // detach fromNode
+            delete item.fromId;
+            item.fromOrphan = {pos: {x: fromPos.x, y: fromPos.y}}
+        } else if(control === 'to' && item.toId){
+            // detach toNode
+            delete item.toId;
+            item.toOrphan = {pos: {x: toPos.x, y: toPos.y}}
+        }
+        dispatch('edgeChanged', {source: item})
     }
 </script>
 
@@ -135,6 +156,25 @@
             {/if}
 	</text>
 
+    {#if isSelected}
+        <circle 
+            class="control"
+            on:click={e => handleControlClicked(e, 'from')}
+            cx={fromPos.x} 
+            cy={fromPos.y}
+            r={5}
+        >
+        </circle>
+
+        <circle 
+            class="control"
+            on:click={e => handleControlClicked(e, 'to')}
+            cx={toPos.x} 
+            cy={toPos.y}
+            r={5}
+        >
+        </circle>
+    {/if}
 </g>
 
 <style>

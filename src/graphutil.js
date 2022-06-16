@@ -75,13 +75,28 @@ export function resizeGraphNode(item, graph){
     // console.log(item.label, item.width, item.height);
 }
 
+function decideNodeLevel(item, graph, currentLevel){
+    item.level = currentLevel;
+    item.children.forEach(c => decideNodeLevel(getGraphNode(c, graph), graph, currentLevel + 1))
+}
+
 export function layout(graph){
     // console.log("layout");
     prepareGraph(graph);
     // resize top nodes only because they will recurse
     graph.items.filter(i => (i.kind === 'node' && !i.parent)).forEach(item => {
         resizeGraphNode(item, graph);
+        decideNodeLevel(item, graph, 0);
     });
+
+    graph.items.filter(i => (i.kind === 'edge')).forEach(edge => {
+        // handle edges without nodes
+        edge.level = Math.max(
+            edge.fromId ? (getGraphNode(edge.fromId, graph).level) : 20, 
+            edge.toId ? (getGraphNode(edge.toId, graph).level) : 20
+        )
+    });
+
     return graph;
 }
 
@@ -137,7 +152,7 @@ export function deleteGraphItem(item, graph, deleteDependents){
 }
 
 export function createGraphNode(e){
-    console.log("createGraphNode")
+    // console.log("createGraphNode")
     graph.items.push({
         id: Math.ceil(Math.random() * 10000),
         kind: 'node',
@@ -150,7 +165,7 @@ export function createGraphNode(e){
 }
 
 export function createGraphNodeEdge(from, fromHandle){
-    console.log("createGraphNodeEdge")
+    // console.log("createGraphNodeEdge")
     let newId = Math.ceil(Math.random() * 100000);
     graph.items.push({
         id: newId,
@@ -178,7 +193,7 @@ export function createGraphNodeEdge(from, fromHandle){
         directed: true, 
         weight: 5,
         fromHandle: fromHandle,
-        toHandle: 22
+        toHandle: 11
     })
 }
 
