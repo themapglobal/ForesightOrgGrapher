@@ -48,5 +48,8 @@
     };
 </script>
 
-<MapEditor unsizedGraph={graph} on:graphchanged="{e => graph = e.detail}"/>
+    <MapEditor unsizedGraph={graph} on:graphchanged="{e => graph = e.detail}"/>
+    
+
+
 
