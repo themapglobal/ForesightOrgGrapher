@@ -28,7 +28,7 @@
 	<h1>{selectedItem.kind}: {selectedItem.label}</h1>
 
 	<div class="table">
-	{#each ['number_id','text_label', 'number_parent', 'color_fill', 'color_stroke', 'text_strokeType', 'checkbox_directed', 'number_weight', 'number_fromHandle', 'number_toHandle', 'text_shape', 'json_custom'].filter(f => f === 'json_custom' || Object.keys(selectedItem).includes(f.split("_")[1])) as field (field)}
+	{#each ['number_id','text_label', 'number_parent', 'color_fill', 'color_stroke', 'text_strokeType', 'checkbox_directed', 'number_weight', 'text_shape', 'json_custom'].filter(f => (f === 'json_custom' && graph.customjson) || Object.keys(selectedItem).includes(f.split("_")[1])) as field (field)}
 	<div class="row">
 		<span><strong>{field.split("_")[1]}</strong></span>
 		{#if field === 'text_strokeType'}
@@ -41,18 +41,6 @@
 			<option value="straight" selected={selectedItem[field.split("_")[1]] === 'straight'}>straight</option>
 			<option value="curved" selected={selectedItem[field.split("_")[1]] === 'curved'}>curved</option>
 			<option value="ortho" selected={selectedItem[field.split("_")[1]] === 'ortho'}>ortho</option>
-		</select>
-		{:else if field === 'number_fromHandle' || field === 'number_toHandle'}
-		<select on:change={e => handleInputChange(e, field)}>
-			<option value="11" selected={selectedItem[field.split("_")[1]] === 11}>top-left</option>
-			<option value="12" selected={selectedItem[field.split("_")[1]] === 12}>mid-left</option>
-			<option value="13" selected={selectedItem[field.split("_")[1]] === 13}>bottom-left</option>
-			<option value="21" selected={selectedItem[field.split("_")[1]] === 21}>top-mid</option>
-			<option value="22" selected={selectedItem[field.split("_")[1]] === 22}>mid-mid</option>
-			<option value="23" selected={selectedItem[field.split("_")[1]] === 23}>bottom-mid</option>
-			<option value="31" selected={selectedItem[field.split("_")[1]] === 31}>top-right</option>
-			<option value="32" selected={selectedItem[field.split("_")[1]] === 32}>mid-right</option>
-			<option value="33" selected={selectedItem[field.split("_")[1]] === 33}>bottom-right</option>
 		</select>
 		{:else if field.startsWith('checkbox')}
 		<input 

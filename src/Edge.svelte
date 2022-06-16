@@ -19,19 +19,14 @@
             fromY = item.fromOrphan.pos.y;
         } else {
             let fromNode = graph.items.find(i => i.id === item.fromId);
-            
-            // convert handleIndex like 23 or 31 into -1,0,1 for both x and y
-            let fromXHandleIndex = Math.round(item.fromHandle / 10) - 2;
-            let fromYHandleIndex = item.fromHandle % 10 - 2;
 
             // coordinates of the handle
-            fromX = fromNode.pos.x + fromXHandleIndex * (fromNode.width / 2);
-            fromY = fromNode.pos.y + fromYHandleIndex * (fromNode.height / 2);
+            fromX = fromNode.pos.x;
+            fromY = fromNode.pos.y;
 
             if(item.shape === 'curved'){
-                // control points for bezier curve: center + 3*(handle - center)
-                fromControlPointX = fromNode.pos.x + 3*(fromX - fromNode.pos.x);
-                fromControlPointY = fromNode.pos.y + 6*(fromY - fromNode.pos.y);
+                fromControlPointX = fromNode.pos.x + 30;
+                fromControlPointY = fromNode.pos.y + 60;
             }
         }
 
@@ -41,15 +36,12 @@
         } else {
             let toNode = graph.items.find(i => i.id === item.toId);
             
-            let toXHandleIndex = Math.round(item.toHandle / 10) - 2;
-            let toYHandleIndex = item.toHandle % 10 - 2;
-            
-            toX = toNode.pos.x + toXHandleIndex * (toNode.width / 2);
-            toY = toNode.pos.y + toYHandleIndex * (toNode.height / 2);
+            toX = toNode.pos.x
+            toY = toNode.pos.y;
             
             if(item.shape === 'curved'){
-                toControlPointX = toNode.pos.x + 3*(toX - toNode.pos.x);
-                toControlPointY = toNode.pos.y + 6*(toY - toNode.pos.y);
+                toControlPointX = toNode.pos.x - 30;
+                toControlPointY = toNode.pos.y - 30;
             }
         }
 

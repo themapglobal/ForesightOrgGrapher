@@ -1,7 +1,7 @@
 <script>
 	import { styles } from "./styles.js";
 	import {getGraphNode, moveGraphNode, createGraphNodeEdge, layout, 
-		deleteGraphItem, createGraphNode, exportCytoscape} from "./graphutil.js"
+		deleteGraphItem, createGraphNode, exportCytoscape, createGraphChildNode} from "./graphutil.js"
 	import Node from "./Node.svelte";
 	import Edge from "./Edge.svelte";
 	import Grid from "./Grid.svelte";
@@ -88,7 +88,7 @@
 	};
 
 	function createNode(e){
-		createGraphNode(e);
+		createGraphNode(e, graph, svgElement);
 		graph = graph;
 		dispatch('graphchanged', graph);
 		contextMenuPosition = null;
@@ -116,6 +116,14 @@
 	function handleEdgeChanged(e){
 		graph = graph;
 		dispatch('graphchanged', graph);
+	}
+
+	function createChildNode(e, item){
+		console.log("createChildNode", item);
+		createGraphChildNode(e, graph, item, svgElement);
+		graph = graph;
+		dispatch('graphchanged', graph);
+		contextMenuPosition = null;
 	}
 
 	// $: console.log('arithmetic pos', graph.items.find(i => i.label === 'Arithmetic').pos)
@@ -170,9 +178,17 @@
 
 {#if graph.sidepanel}
 <section class="sidepanel">
+	{#if graph.jsonview}
 	<button on:click={(e) => showJson = true}>View/Modify JSON</button>
+	{/if}
+
+	{#if graph.exportcytoscape}
 	<button on:click={(e) => showCytoscape = true}>View Cytoscape JSON</button>
+	{/if}
+
+	{#if graph.exportsvg}
 	<button on:click={(e) => showSvgExport = true}>Export as SVG</button>
+	{/if}
 
 	<ItemEditor {selectedItem} {graph} on:graphchanged="{e => {graph = e.detail; dispatch('graphchanged', graph); }}"/>
 
@@ -191,6 +207,7 @@
   	<sl-menu-item value="deleteitem" on:click={(e) => deleteItem(selectedItem, false)}>Delete &quot;{selectedItem.label}&quot; leaving orphans</sl-menu-item>
 	{#if selectedItem.kind === 'node'}
   		<sl-menu-item value="deleteitemwithdependents" on:click={(e) => deleteItem(selectedItem, true)}>Delete &quot;{selectedItem.label}&quot; including dependents</sl-menu-item>
+		<sl-menu-item value="createchildnode" on:click={(e) => createChildNode(e, selectedItem)}>Create child node</sl-menu-item>
 	{/if}
   {:else}
   <sl-menu-item value="createnode" on:click={createNode}>Create new node</sl-menu-item>
@@ -210,6 +227,7 @@
 </sl-dialog>
 {/if}
 
+{#if graph.exportcytoscape}
 <!-- textarea for exporting Cytoscape compatible json -->
 <sl-dialog style="--width: 35vw;" open={showCytoscape} label="View Cytoscape-compatible JSON" class="dialog-overview" on:sl-hide={(e) => showCytoscape = false}>
   <textarea 
@@ -218,7 +236,9 @@
   
   <sl-button on:click={(e) => showCytoscape = false} slot="footer" variant="primary">Close</sl-button>
 </sl-dialog>
+{/if}
 
+{#if graph.exportsvg}
 <!-- textarea for SVG export -->
 <sl-dialog style="--width: 35vw;" open={showSvgExport} label="Export SVG" class="dialog-overview" on:sl-hide={(e) => showSvgExport = false}>
 	<textarea 
@@ -227,6 +247,8 @@
 	
 	<sl-button on:click={(e) => showSvgExport = false} slot="footer" variant="primary">Close</sl-button>
   </sl-dialog>
+{/if}
+
 </div>
 
 <style>

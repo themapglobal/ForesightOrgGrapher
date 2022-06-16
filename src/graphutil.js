@@ -151,16 +151,37 @@ export function deleteGraphItem(item, graph, deleteDependents){
     }    
 }
 
-export function createGraphNode(e){
+export function createGraphNode(e, graph, svg){
     // console.log("createGraphNode")
     graph.items.push({
         id: Math.ceil(Math.random() * 10000),
         kind: 'node',
         label: 'New node',
         children: [],
-        pos: {x: e.clientX,y: e.clientY},
+        pos: getSvgCoordinates(svg, e),
         fill: 'yellow',
         stroke: 'black'
+    })
+}
+
+function getSvgCoordinates(svg, e){
+    const pt = svg.createSVGPoint();
+    pt.x = e.clientX;
+    pt.y = e.clientY;
+    return pt.matrixTransform( svg.getScreenCTM().inverse() );
+}
+
+export function createGraphChildNode(e, graph, parent, svg){
+    // console.log("createGraphNode")
+    graph.items.push({
+        id: Math.ceil(Math.random() * 10000),
+        kind: 'node',
+        label: 'New node',
+        children: [],
+        pos: getSvgCoordinates(svg, e),
+        fill: 'yellow',
+        stroke: 'black',
+        parent: parent.id
     })
 }
 
@@ -191,9 +212,7 @@ export function createGraphNodeEdge(from, fromHandle, graph){
         stroke: "grey",
         strokeType: "solid",
         directed: true, 
-        weight: 5,
-        fromHandle: fromHandle,
-        toHandle: 11
+        weight: 5
     })
 }
 

@@ -34,16 +34,17 @@
             weight: 5, 
             fromId: 3, 
             toId: 1, 
-            fromHandle: 13, 
-            toHandle: 23,
             shape: 'curved',
         }],
-        grid: 'cartesian',
-        fill: "#ffffce",
+        grid: 'false',
+        fill: "#ffffde",
         debugger: false,
-        sidepanel: true,
-        jsonview: true,
+        sidepanel: false,
+        jsonview: false,
         contextmenu: true,
+        customjson: false,
+        exportcytoscape: false,
+        exportsvg: false,
         viewBox: [0, 0, 1000, 1000]
     };
 </script>
