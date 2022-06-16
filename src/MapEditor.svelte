@@ -8,7 +8,7 @@
 	import ItemEditor from "./ItemEditor.svelte"
 	import { onMount } from 'svelte'
 	import { zoom } from 'd3-zoom'
-  	import { select } from 'd3-selection'
+  import { select } from 'd3-selection'
 
 	import { createEventDispatcher } from 'svelte';
 	const dispatch = createEventDispatcher();
@@ -125,6 +125,7 @@
 	// $: window.getnode = getGraphNode;
 
 </script>
+
 <div class="container">
 <svg tabindex="0" id="mysvg" viewBox={graph.viewBox.join(" ")}
 		on:mousemove="{e => handleMouseMove(e.clientX, e.clientY)}"
