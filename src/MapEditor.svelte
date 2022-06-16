@@ -6,8 +6,10 @@
 	import Edge from "./Edge.svelte";
 	import Grid from "./Grid.svelte";
 	import ItemEditor from "./ItemEditor.svelte"
+	import { onMount } from 'svelte'
+	import { zoom } from 'd3-zoom'
+  	import { select } from 'd3-selection'
 
-	// import ZoomSvg from '@svelte-parts/zoom/svg'
 	import { createEventDispatcher } from 'svelte';
 	const dispatch = createEventDispatcher();
 
@@ -23,6 +25,16 @@
 	let showCytoscape = false;
 	let showSvgExport = false;
 	let svgElement;
+	let topGroupElem;
+
+	onMount(() => {
+		if (svgElement && topGroupElem) {
+			select(svgElement).call(zoom().on('zoom', ({ transform }) => {
+				const { k, x, y } = transform
+				select(topGroupElem).attr('transform', `translate(${x}, ${y}) scale(${k})`)
+			}))
+		}
+	})
 
     // $: fetch('/getgraph.json').then(r => r.json()).then(d => {data = d;});
 
@@ -124,7 +136,8 @@
       <path d="M 0 0 L 10 5 L 0 10 z" fill="grey" />
     </marker>
   </defs>
-	
+  
+  <g bind:this={topGroupElem}>
 	<Grid kind={graph.grid}/> 
 	
 	<!-- draw edges first, then parent nodes, then child nodes, then selectedItem -->
@@ -146,6 +159,7 @@
 					isSelected={item.id === selectedItem?.id}/>
 		{/if}
     {/each}    
+  </g>
 </svg>
 
 {#if graph.sidepanel}

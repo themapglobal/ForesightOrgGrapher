@@ -62,6 +62,13 @@
 		>
 		{:else if field.startsWith('json')}
 			<JSONEditor content={{json: selectedItem[field.split("_")[1]] || {}}} onChange={handleJsonChange} />
+		{:else if field === 'color_fill' || field === 'color_stroke'}
+			<sl-color-picker format="hex" size="small" 
+				value={selectedItem[field.split("_")[1]]} 
+				label={`Select a ${field}`}
+				on:sl-change={e => handleInputChange(e, field)}
+			>
+			</sl-color-picker>
 		{:else}
 		<input 
 			type={field.split("_")[0]} 
