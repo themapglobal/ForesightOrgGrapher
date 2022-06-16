@@ -77,7 +77,7 @@ export function resizeGraphNode(item, graph){
 
 function decideNodeLevel(item, graph, currentLevel){
     item.level = currentLevel;
-    item.children.forEach(c => decideNodeLevel(getGraphNode(c, graph), graph, currentLevel + 1))
+    item.children.forEach(c => decideNodeLevel(getGraphNode(c, graph), graph, currentLevel + 2))
 }
 
 export function layout(graph){
@@ -92,8 +92,8 @@ export function layout(graph){
     graph.items.filter(i => (i.kind === 'edge')).forEach(edge => {
         // handle edges without nodes
         edge.level = Math.max(
-            edge.fromId ? (getGraphNode(edge.fromId, graph).level) : 20, 
-            edge.toId ? (getGraphNode(edge.toId, graph).level) : 20
+            edge.fromId ? (getGraphNode(edge.fromId, graph).level - 1) : 20, 
+            edge.toId ? (getGraphNode(edge.toId, graph).level - 1) : 20
         )
     });
 

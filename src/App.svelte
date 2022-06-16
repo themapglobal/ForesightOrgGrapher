@@ -39,12 +39,12 @@
         grid: 'false',
         fill: "#ffffde",
         debugger: false,
-        sidepanel: false,
-        jsonview: false,
+        sidepanel: true,
+        jsonview: true,
         contextmenu: true,
         customjson: false,
-        exportcytoscape: false,
-        exportsvg: false,
+        exportcytoscape: true,
+        exportsvg: true,
         viewBox: [0, 0, 1000, 1000]
     };
 </script>
