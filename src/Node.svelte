@@ -1,4 +1,5 @@
 <script>
+	import ControlPoint from "./ControlPoint.svelte"
     import { createEventDispatcher } from 'svelte';
     const dispatch = createEventDispatcher();
 
@@ -7,7 +8,7 @@
 
 	function handleControlClicked(e){
 		let handle = parseInt(e.target.getAttribute('data-handle'));
-		console.log(handle)
+		// console.log(handle)
 		dispatch('createnode', {from: item, handle: handle})
 	}
 
@@ -44,15 +45,14 @@
 
 	{#if isSelected}
 	  {#each [[1,0],[0,1],[-1,0],[0,-1]] as control}
-	  	<circle 
-			class="control"
-			data-handle={22 + control[1] + 10*control[0]}
+	  	<ControlPoint 
+			kind='plus'
+			data={22 + control[1] + 10*control[0]}
 			on:click={handleControlClicked}
-			cx={item.pos.x + control[0] * item.width/2} 
-			cy={item.pos.y + control[1] * item.height/2}
+			x={item.pos.x + control[0] * item.width/2} 
+			y={item.pos.y + control[1] * item.height/2}
 			title="Create new connected node"
-			r={5}>
-		</circle>
+			size={4}/>
 	  {/each}
 	{/if}
 
@@ -74,14 +74,5 @@
 		cursor: pointer;
 	}
 
-	circle.control {
-		fill: white;
-		stroke: black;
-		cursor: pointer;
-	}
 
-	circle.control:hover {
-		fill: magenta;
-		stroke: red;
-	}
 </style>

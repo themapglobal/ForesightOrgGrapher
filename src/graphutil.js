@@ -164,7 +164,7 @@ export function createGraphNode(e){
     })
 }
 
-export function createGraphNodeEdge(from, fromHandle){
+export function createGraphNodeEdge(from, fromHandle, graph){
     // console.log("createGraphNodeEdge")
     let newId = Math.ceil(Math.random() * 100000);
     graph.items.push({

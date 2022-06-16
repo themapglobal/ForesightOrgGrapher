@@ -101,7 +101,7 @@
 
 	function handleCreateNode(e){
 		// console.log("createnode", e.detail)
-		createGraphNodeEdge(e.detail.from, e.detail.handle)
+		createGraphNodeEdge(e.detail.from, e.detail.handle, graph)
 		graph = graph; 
 		dispatch('graphchanged', graph);
 	}

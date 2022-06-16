@@ -1,4 +1,5 @@
 <script>
+    import ControlPoint from "./ControlPoint.svelte"
 	import {getGraphNode} from "./graphutil.js"
     import { createEventDispatcher } from 'svelte';
     const dispatch = createEventDispatcher();
@@ -87,8 +88,9 @@
         return (angle > 90 || angle < -120) ? 'right' : 'left';
     }
 
-    function handleControlClicked(e, control){
-        console.log("handleControlClicked", control)
+    function handleControlClicked(e){
+        let control = e.target.getAttribute('data-handle');
+        // console.log("handleControlClicked", control)
         if(control === 'from' && item.fromId){
             // detach fromNode
             delete item.fromId;
@@ -157,23 +159,25 @@
 	</text>
 
     {#if isSelected}
-        <circle 
-            class="control"
-            on:click={e => handleControlClicked(e, 'from')}
-            cx={fromPos.x} 
-            cy={fromPos.y}
-            r={5}
-        >
-        </circle>
+        <ControlPoint 
+            kind='cross'
+            data='from'
+            on:click={handleControlClicked}
+            x={fromPos.x} 
+            y={fromPos.y}
+            title='Detach from Node'
+            size={4}
+        />
 
-        <circle 
-            class="control"
-            on:click={e => handleControlClicked(e, 'to')}
-            cx={toPos.x} 
-            cy={toPos.y}
-            r={5}
-        >
-        </circle>
+        <ControlPoint 
+            kind='cross'
+            data='to'
+            on:click={handleControlClicked}
+            x={toPos.x} 
+            y={toPos.y}
+            title='Detach from Node'
+            size={4}
+        />
     {/if}
 </g>
 
