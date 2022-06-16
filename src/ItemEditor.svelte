@@ -1,4 +1,5 @@
 <script>
+	import {getGraphNode, detachNodeFromParent} from "./graphutil.js"
     export let selectedItem;
     export let graph;
 	import { JSONEditor } from 'svelte-jsoneditor';
@@ -7,9 +8,11 @@
 
     function handleInputChange(e, field){
 		if(field.split("_")[0] == 'text' || field.split("_")[0] == 'color'){
-			selectedItem[field.split("_")[1]] = e.target.value
+			selectedItem[field.split("_")[1]] = e.target.value;
+		} else if( field.split("_")[0] == 'number'){
+			selectedItem[field.split("_")[1]] = e.target.value === '' ? null : JSON.parse(e.target.value);
 		} else if( field.split("_")[0] == 'checkbox'){
-			selectedItem[field.split("_")[1]] = e.target.checked
+			selectedItem[field.split("_")[1]] = e.target.checked;
 		} else {
 			selectedItem[field.split("_")[1]] = JSON.parse(e.target.value); 
 		}
@@ -22,10 +25,20 @@
 		graph = graph;
 		dispatch('graphchanged', graph);
 	}
+
+	function detachFromParent(){
+		detachNodeFromParent(selectedItem, graph)
+		graph = graph;
+        dispatch('graphchanged', graph);
+	}
 </script>
 
 {#if selectedItem}
 	<h1>{selectedItem.kind}: {selectedItem.label}</h1>
+
+	{#if selectedItem.kind === 'node' && getGraphNode(selectedItem.parent, graph)}
+	<button on:click={detachFromParent}>Detach from &quot;{getGraphNode(selectedItem.parent, graph).label}&quot;</button>
+	{/if}
 
 	<div class="table">
 	{#each ['number_id','text_label', 'number_parent', 'color_fill', 'color_stroke', 'text_strokeType', 'checkbox_directed', 'number_weight', 'text_shape', 'json_custom'].filter(f => (f === 'json_custom' && graph.customjson) || Object.keys(selectedItem).includes(f.split("_")[1])) as field (field)}
@@ -62,7 +75,6 @@
 			type={field.split("_")[0]} 
 			value={selectedItem[field.split("_")[1]]} 
 			on:input={e => handleInputChange(e, field)}
-			readonly={field==='number_parent'}
 		>
 		{/if}
 	</div>

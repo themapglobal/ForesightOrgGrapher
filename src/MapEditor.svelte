@@ -1,6 +1,6 @@
 <script>
 	import { styles } from "./styles.js";
-	import {getGraphNode, moveGraphNode, createGraphNodeEdge, layout, 
+	import {exportJson, moveGraphNode, createGraphNodeEdge, layout, 
 		deleteGraphItem, createGraphNode, exportCytoscape, createGraphChildNode} from "./graphutil.js"
 	import Node from "./Node.svelte";
 	import Edge from "./Edge.svelte";
@@ -221,7 +221,7 @@
   <textarea 
   	cols="54" rows="20" autofocus
 	on:input={(e) => {graph = JSON.parse(e.target.value); dispatch('graphchanged', graph);}}
-  >{JSON.stringify(graph, null, 2)}</textarea>
+  >{exportJson(graph)}</textarea>
   
   <sl-button on:click={(e) => showJson = false} slot="footer" variant="primary">Close</sl-button>
 </sl-dialog>

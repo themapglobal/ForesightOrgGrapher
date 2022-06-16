@@ -4,7 +4,12 @@ export function getGraphNode(nodeid, graph){
 
 export function prepareGraph(graph){
     // populate item.children[] for convenience
-    graph.items.filter(i => i.kind === 'node').forEach(item => { item.children = []; });
+    graph.items.filter(i => i.kind === 'node').forEach(item => { 
+        item.children = []; 
+        if(!item.hasOwnProperty('parent')){
+            item.parent = null
+        }
+    });
     graph.items.forEach(item => {
         if(item.parent){
             let parent = getGraphNode(item.parent, graph);
@@ -15,6 +20,13 @@ export function prepareGraph(graph){
             parent.children = [...(parent.children || []), item.id]
         }
     })
+    return graph;
+}
+
+export function detachNodeFromParent(item, graph){
+    if(getGraphNode(item.parent, graph)){
+        item.parent = null;
+    }
     return graph;
 }
 
@@ -216,6 +228,73 @@ export function createGraphNodeEdge(from, fromHandle, graph){
     })
 }
 
+export function exportJson(graph){
+    // remove temporary fields before serializing
+    let data = {};
+
+    data.items = graph.items.map(item => {
+        if(item.kind === 'node')
+            return {
+                id: item.id,
+                kind: 'node',
+                label: item.label,
+                parent: item.parent,
+                pos: item.pos,
+                fill: item.fill,
+                stroke: item.stroke
+            };
+        else if(item.kind === 'edge')
+            return {
+                id: item.id,
+                kind: 'edge',
+                label: item.label,
+                stroke: item.stroke,
+                strokeType: item.strokeType,
+                directed: item.directed,
+                weight: item.weight,
+                fromId: item.fromId,
+                toId: item.toId,
+                shape: item.shape,
+                fromOrphan: item.fromOrphan,
+                toOrphan: item.toOrphan
+            }
+    })
+
+    data.grid = graph.grid;
+    data.fill = graph.fill;
+    data.debugger = graph.debugger;
+    data.sidepanel = graph.sidepanel;
+    data.jsonview = graph.jsonview;
+    data.contextmenu = graph.contextmenu;
+    data.customjson = graph.customjson;
+    data.exportcytoscape = graph.exportcytoscape;
+    data.exportsvg = graph.exportsvg;
+    data.viewBox = graph.viewBox;
+
+    return JSON.stringify(data, null, 2);
+}
+
 export function exportCytoscape(graph){
-    return JSON.stringify({}, null, 2);
+    let cy = {};
+
+    cy.elements = graph.items.filter(x => x.kind === 'node' || (x.fromId && x.toId)).map(item => {
+        if(item.kind === 'node')
+            return {
+                group: 'nodes', 
+                data: {
+                        id: item.id,
+                        parent: item.parent
+                    },
+                position: {x: item.pos.x, y: item.pos.y}
+            };
+        else if(item.kind === 'edge')
+            return {group: 'edges', data: {
+                        
+                        id: item.id,
+                        source: item.fromId,
+                        target: item.toId
+                    }}
+    })
+
+    return JSON.stringify(cy, null, 2);
 }
