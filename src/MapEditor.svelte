@@ -118,7 +118,7 @@
 	$: window.getnode = getGraphNode;
 
 </script>
-
+<div class="container">
 <svg tabindex="0" id="mysvg" viewBox={graph.viewBox.join(" ")}
 		on:mousemove="{e => handleMouseMove(e.clientX, e.clientY)}"
 	    on:mousedown="{e => draggingFrom = {x: e.clientX, y: e.clientY}}"
@@ -221,23 +221,29 @@
 	
 	<sl-button on:click={(e) => showSvgExport = false} slot="footer" variant="primary">Close</sl-button>
   </sl-dialog>
+</div>
 
 <style>
+	.container{
+		width: 100%;
+		height: 100%;
+		position: relative;
+	}
 	svg {
-		width: 100vw;
-		height: 100vh;
+		width: 100%;
+		height: 100%;
 		background-color: var(--color);
 	}
 	
 	section.sidepanel {
-		position: fixed;
+		position: absolute;
 		right: 0px;
 		top: 0px;
 		width: 300px;
 		height: 100%;
 		z-index: 10;
 		background-color: white;
-		padding: 10px;
+		padding: 0 10px;
 		border-left: 3px solid #eeeeee;
 	}
 
