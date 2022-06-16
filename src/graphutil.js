@@ -75,13 +75,28 @@ export function resizeGraphNode(item, graph){
     // console.log(item.label, item.width, item.height);
 }
 
+function decideNodeLevel(item, graph, currentLevel){
+    item.level = currentLevel;
+    item.children.forEach(c => decideNodeLevel(getGraphNode(c, graph), graph, currentLevel + 1))
+}
+
 export function layout(graph){
     // console.log("layout");
     prepareGraph(graph);
     // resize top nodes only because they will recurse
     graph.items.filter(i => (i.kind === 'node' && !i.parent)).forEach(item => {
         resizeGraphNode(item, graph);
+        decideNodeLevel(item, graph, 0);
     });
+
+    graph.items.filter(i => (i.kind === 'edge')).forEach(edge => {
+        // handle edges without nodes
+        edge.level = Math.max(
+            edge.fromId ? (getGraphNode(edge.fromId, graph).level) : 20, 
+            edge.toId ? (getGraphNode(edge.toId, graph).level) : 20
+        )
+    });
+
     return graph;
 }
 

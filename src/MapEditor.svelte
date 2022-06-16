@@ -139,11 +139,8 @@
   
   <g bind:this={topGroupElem}>
 	<Grid kind={graph.grid}/> 
-	
-	<!-- draw edges first, then parent nodes, then child nodes, then selectedItem -->
-	<!-- Edges need nodes' width and height for path calculation -->
 
-    {#each graph.items.sort((a,b) => a.kind.localeCompare(b.kind)) as item (item.id)}
+    {#each graph.items.sort((a,b) => a.level - b.level) as item (item.id)}
 		{#if item.kind === 'node'}
     		<Node {item}
 					on:itemMouseDown={handleItemMouseDown} 
