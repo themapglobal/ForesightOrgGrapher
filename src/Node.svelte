@@ -61,8 +61,6 @@
 <style>
 	g:hover rect {
 		fill-opacity: 0.7;
-		stroke: black;
-		stroke-width: 1px;
 	}
 	
 	text {

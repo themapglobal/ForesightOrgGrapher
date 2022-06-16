@@ -152,7 +152,7 @@ export function deleteGraphItem(item, graph, deleteDependents){
 }
 
 export function createGraphNode(e){
-    console.log("createGraphNode")
+    // console.log("createGraphNode")
     graph.items.push({
         id: Math.ceil(Math.random() * 10000),
         kind: 'node',
@@ -165,7 +165,7 @@ export function createGraphNode(e){
 }
 
 export function createGraphNodeEdge(from, fromHandle){
-    console.log("createGraphNodeEdge")
+    // console.log("createGraphNodeEdge")
     let newId = Math.ceil(Math.random() * 100000);
     graph.items.push({
         id: newId,
@@ -193,7 +193,7 @@ export function createGraphNodeEdge(from, fromHandle){
         directed: true, 
         weight: 5,
         fromHandle: fromHandle,
-        toHandle: 22
+        toHandle: 11
     })
 }
 
