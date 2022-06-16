@@ -35,6 +35,7 @@
 
 {#if selectedItem}
 	<h1>{selectedItem.kind}: {selectedItem.label}</h1>
+	<p>{selectedItem.kind === 'edge' ? `from ${getGraphNode(selectedItem.fromId, graph)?.label} to ${getGraphNode(selectedItem.toId, graph)?.label}` : `${selectedItem.children.length} children`}</p>
 
 	{#if selectedItem.kind === 'node' && getGraphNode(selectedItem.parent, graph)}
 	<button on:click={detachFromParent}>Detach from &quot;{getGraphNode(selectedItem.parent, graph).label}&quot;</button>

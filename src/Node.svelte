@@ -21,8 +21,8 @@
 		width={item.width}
 		height={item.height}
 		fill={item.fill}
-		stroke={isSelected ? 'blue' : 'none'}
-		stroke-width={isSelected ? '3px' : '0px'}
+		stroke={isSelected ? 'blue' : item.stroke}
+		stroke-width={isSelected ? '3px' : '1px'}
 		rx='8'		
 		on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
 		on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item})}
@@ -60,7 +60,7 @@
 
 <style>
 	g:hover rect {
-		fill-opacity: 0.7;
+		fill-opacity: 1.0;
 	}
 	
 	text {
@@ -69,7 +69,7 @@
 	}
 	
 	rect {
-		opacity: 0.5;
+		fill-opacity: 0.7;
 		filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
 		cursor: pointer;
 	}

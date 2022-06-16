@@ -50,7 +50,7 @@ export function resizeGraphNode(item, graph){
     })
     
     // make sure label and children nodes fit inside width
-    let halfLabelWidth = 0.5 * item.label.length * 10;
+    let halfLabelWidth = 0.5 * item.label.length *7 + 25;
 
     let rightchild = Math.max(...(item.children.map(c => {
         let child = getGraphNode(c, graph);
@@ -103,9 +103,9 @@ export function layout(graph){
 
     graph.items.filter(i => (i.kind === 'edge')).forEach(edge => {
         // handle edges without nodes
-        edge.level = Math.max(
-            edge.fromId ? (getGraphNode(edge.fromId, graph).level - 1) : 20, 
-            edge.toId ? (getGraphNode(edge.toId, graph).level - 1) : 20
+        edge.level = -1 + Math.max(
+            edge.fromId ? getGraphNode(edge.fromId, graph).level : 20, 
+            edge.toId ? getGraphNode(edge.toId, graph).level : 20
         )
     });
 

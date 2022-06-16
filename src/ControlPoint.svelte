@@ -4,11 +4,11 @@
   export let y;
   export let size = 4;
   export let data;
-  export let title;
+  export let title; 
 </script>
 
 <g>
-    <circle cx={x} cy={y} r={size+2} data-handle={data} on:click/>
+    <circle cx={x} cy={y} r={size+2} data-handle={data} on:click {title}/>
     {#if kind === 'plus'}
         <path d={`M ${x},${y-size} v ${2*size} M ${x-size},${y} h ${2*size}`}  data-handle={data} on:click/>
     {:else if kind === 'cross'}

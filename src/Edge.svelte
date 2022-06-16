@@ -8,73 +8,30 @@
 	export let graph; // is useful when drawing edges
 	export let isSelected;
 
-    let fromPos, toPos;
+    $: fromNode = item.fromOrphan || getGraphNode(item.fromId, graph);
+    $: toNode = item.toOrphan || getGraphNode(item.toId, graph);
+    $: fromPos = {x: fromNode.pos.x, y: fromNode.pos.y};
+    $: toPos = {x: toNode.pos.x, y: toNode.pos.y};
 	
 	function getEdgePath(graph){
-        let fromX, fromY, toX, toY;
-        let fromControlPointX, fromControlPointY, toControlPointX, toControlPointY;
-
-        if(item.fromOrphan){
-            fromX = item.fromOrphan.pos.x;
-            fromY = item.fromOrphan.pos.y;
-        } else {
-            let fromNode = graph.items.find(i => i.id === item.fromId);
-
-            // coordinates of the handle
-            fromX = fromNode.pos.x;
-            fromY = fromNode.pos.y;
-
-            if(item.shape === 'curved'){
-                fromControlPointX = fromNode.pos.x + 30;
-                fromControlPointY = fromNode.pos.y + 60;
-            }
-        }
-
-        if(item.toOrphan){
-            toX = item.toOrphan.pos.x;
-            toY = item.toOrphan.pos.y;
-        } else {
-            let toNode = graph.items.find(i => i.id === item.toId);
-            
-            toX = toNode.pos.x
-            toY = toNode.pos.y;
-            
-            if(item.shape === 'curved'){
-                toControlPointX = toNode.pos.x - 30;
-                toControlPointY = toNode.pos.y - 30;
-            }
-        }
-
-        fromPos = {x: fromX, y: fromY};
-        toPos = {x: toX, y: toY};
-
         if(item.shape === 'straight'){
-            return `M ${fromX},${fromY} L ${toX},${toY}`;
+            return `M ${fromPos.x},${fromPos.y} L ${toPos.x},${toPos.y}`;
         } else if(item.shape === 'curved'){
+            let fromControlPoint = {x: fromNode.pos.x + 30, y: fromNode.pos.y + 30};
+            let toControlPoint = {x: toNode.pos.x - 30, y: toNode.pos.y - 30};
             return [
-                `M ${fromX},${fromY}`,
-                ...[fromControlPointX && toControlPointX ? `C` : (fromControlPointX || toControlPointX ? `Q` : ``)], 
-                ...[fromControlPointX && `${fromControlPointX},${fromControlPointY}`], 
-                ...[toControlPointX && `${toControlPointX},${toControlPointY}`], 
-                `${toX},${toY}`
+                `M ${fromPos.x},${fromPos.y}`,
+                `C`,
+                `${fromControlPoint.x},${fromControlPoint.y}`,
+                `${toControlPoint.x},${toControlPoint.y}`,
+                `${toPos.x},${toPos.y}`
             ].join(' ');
         } else if(item.shape === 'ortho'){
-            return `M ${fromX},${fromY} h ${(toX - fromX)/2} v ${toY - fromY} L ${toX},${toY}`;
+            return `M ${fromPos.x},${fromPos.y} h ${(toPos.x - fromPos.x)/2} v ${toPos.y - fromPos.y} L ${toPos.x},${toPos.y}`;
         };
 	}
-	
-	function getEdgeLabelLocation(graph){
-        let fromNode = item.fromOrphan || graph.items.find(i => i.id === item.fromId);
-        let toNode = item.toOrphan || graph.items.find(i => i.id === item.toId);
 
-        // mid-point of fromNode and toNode
-        return {x: (fromNode.pos.x + toNode.pos.x)/2, y: (fromNode.pos.y + toNode.pos.y)/2};
-	}
-
-    function getLabelDirection(edge, graph){
-        let fromNode = edge.fromOrphan || getGraphNode(edge.fromId, graph);
-        let toNode = edge.toOrphan || getGraphNode(edge.toId, graph);
-
+    function getLabelDirection(graph){
         let angle = Math.atan2(toNode.pos.y - fromNode.pos.y, toNode.pos.x - fromNode.pos.x) * 180 / Math.PI;
 
         return (angle > 90 || angle < -120) ? 'right' : 'left';
@@ -129,7 +86,7 @@
                 on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
                 on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item})}
                 on:click|stopPropagation
-                side={getLabelDirection(item, graph)}>
+                side={getLabelDirection(graph)}>
                     {item.label}
             </textPath>
             {#if item.directed}
@@ -150,7 +107,7 @@
             {/if}
 	</text>
 
-    {#if isSelected}
+    {#if isSelected && fromPos}
         <ControlPoint 
             kind='cross'
             data='from'
@@ -160,7 +117,9 @@
             title='Detach from Node'
             size={4}
         />
+    {/if}
 
+    {#if isSelected && toPos}
         <ControlPoint 
             kind='cross'
             data='to'
@@ -191,15 +150,4 @@
     path {
         cursor: pointer;
     }
-
-	circle.control {
-		fill: white;
-		stroke: black;
-		cursor: pointer;
-	}
-
-	circle.control:hover {
-		fill: magenta;
-		stroke: red;
-	}
 </style>

@@ -36,7 +36,11 @@
 		}
 	})
 
-    // $: fetch('/getgraph.json').then(r => r.json()).then(d => {data = d;});
+    function reRender(){
+		//graph = graph;
+		svgElement = svgElement;
+		dispatch('graphchanged', graph);
+	}
 
     function handleItemMouseDown(e){
         // console.log('handleItemMouseDown');
@@ -60,8 +64,7 @@
 	function deleteItem(item, deleteDependents){
 		deleteGraphItem(item, graph, deleteDependents);
 		selectedItem = null;
-		graph = graph;
-		dispatch('graphchanged', graph);
+		reRender();
 		contextMenuPosition = null;
 	}
 	
@@ -83,14 +86,12 @@
 		draggingFrom.x = currentMouse.x;
 		draggingFrom.y = currentMouse.y;
 		// console.log("handleMouseMove");
-		graph = graph; 
-		dispatch('graphchanged', graph);
+		reRender();
 	};
 
 	function createNode(e){
 		createGraphNode(e, graph, svgElement);
-		graph = graph;
-		dispatch('graphchanged', graph);
+		reRender();
 		contextMenuPosition = null;
 	}
 
@@ -102,8 +103,7 @@
 	function handleCreateNode(e){
 		// console.log("createnode", e.detail)
 		createGraphNodeEdge(e.detail.from, e.detail.handle, graph)
-		graph = graph; 
-		dispatch('graphchanged', graph);
+		reRender();
 	}
 
 	function handleKeydown(e){
@@ -114,16 +114,25 @@
 	}
 
 	function handleEdgeChanged(e){
-		graph = graph;
-		dispatch('graphchanged', graph);
+		reRender();
 	}
 
 	function createChildNode(e, item){
 		console.log("createChildNode", item);
 		createGraphChildNode(e, graph, item, svgElement);
-		graph = graph;
-		dispatch('graphchanged', graph);
+		reRender();
 		contextMenuPosition = null;
+	}
+
+	function getItemsForRender(graph, selectedItem){
+		// draw selected edge on the top (at the end)
+		if(selectedItem?.kind === 'edge')
+			return [
+				...graph.items.sort((a,b) => a.level - b.level)
+				.filter(i => i.id !== selectedItem.id), 
+				...graph.items.filter(i => i.id === selectedItem.id)];
+		else 
+			return graph.items.sort((a,b) => a.level - b.level);
 	}
 
 	// $: console.log('arithmetic pos', graph.items.find(i => i.label === 'Arithmetic').pos)
@@ -156,7 +165,7 @@
   <g bind:this={topGroupElem}>
 	<Grid kind={graph.grid}/> 
 
-    {#each graph.items.sort((a,b) => a.level - b.level) as item (item.id)}
+    {#each getItemsForRender(graph, selectedItem) as item (item.id)}
 		{#if item.kind === 'node'}
     		<Node {item}
 					on:itemMouseDown={handleItemMouseDown} 
@@ -278,7 +287,7 @@
 	sl-menu {
 		position: fixed;
 		z-index: 20;
-		max-width: 320px;
+		max-width: 380px;
 	}
 
 	sl-dialog textarea {
