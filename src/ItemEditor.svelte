@@ -3,6 +3,7 @@
     export let selectedItem;
     export let graph;
 	import { JSONEditor } from 'svelte-jsoneditor';
+	import TagsInput from "./TagsInput.svelte";
     import { createEventDispatcher } from 'svelte';
 	const dispatch = createEventDispatcher();
 
@@ -42,7 +43,7 @@
 	{/if}
 
 	<div class="table">
-	{#each ['number_id','text_label', 'number_parent', 'color_fill', 'color_stroke', 'text_strokeType', 'checkbox_directed', 'number_weight', 'text_shape', 'json_custom'].filter(f => (f === 'json_custom' && graph.customjson) || Object.keys(selectedItem).includes(f.split("_")[1])) as field (field)}
+	{#each ['number_id','text_label', 'tags_tags', 'number_parent', 'color_fill', 'color_stroke', 'text_strokeType', 'checkbox_directed', 'number_weight', 'text_shape', 'json_custom'].filter(f => (f === 'json_custom' && graph.customjson) || Object.keys(selectedItem).includes(f.split("_")[1])) as field (field)}
 	<div class="row">
 		<span><strong>{field.split("_")[1]}</strong></span>
 		{#if field === 'text_strokeType'}
@@ -56,6 +57,8 @@
 			<option value="curved" selected={selectedItem[field.split("_")[1]] === 'curved'}>curved</option>
 			<option value="ortho" selected={selectedItem[field.split("_")[1]] === 'ortho'}>ortho</option>
 		</select>
+		{:else if field.startsWith('tags')}
+		  <TagsInput tags={selectedItem[field.split("_")[1]]} on:tagschanged={e => { selectedItem[field.split("_")[1]] = e.detail.value; graph = graph; dispatch('graphchanged', graph) }}/>
 		{:else if field.startsWith('checkbox')}
 		<input 
 			type='checkbox' 
