@@ -7,6 +7,8 @@
             "id": 2,
             "kind": "node",
             "label": "Arithmetic",
+            "desc": "",
+            "link": "",
             "tags": [],
             "parent": null,
             "pos": {
@@ -20,6 +22,8 @@
             "id": 1,
             "kind": "node",
             "label": "Algebra",
+            "desc": "",
+            "link": "",
             "tags": [],
             "parent": null,
             "pos": {
@@ -33,6 +37,8 @@
             "id": 4,
             "kind": "edge",
             "label": "is a prerequisite of",
+            "desc": "",
+            "link": "",
             "tags": [],
             "stroke": "#f94fc3",
             "strokeType": "solid",
@@ -46,6 +52,8 @@
             "id": 37845,
             "kind": "edge",
             "label": "",
+            "desc": "",
+            "link": "",
             "tags": [],
             "stroke": "grey",
             "strokeType": "solid",
@@ -59,6 +67,8 @@
             "id": 3,
             "kind": "node",
             "label": "Subtraction",
+            "desc": "",
+            "link": "",
             "tags": [],
             "parent": 2,
             "pos": {
@@ -72,6 +82,8 @@
             "id": 94575,
             "kind": "node",
             "label": "Multiplication",
+            "desc": "",
+            "link": "",
             "tags": [],
             "parent": 2,
             "pos": {
@@ -85,6 +97,8 @@
             "id": 1550,
             "kind": "node",
             "label": "Quadratic Equations",
+            "desc": "",
+            "link": "",
             "tags": [],
             "parent": 1,
             "pos": {
@@ -98,6 +112,8 @@
             "id": 17122,
             "kind": "edge",
             "label": "",
+            "desc": "",
+            "link": "",
             "tags": [],
             "stroke": "grey",
             "strokeType": "solid",
@@ -111,6 +127,8 @@
             "id": 5699,
             "kind": "node",
             "label": "Arithmetic Sequences",
+            "desc": "",
+            "link": "",
             "tags": [],
             "parent": 3,
             "pos": {
@@ -124,6 +142,8 @@
             "id": 6916,
             "kind": "node",
             "label": "Factorizing",
+            "desc": "",
+            "link": "",
             "tags": [],
             "parent": 94575,
             "pos": {
@@ -137,6 +157,8 @@
             "id": 10451,
             "kind": "node",
             "label": "Proof by Induction",
+            "desc": "",
+            "link": "",
             "tags": [],
             "parent": 3,
             "pos": {
@@ -150,6 +172,8 @@
             "id": 3283,
             "kind": "node",
             "label": "Prime Numbers",
+            "desc": "",
+            "link": "",
             "tags": [],
             "parent": 6916,
             "pos": {
