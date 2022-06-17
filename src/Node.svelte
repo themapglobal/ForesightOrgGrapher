@@ -60,7 +60,9 @@
 
 <style>
 	g:hover rect {
-		fill-opacity: 1.0;
+		fill-opacity: 1;
+		stroke: blue;
+		stroke-width: 2px;
 	}
 	
 	text {
@@ -69,7 +71,7 @@
 	}
 	
 	rect {
-		fill-opacity: 0.7;
+		fill-opacity: 0.8;
 		filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
 		cursor: pointer;
 	}

@@ -103,7 +103,7 @@ export function layout(graph){
 
     graph.items.filter(i => (i.kind === 'edge')).forEach(edge => {
         // handle edges without nodes
-        edge.level = -1 + Math.max(
+        edge.level = -1 + Math.min(
             edge.fromId ? getGraphNode(edge.fromId, graph).level : 20, 
             edge.toId ? getGraphNode(edge.toId, graph).level : 20
         )

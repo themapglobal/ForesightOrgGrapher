@@ -24,7 +24,7 @@
                 "x": 155,
                 "y": 783
             },
-            "fill": "#ffe6d6",
+            "fill": "#ffffde",
             "stroke": "#ff0000"
             },
             {
@@ -60,7 +60,7 @@
                 "x": 445,
                 "y": 364
             },
-            "fill": "#f5f854",
+            "fill": "#ffffde",
             "stroke": "#103320"
             },
             {
@@ -72,7 +72,7 @@
                 "x": 70,
                 "y": 410
             },
-            "fill": "#f5f854",
+            "fill": "#ffffde",
             "stroke": "#103320"
             },
             {
@@ -84,7 +84,7 @@
                 "x": 150,
                 "y": 831
             },
-            "fill": "yellow",
+            "fill": "#ffffde",
             "stroke": "black"
             },
             {
@@ -108,7 +108,7 @@
                 "x": 465,
                 "y": 274
             },
-            "fill": "yellow",
+            "fill": "#ffffde",
             "stroke": "black"
             },
             {
@@ -120,7 +120,7 @@
                 "x": 48,
                 "y": 450
             },
-            "fill": "yellow",
+            "fill": "#ffffde",
             "stroke": "black"
             },
             {
@@ -132,7 +132,7 @@
                 "x": 519,
                 "y": 474
             },
-            "fill": "yellow",
+            "fill": "#ffffde",
             "stroke": "black"
             },
             {
@@ -144,12 +144,12 @@
                 "x": 25,
                 "y": 450
             },
-            "fill": "#9f9f04",
+            "fill": "#ffffde",
             "stroke": "black"
             }
         ],
         "grid": "false",
-        "fill": "#ffffde",
+        "fill": "#f1f5f9",
         "debugger": false,
         "sidepanel": true,
         "jsonview": true,
