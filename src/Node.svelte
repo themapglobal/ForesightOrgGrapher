@@ -70,9 +70,8 @@
 
 <style>
 	g:hover rect {
-		fill: '#facc15';
-		stroke: blue;
-		stroke-width: 2px;
+		filter: invert(10%) drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
+	
 	}
 	
 	text {

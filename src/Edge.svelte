@@ -52,6 +52,12 @@
         }
         dispatch('edgeChanged', {source: item})
     }
+    function getDashArray(strokeType){
+       if(strokeType === 'dashed') return '8,5';
+       else if(strokeType === 'dotted') return '5,5';
+       else return false;
+   }
+
 </script>
 
 <g>
@@ -59,8 +65,8 @@
         d={getEdgePath(graph)}
         fill="none"
         stroke={isSelected ? 'blue' : (item.stroke || graph.theme.edgestroke)}
-        stroke-width={item.weight}
-        stroke-dasharray={(item.strokeType || graph.theme.edgestroketype) === 'dashed' ? '8,5' : false}
+        stroke-width=5
+        stroke-dasharray={getDashArray(item.strokeType || graph.theme.edgestroketype)}
         marker-end={(item.directed && false) ? "url(#arrow)" : false}
         on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
         on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item})}
@@ -70,7 +76,7 @@
     </path>
 	<text
         font-family="Verdana"
-        font-size={4*item.weight} 
+        font-size=20 
         fill={item.stroke} 
         on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
         on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item})}
@@ -81,7 +87,7 @@
                 startOffset="40%" 
                 lengthAdjust="spacingAndGlyphs" 
                 font-family="Verdana"
-                font-size={4*item.weight} 
+                font-size=20 
                 fill={isSelected ? 'blue' : (item.stroke || 'red')}
                 stroke={isSelected ? 'blue' : (item.stroke || 'red')}
                 on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
@@ -96,7 +102,7 @@
                 startOffset="20%" 
                 lengthAdjust="spacingAndGlyphs" 
                 font-family="Verdana"
-                font-size={4*item.weight} 
+                font-size=20 
                 fill={isSelected ? 'blue' : (item.stroke || 'red')}
                 stroke={isSelected ? 'blue' : (item.stroke || 'red')}
                 on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
