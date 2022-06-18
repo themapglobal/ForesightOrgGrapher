@@ -70,7 +70,7 @@
 
 <style>
 	g:hover rect {
-		fill-opacity: 1;
+		fill: '#facc15';
 		stroke: blue;
 		stroke-width: 2px;
 	}
@@ -81,7 +81,7 @@
 	}
 	
 	rect {
-		fill-opacity: 0.8;
+		fill-opacity: 1;
 		filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
 		cursor: pointer;
 	}

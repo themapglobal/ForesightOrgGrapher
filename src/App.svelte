@@ -103,6 +103,7 @@
             "weight": 5,
             "fromId": 5699,
             "toId": 10451,
+            "strokeType": "dotted",
             },
             {
             "id": 5699,
@@ -170,7 +171,7 @@
             "name": "classic",
             "bgfill": "#f3f3f3",
             "grid": false,
-            "nodefill": "yellow",
+            "nodefill": "#fde047",
             "nodestroke": "black",
             "edgestroke": "red",
             "edgeshape": "curved",
