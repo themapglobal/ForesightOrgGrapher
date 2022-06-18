@@ -24,3 +24,8 @@ Beta 2:
 - Badges on nodes
 - (Rethink) When printed, show QR codes for nodes
 - Performance testing
+- make unicode emojis work in badge text
+
+
+
+

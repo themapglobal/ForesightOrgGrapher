@@ -174,8 +174,6 @@ export function createGraphNode(e, graph, svg){
         tags: [],
         children: [],
         pos: getSvgCoordinates(svg, e),
-        fill: 'yellow',
-        stroke: 'black'
     })
 }
 
@@ -197,8 +195,6 @@ export function createGraphChildNode(e, graph, parent, svg){
         tags: [],
         children: [],
         pos: getSvgCoordinates(svg, e),
-        fill: 'yellow',
-        stroke: 'black',
         parent: parent.id
     })
 }
@@ -232,9 +228,6 @@ export function createGraphNodeEdge(from, fromHandle, graph){
         tags: [],
         fromId: from.id,
         toId: newId,
-        shape: 'curved',
-        stroke: "grey",
-        strokeType: "solid",
         directed: true, 
         weight: 5
     })
@@ -279,7 +272,7 @@ export function exportJson(graph){
     })
 
     data.grid = graph.grid;
-    data.fill = graph.fill;
+    data.theme = graph.theme;
     data.debugger = graph.debugger;
     data.sidepanel = graph.sidepanel;
     data.jsonview = graph.jsonview;

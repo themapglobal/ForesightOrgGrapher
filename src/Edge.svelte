@@ -14,9 +14,10 @@
     $: toPos = {x: toNode.pos.x, y: toNode.pos.y};
 	
 	function getEdgePath(graph){
-        if(item.shape === 'straight'){
+        let shape = item.shape || graph.theme.edgeshape;
+        if(shape === 'straight'){
             return `M ${fromPos.x},${fromPos.y} L ${toPos.x},${toPos.y}`;
-        } else if(item.shape === 'curved'){
+        } else if(shape === 'curved'){
             let fromControlPoint = {x: fromNode.pos.x + 30, y: fromNode.pos.y + 30};
             let toControlPoint = {x: toNode.pos.x - 30, y: toNode.pos.y - 30};
             return [
@@ -26,7 +27,7 @@
                 `${toControlPoint.x},${toControlPoint.y}`,
                 `${toPos.x},${toPos.y}`
             ].join(' ');
-        } else if(item.shape === 'ortho'){
+        } else if(shape === 'ortho'){
             return `M ${fromPos.x},${fromPos.y} h ${(toPos.x - fromPos.x)/2} v ${toPos.y - fromPos.y} L ${toPos.x},${toPos.y}`;
         };
 	}
@@ -57,9 +58,9 @@
 	<path 
         d={getEdgePath(graph)}
         fill="none"
-        stroke={isSelected ? 'blue' : (item.stroke || 'red')}
+        stroke={isSelected ? 'blue' : (item.stroke || graph.theme.edgestroke)}
         stroke-width={item.weight}
-        stroke-dasharray={item.strokeType === 'dashed' ? '8,5' : false}
+        stroke-dasharray={(item.strokeType || graph.theme.edgestroketype) === 'dashed' ? '8,5' : false}
         marker-end={(item.directed && false) ? "url(#arrow)" : false}
         on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
         on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item})}

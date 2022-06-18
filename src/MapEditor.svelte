@@ -135,12 +135,44 @@
 			return graph.items.sort((a,b) => a.level - b.level);
 	}
 
-	// $: console.log('arithmetic pos', graph.items.find(i => i.label === 'Arithmetic').pos)
-	// $: console.log('subtraction pos', graph.items.find(i => i.label === 'Subtraction').pos)
-	// $: window.graph = graph;
-	// $: window.move = moveGraphNode;
-	// $: window.getnode = getGraphNode;
-
+	function switchTheme(name){
+		switch(name){
+			case 'elegant':
+				graph.theme = {
+					"name": "elegant",
+					"bgfill": "cyan",
+					"grid": "cartesian",
+					"nodefill": "black",
+					"nodestroke": "white",
+					"edgestroke": "red",
+					"edgeshape": "curved",
+					"edgestroketype": "solid"
+				}; break;
+			case 'foresight':
+				graph.theme = {
+					"name": "foresight",
+					"bgfill": "pink",
+					"grid": "polar",
+					"nodefill": "white",
+					"nodestroke": "black",
+					"edgestroke": "red",
+					"edgeshape": "ortho",
+					"edgestroketype": "dashed"
+				}; break;
+			default:
+				graph.theme = {
+				"name": "classic",
+				"bgfill": "#f3f3f3",
+				"grid": false,
+				"nodefill": "yellow",
+				"nodestroke": "black",
+				"edgestroke": "red",
+				"edgeshape": "curved",
+				"edgestroketype": "solid"
+			}
+		};
+		reRender();
+	}
 </script>
 
 <div class="container">
@@ -150,7 +182,7 @@
 	    on:mouseup="{() => draggingFrom = null}"
 		on:click={handleSvgClick}
 		on:contextmenu|preventDefault={handleContextMenu}
-		use:styles={{color: graph.fill}}
+		use:styles={{color: graph.theme.bgfill}}
 		bind:this={svgElement}
 		on:keydown={handleKeydown}
 >
@@ -163,7 +195,7 @@
   </defs>
   
   <g bind:this={topGroupElem}>
-	<Grid kind={graph.grid}/> 
+	<Grid kind={graph.theme.grid}/> 
 
     {#each getItemsForRender(graph, selectedItem) as item (item.id)}
 		{#if item.kind === 'node'}
@@ -173,6 +205,7 @@
 					isSelected={item.id === selectedItem?.id}
 					on:nodeChanged={handleNodeChanged}
 					on:createnode={handleCreateNode}
+					theme={graph.theme}
 			/>
 		{:else if item.kind === 'edge'}
 			<Edge {item} {graph}
@@ -198,6 +231,13 @@
 	{#if graph.exportsvg}
 	<button on:click={(e) => showSvgExport = true}>Export as SVG</button>
 	{/if}
+
+	<!-- svelte-ignore component-name-lowercase -->
+	<select value={graph.theme.name} on:change="{(e) => switchTheme(e.target.value)}">
+		<option value="classic">Switch theme to: Classic</option>
+		<option value="elegant">Switch theme to: Elegant</option>
+		<option value="foresight">Switch theme to: Foresight</option>
+	</select>
 
 	<ItemEditor {selectedItem} {graph} on:graphchanged="{e => {graph = e.detail; dispatch('graphchanged', graph); }}"/>
 
@@ -276,7 +316,7 @@
 		position: absolute;
 		right: 0px;
 		top: 0px;
-		width: 300px;
+		width: 400px;
 		height: 100%;
 		z-index: 10;
 		background-color: white;

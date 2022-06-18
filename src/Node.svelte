@@ -3,6 +3,7 @@
     import { createEventDispatcher } from 'svelte';
     const dispatch = createEventDispatcher();
 
+	export let theme;
     export let item;
 	export let isSelected;
 
@@ -20,8 +21,8 @@
 		y={item.pos.y - item.height/2} 
 		width={item.width}
 		height={item.height}
-		fill={item.fill}
-		stroke={isSelected ? 'blue' : item.stroke}
+		fill={item.fill || theme.nodefill}
+		stroke={isSelected ? 'blue' : (item.stroke || theme.nodestroke)}
 		stroke-width={isSelected ? '3px' : '1px'}
 		rx='8'		
 		on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
@@ -35,7 +36,7 @@
 		y={item.pos.y - item.height/2 + 20} 
 		font-family="Verdana"
 		font-size={item.fontSize} 
-		fill={item.stroke} 
+		fill={item.stroke || theme.nodestroke} 
 		on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
 		on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item})}
 		on:click|stopPropagation
@@ -54,6 +55,15 @@
 			title="Create new connected node"
 			size={4}/>
 	  {/each}
+	{/if}
+
+	{#if item.badge}
+	<g class="badge">
+		<circle cx={item.pos.x - item.width/2} cy={item.pos.y - item.height/2} r={10}
+			fill="orange" stroke="white"
+		 />
+		 <text x={item.pos.x - item.width/2 - 3} y={item.pos.y - item.height/2 + 6} stroke="white" fill="white">{item.badge}</text>
+	</g>
 	{/if}
 
 </g>

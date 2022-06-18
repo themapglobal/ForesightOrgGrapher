@@ -14,9 +14,7 @@
             "pos": {
                 "x": 264,
                 "y": 351
-            },
-            "fill": "#ffffff",
-            "stroke": "#ff0000"
+            }
             },
             {
             "id": 1,
@@ -29,9 +27,7 @@
             "pos": {
                 "x": 155,
                 "y": 783
-            },
-            "fill": "#ffffde",
-            "stroke": "#ff0000"
+            }
             },
             {
             "id": 4,
@@ -40,13 +36,10 @@
             "desc": "",
             "link": "",
             "tags": [],
-            "stroke": "#f94fc3",
-            "strokeType": "solid",
             "directed": true,
             "weight": 5,
             "fromId": 3,
-            "toId": 1,
-            "shape": "curved"
+            "toId": 1
             },
             {
             "id": 37845,
@@ -55,13 +48,10 @@
             "desc": "",
             "link": "",
             "tags": [],
-            "stroke": "grey",
-            "strokeType": "solid",
             "directed": true,
             "weight": 5,
             "fromId": 3,
-            "toId": 94575,
-            "shape": "curved"
+            "toId": 94575
             },
             {
             "id": 3,
@@ -74,9 +64,7 @@
             "pos": {
                 "x": 445,
                 "y": 364
-            },
-            "fill": "#ffffde",
-            "stroke": "#103320"
+            }
             },
             {
             "id": 94575,
@@ -89,9 +77,7 @@
             "pos": {
                 "x": 70,
                 "y": 410
-            },
-            "fill": "#ffffde",
-            "stroke": "#103320"
+            }
             },
             {
             "id": 1550,
@@ -104,9 +90,7 @@
             "pos": {
                 "x": 150,
                 "y": 831
-            },
-            "fill": "#ffffde",
-            "stroke": "black"
+            }
             },
             {
             "id": 17122,
@@ -115,13 +99,10 @@
             "desc": "",
             "link": "",
             "tags": [],
-            "stroke": "grey",
-            "strokeType": "solid",
             "directed": true,
             "weight": 5,
             "fromId": 5699,
             "toId": 10451,
-            "shape": "curved"
             },
             {
             "id": 5699,
@@ -134,9 +115,7 @@
             "pos": {
                 "x": 465,
                 "y": 274
-            },
-            "fill": "#ffffde",
-            "stroke": "black"
+            }
             },
             {
             "id": 6916,
@@ -149,9 +128,7 @@
             "pos": {
                 "x": 48,
                 "y": 450
-            },
-            "fill": "#ffffde",
-            "stroke": "black"
+            }
             },
             {
             "id": 10451,
@@ -164,9 +141,7 @@
             "pos": {
                 "x": 519,
                 "y": 474
-            },
-            "fill": "#ffffde",
-            "stroke": "black"
+            }
             },
             {
             "id": 3283,
@@ -175,24 +150,39 @@
             "desc": "",
             "link": "",
             "tags": [],
+            "badge": "\u2705",
             "parent": 6916,
             "pos": {
                 "x": 25,
                 "y": 450
-            },
-            "fill": "#ffffde",
-            "stroke": "black"
+            }
+            }
+        ],
+        "extra": [
+            {
+                "kind": "note",
+                pos: {x:200, y:250},
+                value: "hello"
             }
         ],
         "grid": "false",
-        "fill": "#f1f5f9",
+        "theme": {
+            "name": "classic",
+            "bgfill": "#f3f3f3",
+            "grid": false,
+            "nodefill": "yellow",
+            "nodestroke": "black",
+            "edgestroke": "red",
+            "edgeshape": "curved",
+            "edgestroketype": "solid"
+        },
         "debugger": false,
         "sidepanel": true,
         "jsonview": true,
         "contextmenu": true,
         "customjson": false,
         "exportcytoscape": true,
-        "exportsvg": true,
+        "exportsvg": false,
         "viewBox": [0,0,1000,1000]
         };
 </script>

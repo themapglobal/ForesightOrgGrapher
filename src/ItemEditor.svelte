@@ -39,62 +39,136 @@
 	<!-- <p>{selectedItem.kind === 'edge' ? `from ${getGraphNode(selectedItem.fromId, graph)?.label} to ${getGraphNode(selectedItem.toId, graph)?.label}` : `${selectedItem.children.length} children`}</p> -->
 
 	<p class="itemdesc">{selectedItem.desc}</p>
+	
+	{#if selectedItem.link && selectedItem.link.toString().length > 0}
 	<a class="itemlink" href={selectedItem.link} target="_blank">See more at {selectedItem.link}</a>
+	{/if}
 
 	{#if selectedItem.kind === 'node' && getGraphNode(selectedItem.parent, graph)}
 	<button on:click={detachFromParent}>Detach from &quot;{getGraphNode(selectedItem.parent, graph).label}&quot;</button>
 	{/if}
 
 	<div class="table">
-	{#each ['number_id','text_label', 'text_desc', 'url_link', 'tags_tags', 'number_parent', 'color_fill', 'color_stroke', 'text_strokeType', 'checkbox_directed', 'number_weight', 'text_shape', 'json_custom'].filter(f => (f === 'json_custom' && graph.customjson) || Object.keys(selectedItem).includes(f.split("_")[1])) as field (field)}
-	<div class="row">
-		<span><strong>{field.split("_")[1]}</strong></span>
-		{#if field === 'text_strokeType'}
-		<select on:change={e => handleInputChange(e, field)}>
-			<option value="solid" selected={selectedItem[field.split("_")[1]] === 'solid'}>solid</option>
-			<option value="dashed" selected={selectedItem[field.split("_")[1]] === 'dashed'}>dashed</option>
-		</select>
-		{:else if field === 'text_shape'}
-		<select on:change={e => handleInputChange(e, field)}>
-			<option value="straight" selected={selectedItem[field.split("_")[1]] === 'straight'}>straight</option>
-			<option value="curved" selected={selectedItem[field.split("_")[1]] === 'curved'}>curved</option>
-			<option value="ortho" selected={selectedItem[field.split("_")[1]] === 'ortho'}>ortho</option>
-		</select>
-		{:else if field.startsWith('tags')}
-		  <TagsInput tags={selectedItem[field.split("_")[1]]} on:tagschanged={e => { selectedItem[field.split("_")[1]] = e.detail.value; graph = graph; dispatch('graphchanged', graph) }}/>
-		{:else if field === 'text_desc'}
+		<div class="row">
+			<span><strong>id</strong></span>
+			<input 
+				type='number' 
+				value={selectedItem.id} 
+				on:input={e => handleInputChange(e, 'number_id')}
+			>
+		</div>
+		
+		<div class="row">
+			<span><strong>label</strong></span>
+			<input 
+				type='text' 
+				value={selectedItem.label} 
+				on:input={e => handleInputChange(e, 'text_label')}
+			>
+		</div>
+		
+		<div class="row">
+			<span><strong>desc</strong></span>
 			<sl-textarea 
 				placeholder="Description..."
 				size="small"
 				resize="auto"
-				on:sl-input={e => handleInputChange(e, field)}
-				value={selectedItem[field.split("_")[1]]}
+				on:sl-input={e => handleInputChange(e, 'text_desc')}
+				value={selectedItem.desc}
 			>
 			</sl-textarea>
-		{:else if field.startsWith('checkbox')}
-		<input 
-			type='checkbox' 
-			on:change={e => handleInputChange(e, field)}
-			checked={selectedItem[field.split("_")[1]]}
-		>
-		{:else if field.startsWith('json')}
-			<JSONEditor content={{json: selectedItem[field.split("_")[1]] || {}}} onChange={handleJsonChange} />
-		{:else if field === 'color_fill' || field === 'color_stroke'}
+		</div>
+		
+		<div class="row">
+			<span><strong>link</strong></span>
+			<input 
+				type='url' 
+				value={selectedItem.link} 
+				on:input={e => handleInputChange(e, 'url_link')}
+			>
+		</div>
+		
+		<div class="row">
+			<span><strong>tags</strong></span>
+			<TagsInput tags={selectedItem.tags} on:tagschanged={e => { selectedItem.tags = e.detail.value; graph = graph; dispatch('graphchanged', graph) }}/>
+		</div>
+			
+		{#if selectedItem.kind === 'node'}
+			<div class="row">
+			<span><strong>fill</strong></span>
 			<sl-color-picker format="hex" size="small" 
-				value={selectedItem[field.split("_")[1]]} 
-				label={`Select a ${field}`}
-				on:sl-change={e => handleInputChange(e, field)}
+				value={selectedItem.fill} 
+				label={`Select fill color`}
+				on:sl-change={e => handleInputChange(e, 'color_fill')}
 			>
 			</sl-color-picker>
-		{:else}
-		<input 
-			type={field.split("_")[0]} 
-			value={selectedItem[field.split("_")[1]]} 
-			on:input={e => handleInputChange(e, field)}
-		>
+			</div>
+
+			<div class="row">
+			<span><strong>stroke</strong></span>
+			<sl-color-picker format="hex" size="small" 
+				value={selectedItem.stroke} 
+				label={`Select stroke color`}
+				on:sl-change={e => handleInputChange(e, 'color_stroke')}
+			>
+			</sl-color-picker>
+			</div>
+		{:else if selectedItem.kind === 'edge'} <!-- edge -->
+			<div class="row">
+			<span><strong>directed</strong></span>
+			<input 
+				type='checkbox' 
+				on:change={e => handleInputChange(e, 'checkbox_directed')}
+				checked={selectedItem.directed}
+			/>
+			</div>
+
+			<div class="row">
+			<span><strong>weight</strong></span>
+			<input 
+				type='number' 
+				step="1"
+				min="1"
+				value={selectedItem.weight} 
+				on:input={e => handleInputChange(e, 'number_weight')}
+			/>
+			</div>
+
+			<div class="row">
+			<span><strong>shape</strong></span>
+			<select on:change={e => handleInputChange(e, 'text_shape')}>
+				<option value="straight" selected={selectedItem.shape === 'straight'}>straight</option>
+				<option value="curved" selected={selectedItem.shape === 'curved'}>curved</option>
+				<option value="ortho" selected={selectedItem.shape === 'ortho'}>ortho</option>
+			</select>
+			</div>
+
+			<div class="row">
+				<span><strong>stroke</strong></span>
+				<sl-color-picker format="hex" size="small" 
+					value={selectedItem.stroke} 
+					label={`Select stroke color`}
+					on:sl-change={e => handleInputChange(e, 'color_stroke')}
+				>
+				</sl-color-picker>
+			</div>
+			
+			<div class="row">
+			<span><strong>strokeType</strong></span>
+			<select on:change={e => handleInputChange(e, 'text_strokeType')}>
+				<option value="solid" selected={selectedItem.strokeType === 'solid'}>solid</option>
+				<option value="dashed" selected={selectedItem.strokeType === 'dashed'}>dashed</option>
+			</select>
+			</div>
 		{/if}
-	</div>
-	{/each}
+
+		{#if graph.customjson}
+		<div class="row">
+			<span><strong>custom</strong></span>
+			<JSONEditor content={{json: selectedItem.custom || {}}} onChange={handleJsonChange} />
+		</div>
+		{/if}
+
 	</div>
 {/if}
 
@@ -118,7 +192,7 @@
 	}
 
 	div.row input[type=text], div.row input[type=number], div.row input[type=url] {
-		width: 190px;
+		width: 280px;
 	}
 
 	div.row input[type=checkbox] {
@@ -127,7 +201,7 @@
 	}
 
 	div.row sl-textarea {
-		width: 190px;
+		width: 280px;
 		margin-bottom: 10px;
 	}
 
