@@ -6,6 +6,7 @@
 	export let theme;
     export let item;
 	export let isSelected;
+	export let isHighlighted;
 
 	function handleControlClicked(e){
 		let handle = parseInt(e.target.getAttribute('data-handle'));
@@ -22,8 +23,8 @@
 		width={item.width}
 		height={item.height}
 		fill={item.fill || theme.nodefill}
-		stroke={isSelected ? 'blue' : (item.stroke || theme.nodestroke)}
-		stroke-width={isSelected ? '3px' : '1px'}
+		stroke={isSelected ? 'blue' : (isHighlighted ? 'red' : (item.stroke || theme.nodestroke))}
+		stroke-width={(isSelected || isHighlighted) ? '5px' : '1px'}
 		rx='8'		
 		on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
 		on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item})}
