@@ -141,10 +141,10 @@
 			case 'elegant':
 				graph.theme = {
 					"name": "elegant",
-					"bgfill": "cyan",
+					"bgfill": "#334155",
 					"grid": "cartesian",
-					"nodefill": "black",
-					"nodelabelstroke": "white",
+					"nodefill": "#bae6fd",
+					"nodelabelstroke": "#334155",
 					"nodeborder": "white",
 					"edgestroke": "red",
 					"edgeshape": "curved",

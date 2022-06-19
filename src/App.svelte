@@ -199,8 +199,7 @@
             acc[kind] = acc[kind] ?? [];
             acc[kind].push(name);
             return acc;
-        }, {})
-        console.log(groups);
+        }, {});
         return Object.entries(groups);
     }
 </script>
@@ -210,6 +209,7 @@
 <section>
 <sl-select 
     placeholder="Highlight by Tag"
+    clearable pill
     on:sl-change={e => highlighted = graph.items.filter(i => i.kind === 'node' && i.tags.includes(e.target.value)).map(i => i.id)}
 >
         {#each getTagGroups(graph) as group}
@@ -227,9 +227,6 @@
         position: fixed;
         top: 20px;
         left: 20px;
-        background-color: orange;
-        border-radius: 3px;
-        border: 2px solid red;
     }
 
     sl-select {

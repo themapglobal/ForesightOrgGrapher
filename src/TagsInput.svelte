@@ -45,7 +45,7 @@
 
 <style>
     sl-input {
-        width: 190px;
+        width: 280px;
         margin-bottom: 10px;
     }
 </style>
