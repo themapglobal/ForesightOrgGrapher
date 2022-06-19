@@ -9,7 +9,7 @@
             "label": "Arithmetic",
             "desc": "",
             "link": "",
-            "tags": [],
+            "tags": ["foo"],
             "parent": null,
             "pos": {
                 "x": 264,
@@ -22,7 +22,7 @@
             "label": "Algebra",
             "desc": "",
             "link": "",
-            "tags": [],
+            "tags": ["foo", "bar"],
             "parent": null,
             "pos": {
                 "x": 155,
@@ -35,7 +35,7 @@
             "label": "is a prerequisite of",
             "desc": "",
             "link": "",
-            "tags": [],
+            "tags": ["bar","x"],
             "directed": true,
             "weight": 5,
             "fromId": 3,
@@ -47,7 +47,7 @@
             "label": "",
             "desc": "",
             "link": "",
-            "tags": [],
+            "tags": ["baz","foo"],
             "directed": true,
             "weight": 5,
             "fromId": 3,
@@ -185,7 +185,32 @@
         "exportsvg": false,
         "viewBox": [0,0,1000,1000]
         };
+
+    let highlighted = [];
 </script>
 
-<MapEditor unsizedGraph={graph} on:graphchanged="{e => {graph = e.detail;}}"/>
-    
+<MapEditor unsizedGraph={graph} {highlighted} on:graphchanged="{e => {graph = e.detail;}}"/>
+
+<section>
+<sl-dropdown 
+    on:sl-select={e => highlighted = graph.items.filter(i => i.kind === 'node' && i.tags.includes(e.detail.item.value)).map(i => i.id)}>
+    <sl-button slot="trigger" caret>Highlight by Tag</sl-button>
+    <sl-menu>
+        {#each graph.items.map(i => i.tags).flat().filter((value, index, self) => self.indexOf(value) === index) as tag}
+        <sl-menu-item value={tag}>{tag}</sl-menu-item>
+        {/each}
+    </sl-menu>
+</sl-dropdown>
+</section>
+
+<style>
+    section {
+        display: none;
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background-color: orange;
+        border-radius: 3px;
+        border: 2px solid red;
+    }
+</style>

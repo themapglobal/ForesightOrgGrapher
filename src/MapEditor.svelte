@@ -14,6 +14,7 @@
 	const dispatch = createEventDispatcher();
 
 	export let unsizedGraph;
+	export let highlighted;
 
 	$: graph = layout(unsizedGraph);
 
@@ -206,6 +207,7 @@
 					on:nodeChanged={handleNodeChanged}
 					on:createnode={handleCreateNode}
 					theme={graph.theme}
+					isHighlighted={highlighted.includes(item.id)}
 			/>
 		{:else if item.kind === 'edge'}
 			<Edge {item} {graph}
