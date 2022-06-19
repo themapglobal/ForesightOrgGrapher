@@ -144,30 +144,36 @@
 					"bgfill": "cyan",
 					"grid": "cartesian",
 					"nodefill": "black",
-					"nodestroke": "white",
+					"nodelabelstroke": "white",
+					"nodeborder": "white",
 					"edgestroke": "red",
 					"edgeshape": "curved",
-					"edgestroketype": "solid"
+					"edgestroketype": "solid",
+					"font": "Balsamiq Sans"
 				}; break;
 			case 'foresight':
 				graph.theme = {
 					"name": "foresight",
-					"bgfill": "pink",
-					"grid": "polar",
-					"nodefill": "white",
-					"nodestroke": "black",
-					"edgestroke": "red",
+					"bgfill": "#1c170b",
+					"grid": false,
+					"nodefill": "#7b9ecb",
+					"nodelabelstroke": "black",
+					"nodeborder": "white",
+					"edgestroke": "#ccc",
 					"edgeshape": "ortho",
-					"edgestroketype": "dashed"
+					"edgestroketype": "solid",
+					"font": "Roboto Condensed"
 				}; break;
 			default:
 				graph.theme = {
 				"name": "classic",
 				"bgfill": "#f3f3f3",
 				"grid": false,
-				"nodefill": "yellow",
-				"nodestroke": "black",
-				"edgestroke": "red",
+				"font": "Balsamiq Sans",
+				"nodefill": "#fbe6a3",
+				"nodelabelstroke": "black",
+				"nodeborder": "black",
+				"edgestroke": "#4277dd",
 				"edgeshape": "curved",
 				"edgestroketype": "solid"
 			}

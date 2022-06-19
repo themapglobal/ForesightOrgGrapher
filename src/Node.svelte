@@ -23,9 +23,9 @@
 		width={item.width}
 		height={item.height}
 		fill={item.fill || theme.nodefill}
-		stroke={isSelected ? 'blue' : (isHighlighted ? 'red' : (item.stroke || theme.nodestroke))}
-		stroke-width={(isSelected || isHighlighted) ? '5px' : '1px'}
-		rx='8'		
+		stroke={isSelected ? 'blue' : (isHighlighted ? 'red' : (item.bordercolor || theme.nodeborder))}
+		stroke-width={(isSelected || isHighlighted) ? '6px' : '3px'}
+		rx={8+Math.floor(item.height/50)}	
 		on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
 		on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item})}
 		on:click|stopPropagation
@@ -35,9 +35,10 @@
 	<text 
 		x={item.pos.x - 0.5 * item.label.length * 10 + 5} 
 		y={item.pos.y - item.height/2 + 20} 
-		font-family="Verdana"
+		font-family={theme.font}
+		font-weight={item.children.length > 0 ? '700' : '300'}
 		font-size={item.fontSize} 
-		fill={item.stroke || theme.nodestroke} 
+		fill={item.labelcolor || theme.nodelabelstroke} 
 		on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
 		on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item})}
 		on:click|stopPropagation
@@ -71,7 +72,7 @@
 
 <style>
 	g:hover rect {
-		filter: invert(10%) drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
+		filter: invert(10%) drop-shadow(3px 5px 2px rgb(204 204 204 / 0.4));
 	
 	}
 	
@@ -82,7 +83,7 @@
 	
 	rect {
 		fill-opacity: 1;
-		filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
+		filter: drop-shadow(3px 5px 2px rgb(204 204 204 / 0.4));
 		cursor: pointer;
 	}
 

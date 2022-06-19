@@ -105,11 +105,21 @@
 			</div>
 
 			<div class="row">
-			<span><strong>stroke</strong></span>
+			<span><strong>Border Color</strong></span>
 			<sl-color-picker format="hex" size="small" 
-				value={selectedItem.stroke} 
-				label={`Select stroke color`}
-				on:sl-change={e => handleInputChange(e, 'color_stroke')}
+				value={selectedItem.bordercolor} 
+				label={`Select border color`}
+				on:sl-change={e => handleInputChange(e, 'color_bordercolor')}
+			>
+			</sl-color-picker>
+			</div>
+
+			<div class="row">
+			<span><strong>Label Color</strong></span>
+			<sl-color-picker format="hex" size="small" 
+				value={selectedItem.labelcolor} 
+				label={`Select label color`}
+				on:sl-change={e => handleInputChange(e, 'color_labelcolor')}
 			>
 			</sl-color-picker>
 			</div>
@@ -136,7 +146,7 @@
 
 			<div class="row">
 			<span><strong>shape</strong></span>
-			<select on:change={e => handleInputChange(e, 'text_shape')}>
+			<select value={selectedItem.shape} placeholder="Select shape" on:change={e => handleInputChange(e, 'text_shape')}>
 				<option value="straight" selected={selectedItem.shape === 'straight'}>straight</option>
 				<option value="curved" selected={selectedItem.shape === 'curved'}>curved</option>
 				<option value="ortho" selected={selectedItem.shape === 'ortho'}>ortho</option>
@@ -155,9 +165,10 @@
 			
 			<div class="row">
 			<span><strong>strokeType</strong></span>
-			<select on:change={e => handleInputChange(e, 'text_strokeType')}>
+			<select value={selectedItem.strokeType} placeholder="Select strokeType" on:change={e => handleInputChange(e, 'text_strokeType')}>
 				<option value="solid" selected={selectedItem.strokeType === 'solid'}>solid</option>
 				<option value="dashed" selected={selectedItem.strokeType === 'dashed'}>dashed</option>
+				<option value="dotted" selected={selectedItem.strokeType === 'dotted'}>dotted</option>
 			</select>
 			</div>
 		{/if}

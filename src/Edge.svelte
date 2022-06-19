@@ -75,7 +75,7 @@
     >
     </path>
 	<text
-        font-family="Verdana"
+        font-family={graph.theme.font}
         font-size=20 
         fill={item.stroke} 
         on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
@@ -88,8 +88,8 @@
                 lengthAdjust="spacingAndGlyphs" 
                 font-family="Verdana"
                 font-size=20 
-                fill={isSelected ? 'blue' : (item.stroke || 'red')}
-                stroke={isSelected ? 'blue' : (item.stroke || 'red')}
+                fill={isSelected ? 'blue' : (item.stroke || graph.theme.edgestroke)}
+                stroke={isSelected ? 'blue' : (item.stroke || graph.theme.edgestroke)}
                 on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
                 on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item})}
                 on:click|stopPropagation
@@ -103,8 +103,8 @@
                 lengthAdjust="spacingAndGlyphs" 
                 font-family="Verdana"
                 font-size=20 
-                fill={isSelected ? 'blue' : (item.stroke || 'red')}
-                stroke={isSelected ? 'blue' : (item.stroke || 'red')}
+                fill={isSelected ? 'blue' : (item.stroke || graph.theme.edgestroke)}
+                stroke={isSelected ? 'blue' : (item.stroke || graph.theme.edgestroke)}
                 on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
                 on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item})}
                 on:click|stopPropagation
