@@ -17,19 +17,16 @@
 		} else {
 			selectedItem[field.split("_")[1]] = JSON.parse(e.target.value); 
 		}
-        graph = graph;
         dispatch('graphchanged', graph);
     }
 
 	function handleJsonChange(updatedContent, previousContent, patchResult){
 		selectedItem.custom = updatedContent.json;
-		graph = graph;
 		dispatch('graphchanged', graph);
 	}
 
 	function detachFromParent(){
 		detachNodeFromParent(selectedItem, graph)
-		graph = graph;
         dispatch('graphchanged', graph);
 	}
 </script>
@@ -90,7 +87,7 @@
 		
 		<div class="row">
 			<span><strong>tags</strong></span>
-			<TagsInput tags={selectedItem.tags} on:tagschanged={e => { selectedItem.tags = e.detail.value; graph = graph; dispatch('graphchanged', graph) }}/>
+			<TagsInput tags={selectedItem.tags} on:tagschanged={e => { selectedItem.tags = e.detail.value; dispatch('graphchanged', graph) }}/>
 		</div>
 			
 		{#if selectedItem.kind === 'node'}

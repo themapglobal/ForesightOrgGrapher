@@ -69,7 +69,6 @@
 
 	function handleNodeChanged(e){
 		// console.log("handleNodeChanged");
-		// graph = graph;
 		// dispatch('graphchanged', graph);
 	}
 
