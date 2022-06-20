@@ -48,9 +48,10 @@ export function resizeGraphNode(item, graph){
         let child = getGraphNode(c, graph);
         resizeGraphNode(child, graph)
     })
-    
+    let notesWidth = Math.min(300, item.notes ? item.notes.length *10 : 0)
+    let notesHeight = (item.notes ? (Math.ceil(item.notes.length*8 / notesWidth) * 20) : 0)
     // make sure label and children nodes fit inside width
-    let halfLabelWidth = 0.5 * item.label.length *7 + 25;
+    let halfLabelAndNotesWidth = Math.max(25 + (0.5 * item.label.length *7), notesWidth/2);
 
     let rightchild = Math.max(...(item.children.map(c => {
         let child = getGraphNode(c, graph);
@@ -62,9 +63,9 @@ export function resizeGraphNode(item, graph){
         return child.pos.x - child.width / 2 - 15;
     })), item.pos.x);
 
-    item.width = 2 * Math.max(halfLabelWidth, rightchild, leftchild);
+    item.width = 2 * Math.max(halfLabelAndNotesWidth, rightchild, leftchild);
 
-    let halfLabelHeight = 15 ;
+    let halfLabelAndNotesHeight = 15 + notesHeight/2 ;
 
     let childDownExtents = item.children.map(c => {
         let child = getGraphNode(c, graph);
@@ -77,14 +78,13 @@ export function resizeGraphNode(item, graph){
 
     let childUpExtents = item.children.map(c => {
         let child = getGraphNode(c, graph);
-        return child.pos.y - child.height / 2 - 30 - (item.notes.length > 0 ? 70 : 0);
+        return child.pos.y - child.height / 2 - 30 - notesHeight;
     }); 
-    
-    
+  
     let upchild = item.pos.y - Math.min(...childUpExtents, item.pos.y);
     // console.log({upchild})
 
-    item.height = 2 * Math.max(halfLabelHeight, upchild, downchild);
+    item.height = 2 * Math.max(halfLabelAndNotesHeight, upchild, downchild);
     // console.log(item.label, item.width, item.height);
 }
 

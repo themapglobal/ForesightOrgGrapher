@@ -1,6 +1,7 @@
 <script>
 	import ControlPoint from "./ControlPoint.svelte"
     import { createEventDispatcher } from 'svelte';
+import { style } from "d3-selection";
     const dispatch = createEventDispatcher();
 
 	export let theme;
@@ -13,13 +14,14 @@
 		// console.log(handle)
 		dispatch('createnode', {from: item, handle: handle})
 	}
-
+	$: notesWidth = Math.min(300, item.notes ? item.notes.length *10 : 0)
+	$: notesHeight = (item.notes ? (Math.ceil(item.notes.length*10 / notesWidth) * 20) : 0)
 </script>
 
 <g>
     <rect 
 		x={item.pos.x - item.width/2}
-		y={(item.pos.y - item.height/2) } 
+		y={item.pos.y - item.height/2} 
 		width={item.width}
 		height={item.height}
 		fill={item.fill || theme.nodefill}
@@ -48,13 +50,16 @@
 
 	{#if item.notes}	
 	<foreignObject 
-		x={item.pos.x - item.width/2 + 10} 
+		x={item.pos.x - notesWidth/2 + 10} 
 		y={item.pos.y - item.height/2 + 10} 
 		font-family={theme.font}
 		font-weight=300
 		font-size={item.fontSize}	
-		width={item.width - 20}
-		height='100'>
+		width={notesWidth}
+		height={notesHeight}
+		on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
+		on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item})}
+		on:click|stopPropagation>
 			<div style="padding:15px; margin-top:10px">
 				{item.notes}
 			</div>	

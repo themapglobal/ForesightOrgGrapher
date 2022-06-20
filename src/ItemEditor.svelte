@@ -32,13 +32,14 @@
 		graph = graph;
         dispatch('graphchanged', graph);
 	}
+
 </script>
 
 {#if selectedItem}
 	<h1>{selectedItem.label}</h1>
 	<!-- <p>{selectedItem.kind === 'edge' ? `from ${getGraphNode(selectedItem.fromId, graph)?.label} to ${getGraphNode(selectedItem.toId, graph)?.label}` : `${selectedItem.children.length} children`}</p> -->
 
-	<p class="itemdesc">{selectedItem.notes}</p>
+
 	<p class="itemdesc">{selectedItem.desc}</p>
 	
 	{#if selectedItem.link && selectedItem.link.toString().length > 0}
