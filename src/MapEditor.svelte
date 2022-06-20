@@ -204,6 +204,8 @@
 		};
 		reRender();
 	}
+
+	$: itemsForRender = getItemsForRender(graph, selectedItem);
 </script>
 
 <div class="container">
@@ -228,7 +230,7 @@
   <g bind:this={topGroupElem}>
 	<Grid kind={graph.theme.grid}/> 
 
-    {#each getItemsForRender(graph, selectedItem) as item (item.id)}
+    {#each itemsForRender as item (item.id)}
 		{#if item.kind === 'node'}
     		<Node {item}
 					on:itemMouseDown={handleItemMouseDown} 

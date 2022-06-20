@@ -203,6 +203,8 @@
         }, {});
         return Object.entries(groups);
     }
+
+    $: tagGroups = getTagGroups(graph);
 </script>
 
 <MapEditor unsizedGraph={graph} {highlighted} on:graphchanged="{e => {graph = e.detail;}}"/>
@@ -213,7 +215,7 @@
     clearable pill
     on:sl-change={e => highlighted = graph.items.filter(i => i.kind === 'node' && i.tags.includes(e.target.value)).map(i => i.id)}
 >
-        {#each getTagGroups(graph) as group}
+        {#each tagGroups as group (group[0])}
             <sl-menu-label>{group[0]}</sl-menu-label>
             {#each group[1] as tag}
                 <sl-menu-item value={`${group[0]}:${tag}`}>{tag}</sl-menu-item>
