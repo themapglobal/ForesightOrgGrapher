@@ -38,8 +38,9 @@
 	})
 
     function reRender(){
-		//graph = graph;
+		graph = graph;
 		svgElement = svgElement;
+		selectedItem = selectedItem;
 		dispatch('graphchanged', graph);
 	}
 
@@ -157,7 +158,8 @@
 					"edgestroke": "red",
 					"edgeshape": "curved",
 					"edgestroketype": "solid",
-					"font": "Balsamiq Sans"
+					"font": "Dosis",
+            		"badges": ["✅", "❌", "⚡", "👎", "👍"]
 				}; break;
 			case 'foresight':
 				graph.theme = {
@@ -170,7 +172,8 @@
 					"edgestroke": "#ccc",
 					"edgeshape": "ortho",
 					"edgestroketype": "solid",
-					"font": "Roboto Condensed"
+					"font": "Roboto Condensed",
+            		"badges": ["✅", "❌", "⚡", "👎", "👍"]
 				}; break;
 			default:
 				graph.theme = {
@@ -183,7 +186,8 @@
 				"nodeborder": "black",
 				"edgestroke": "#4277dd",
 				"edgeshape": "curved",
-				"edgestroketype": "solid"
+				"edgestroketype": "solid",
+            	"badges": ["✅", "❌", "⚡", "👎", "👍"]
 			}
 		};
 		reRender();
@@ -191,7 +195,8 @@
 </script>
 
 <div class="container">
-<svg tabindex="0" id="mysvg" viewBox={graph.viewBox.join(" ")}
+<svg tabindex="0" id="mysvg" xmlns="http://www.w3.org/2000/svg"
+		viewBox={graph.viewBox.join(" ")}
 		on:mousemove="{e => handleMouseMove(e.clientX, e.clientY)}"
 	    on:mousedown="{e => draggingFrom = {x: e.clientX, y: e.clientY}}"
 	    on:mouseup="{() => draggingFrom = null}"
