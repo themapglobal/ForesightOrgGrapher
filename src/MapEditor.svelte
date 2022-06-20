@@ -38,7 +38,6 @@
 	})
 
     function reRender(){
-		graph = graph;
 		svgElement = svgElement;
 		selectedItem = selectedItem;
 		dispatch('graphchanged', graph);
@@ -274,7 +273,7 @@
 		<option value="foresight">Switch theme to: Foresight</option>
 	</select>
 
-	<ItemEditor {selectedItem} {graph} on:graphchanged="{e => {graph = e.detail; dispatch('graphchanged', graph); }}"/>
+	<ItemEditor {selectedItem} {graph} on:graphchanged />
 
 	{#if graph.debugger}
 	<p>Debugger:
@@ -304,7 +303,7 @@
 <sl-dialog style="--width: 35vw;" open={showJson} label="View or Modify JSON" class="dialog-overview" on:sl-hide={(e) => showJson = false}>
   <textarea 
   	cols="54" rows="20" autofocus
-	on:input={(e) => {graph = JSON.parse(e.target.value); dispatch('graphchanged', graph);}}
+	on:input={(e) => { dispatch('graphchanged', JSON.parse(e.target.value));}}
   >{exportJson(graph)}</textarea>
   
   <sl-button on:click={(e) => showJson = false} slot="footer" variant="primary">Close</sl-button>
