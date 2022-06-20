@@ -26,8 +26,8 @@
 		stroke={isSelected ? 'blue' : (isHighlighted ? 'red' : (item.bordercolor || theme.nodeborder))}
 		stroke-width={(isSelected || isHighlighted) ? '6px' : '3px'}
 		rx={8+Math.floor(item.height/50)}	
-		on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
-		on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item})}
+		on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, rawEvent: e})}
+		on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item, rawEvent: e})}
 		on:click|stopPropagation
 	>
 	</rect>
@@ -39,8 +39,8 @@
 		font-weight={item.children.length > 0 ? '700' : '300'}
 		font-size={item.fontSize} 
 		fill={item.labelcolor || theme.nodelabelstroke} 
-		on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
-		on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item})}
+		on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, rawEvent: e})}
+		on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item, rawEvent: e})}
 		on:click|stopPropagation
 	>
 			{item.label}
@@ -66,18 +66,18 @@
 			cy={item.pos.y - item.height/2} 
 			r={10}
 			fill="white" stroke="orange"
-			on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
-			on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item})}
-			on:click|stopPropagation={(e) => dispatch('itemBadgeClick', {source: item})}
+			on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, rawEvent: e})}
+			on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item, rawEvent: e})}
+			on:click|stopPropagation={(e) => dispatch('itemBadgeClick', {source: item, rawEvent: e})}
 		 />
 		 <text 
 		 	x={item.pos.x - item.width/2 - 7} 
 			y={item.pos.y - item.height/2 + 6} 
 			stroke="white" 
 			fill="white"
-			on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
-			on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item})}
-			on:click|stopPropagation={(e) => dispatch('itemBadgeClick', {source: item})}
+			on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, rawEvent: e})}
+			on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item, rawEvent: e})}
+			on:click|stopPropagation={(e) => dispatch('itemBadgeClick', {source: item, rawEvent: e})}
 		>{item.badge}</text>
 	</g>
 	{/if}

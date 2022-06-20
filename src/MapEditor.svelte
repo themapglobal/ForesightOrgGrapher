@@ -46,15 +46,26 @@
 
     function handleItemMouseDown(e){
         // console.log('handleItemMouseDown');
+
 		selectedItem = e.detail.source;
-		draggingFrom = e.detail.from;
+
+		// to stop mouse events from firing elsewhere
+		e.detail.rawEvent.target.setPointerCapture(e.detail.rawEvent.pointerId);
+
+		draggingFrom = {x: e.detail.rawEvent.clientX, y: e.detail.rawEvent.clientY};
 		contextMenuPosition = null;
+		svgElement.onmousemove = handleMouseMove;
     }
 	
 	function handleItemMouseUp(e){
         // console.log('handleItemMouseUp');
+
+		// release pointer lock
+		e.detail.rawEvent.target.releasePointerCapture(e.detail.rawEvent.pointerId);
+
 		selectedItem = e.detail.source;
 		draggingFrom = null;
+		svgElement.onmousemove = null;
     }
 
 	function handleNodeChanged(e){
@@ -84,8 +95,9 @@
 		contextMenuPosition = null;
 	} 
 	
-	function handleMouseMove(x,y){
-		currentMouse = {x: x, y: y};
+	function handleMouseMove(e){
+		// console.log("mousemove");
+		currentMouse = {x: e.clientX, y: e.clientY};
 		if(!selectedItem || !draggingFrom || !selectedItem.pos) return;
 		
 		// move selectedItem along with all its children
@@ -197,9 +209,8 @@
 <div class="container">
 <svg tabindex="0" id="mysvg" xmlns="http://www.w3.org/2000/svg"
 		viewBox={graph.viewBox.join(" ")}
-		on:mousemove="{e => handleMouseMove(e.clientX, e.clientY)}"
-	    on:mousedown="{e => draggingFrom = {x: e.clientX, y: e.clientY}}"
-	    on:mouseup="{() => draggingFrom = null}"
+	    on:mousedown="{e => { draggingFrom = {x: e.clientX, y: e.clientY}; svgElement.onmousemove = handleMouseMove;}}"
+	    on:mouseup="{() => {draggingFrom = null; svgElement.onmousemove = null; }}"
 		on:click={handleSvgClick}
 		on:contextmenu|preventDefault={handleContextMenu}
 		use:styles={{color: graph.theme.bgfill}}
@@ -343,7 +354,7 @@
 		z-index: 10;
 		background-color: white;
 		padding: 0 10px;
-		border-left: 3px solid #eeeeee;
+		border-left: 3px solid #666;
 	}
 
 	sl-menu {
