@@ -151,7 +151,7 @@
             "desc": "",
             "link": "",
             "tags": [],
-            "badge": "\u2705",
+            "badge": "👎",
             "parent": 6916,
             "pos": {
                 "x": 25,
@@ -177,7 +177,8 @@
             "nodeborder": "black",
             "edgestroke": "#4277dd",
             "edgeshape": "curved",
-            "edgestroketype": "solid"
+            "edgestroketype": "solid",
+            "badges": ["✅", "❌", "⚡", "👎", "👍"]
         },
         "debugger": false,
         "sidepanel": true,

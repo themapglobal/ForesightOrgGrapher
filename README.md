@@ -9,15 +9,17 @@ This is an SVG-based interactive graph dataset editor that allows you to manuall
 - Attaching/Detaching edges via control handles
 - Dropping one node on another to create it as a child
 
-Alpha 1:
+Alpha:
 - Panning and Zooming
 - Graph operations, including Compound node
+- Better path calculation for edges
+- Edge label side on non-Firefox browsers
 - Apply existing styling/aesthetics 
 - Free-form tags input as custom field: https://jifalops.github.io/tags-input/components/tags-input/demo/
 - Hyperlink field for nodes/edges
 - Plan for up to 1000 nodes
 
-Beta 2:
+Beta:
 - Query tags as TableView and highlight results
 - Discussion widgets tied to a location (eg: markup.io)
     - User authentication? Consider allowing anonymous comments. Can we require GitHub login?

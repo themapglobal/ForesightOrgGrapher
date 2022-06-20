@@ -62,6 +62,14 @@
 		// dispatch('graphchanged', graph);
 	}
 
+	function handleItemBadgeClick(e){
+		let item = e.detail.source;
+		let indexOfCurrentBadge = graph.theme.badges.indexOf(item.badge);
+		let indexOfNextBadge = (indexOfCurrentBadge + 1) % graph.theme.badges.length;
+		item.badge = graph.theme.badges[indexOfNextBadge]
+		reRender();
+	}
+
 	function deleteItem(item, deleteDependents){
 		deleteGraphItem(item, graph, deleteDependents);
 		selectedItem = null;
@@ -209,6 +217,7 @@
     		<Node {item}
 					on:itemMouseDown={handleItemMouseDown} 
 					on:itemMouseUp={handleItemMouseUp}
+					on:itemBadgeClick={handleItemBadgeClick}
 					isSelected={item.id === selectedItem?.id}
 					on:nodeChanged={handleNodeChanged}
 					on:createnode={handleCreateNode}

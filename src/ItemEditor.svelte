@@ -95,6 +95,15 @@
 			
 		{#if selectedItem.kind === 'node'}
 			<div class="row">
+			<span><strong>Badge</strong></span>
+			<sl-select clearable value={selectedItem.badge} placeholder="Select badge" on:sl-change={e => handleInputChange(e, 'text_badge')}>
+				{#each graph.theme.badges as badge}
+				<sl-menu-item value={badge} selected={selectedItem.badge === badge}>{badge}</sl-menu-item>
+				{/each}
+			</sl-select>
+			</div>
+
+			<div class="row">
 			<span><strong>fill</strong></span>
 			<sl-color-picker format="hex" size="small" 
 				value={selectedItem.fill} 
