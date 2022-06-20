@@ -49,9 +49,9 @@ export function resizeGraphNode(item, graph){
         resizeGraphNode(child, graph)
     })
     let notesWidth = Math.min(300, item.notes ? item.notes.length *10 : 0)
-    let notesHeight = (item.notes ? (Math.ceil(item.notes.length*8 / notesWidth) * 20) : 0)
+    let notesHeight = (item.notes ? (Math.ceil(item.notes.length*9 / notesWidth) * 20) : 0)
     // make sure label and children nodes fit inside width
-    let halfLabelAndNotesWidth = Math.max(25 + (0.5 * item.label.length *7), notesWidth/2);
+    let halfLabelAndNotesWidth = Math.max(25 + (0.5 * item.label.length *9), notesWidth/2);
 
     let rightchild = Math.max(...(item.children.map(c => {
         let child = getGraphNode(c, graph);
