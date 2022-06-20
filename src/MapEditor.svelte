@@ -17,9 +17,10 @@
 	export let highlighted;
 
 	$: graph = layout(unsizedGraph);
-
+	
 	let currentMouse = {};
 	let selectedItem = null;
+	$: console.log(selectedItem?.width, selectedItem?.height)
 	let draggingFrom = null;
 	let contextMenuPosition = null;
 	let showJson = false;
@@ -27,7 +28,7 @@
 	let showSvgExport = false;
 	let svgElement;
 	let topGroupElem;
-
+	
 	onMount(() => {
 		if (svgElement && topGroupElem) {
 			select(svgElement).call(zoom().on('zoom', ({ transform }) => {

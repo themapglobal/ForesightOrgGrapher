@@ -29,11 +29,13 @@
 		detachNodeFromParent(selectedItem, graph)
         dispatch('graphchanged', graph);
 	}
+
 </script>
 
 {#if selectedItem}
 	<h1>{selectedItem.label}</h1>
 	<!-- <p>{selectedItem.kind === 'edge' ? `from ${getGraphNode(selectedItem.fromId, graph)?.label} to ${getGraphNode(selectedItem.toId, graph)?.label}` : `${selectedItem.children.length} children`}</p> -->
+
 
 	<p class="itemdesc">{selectedItem.desc}</p>
 	
@@ -64,6 +66,18 @@
 			>
 		</div>
 		
+		<div class="row">
+			<span><strong>notes</strong></span>
+			<sl-textarea 
+				placeholder="Notes..."
+				size="small"
+				resize="auto"
+				on:sl-input={e => handleInputChange(e, 'text_notes')}
+				value={selectedItem.notes}
+			>
+			</sl-textarea>
+		</div>
+
 		<div class="row">
 			<span><strong>desc</strong></span>
 			<sl-textarea 
