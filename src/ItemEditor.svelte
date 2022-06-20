@@ -17,19 +17,16 @@
 		} else {
 			selectedItem[field.split("_")[1]] = JSON.parse(e.target.value); 
 		}
-        graph = graph;
         dispatch('graphchanged', graph);
     }
 
 	function handleJsonChange(updatedContent, previousContent, patchResult){
 		selectedItem.custom = updatedContent.json;
-		graph = graph;
 		dispatch('graphchanged', graph);
 	}
 
 	function detachFromParent(){
 		detachNodeFromParent(selectedItem, graph)
-		graph = graph;
         dispatch('graphchanged', graph);
 	}
 
@@ -104,10 +101,19 @@
 		
 		<div class="row">
 			<span><strong>tags</strong></span>
-			<TagsInput tags={selectedItem.tags} on:tagschanged={e => { selectedItem.tags = e.detail.value; graph = graph; dispatch('graphchanged', graph) }}/>
+			<TagsInput tags={selectedItem.tags} on:tagschanged={e => { selectedItem.tags = e.detail.value; dispatch('graphchanged', graph) }}/>
 		</div>
 			
 		{#if selectedItem.kind === 'node'}
+			<div class="row">
+			<span><strong>Badge</strong></span>
+			<sl-select clearable value={selectedItem.badge} placeholder="Select badge" on:sl-change={e => handleInputChange(e, 'text_badge')}>
+				{#each graph.theme.badges as badge}
+				<sl-menu-item value={badge} selected={selectedItem.badge === badge}>{badge}</sl-menu-item>
+				{/each}
+			</sl-select>
+			</div>
+
 			<div class="row">
 			<span><strong>fill</strong></span>
 			<sl-color-picker format="hex" size="small" 

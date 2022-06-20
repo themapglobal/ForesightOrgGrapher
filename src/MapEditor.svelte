@@ -39,28 +39,46 @@
 	})
 
     function reRender(){
-		//graph = graph;
 		svgElement = svgElement;
+		selectedItem = selectedItem;
 		dispatch('graphchanged', graph);
 	}
 
     function handleItemMouseDown(e){
         // console.log('handleItemMouseDown');
+
 		selectedItem = e.detail.source;
-		draggingFrom = e.detail.from;
+
+		// to stop mouse events from firing elsewhere
+		// e.detail.rawEvent.target.setPointerCapture(e.detail.rawEvent.pointerId);
+
+		draggingFrom = {x: e.detail.rawEvent.clientX, y: e.detail.rawEvent.clientY};
 		contextMenuPosition = null;
+		svgElement.onmousemove = handleMouseMove;
     }
 	
 	function handleItemMouseUp(e){
         // console.log('handleItemMouseUp');
+
+		// release pointer lock
+		// e.detail.rawEvent.target.releasePointerCapture(e.detail.rawEvent.pointerId);
+
 		selectedItem = e.detail.source;
 		draggingFrom = null;
+		svgElement.onmousemove = null;
     }
 
 	function handleNodeChanged(e){
 		// console.log("handleNodeChanged");
-		// graph = graph;
 		// dispatch('graphchanged', graph);
+	}
+
+	function handleItemBadgeClick(e){
+		let item = e.detail.source;
+		let indexOfCurrentBadge = graph.theme.badges.indexOf(item.badge);
+		let indexOfNextBadge = (indexOfCurrentBadge + 1) % graph.theme.badges.length;
+		item.badge = graph.theme.badges[indexOfNextBadge]
+		reRender();
 	}
 
 	function deleteItem(item, deleteDependents){
@@ -76,8 +94,9 @@
 		contextMenuPosition = null;
 	} 
 	
-	function handleMouseMove(x,y){
-		currentMouse = {x: x, y: y};
+	function handleMouseMove(e){
+		// console.log("mousemove");
+		currentMouse = {x: e.clientX, y: e.clientY};
 		if(!selectedItem || !draggingFrom || !selectedItem.pos) return;
 		
 		// move selectedItem along with all its children
@@ -142,15 +161,16 @@
 			case 'elegant':
 				graph.theme = {
 					"name": "elegant",
-					"bgfill": "cyan",
+					"bgfill": "#334155",
 					"grid": "cartesian",
-					"nodefill": "black",
-					"nodelabelstroke": "white",
+					"nodefill": "#bae6fd",
+					"nodelabelstroke": "#334155",
 					"nodeborder": "white",
 					"edgestroke": "red",
 					"edgeshape": "curved",
 					"edgestroketype": "solid",
-					"font": "Balsamiq Sans"
+					"font": "Dosis",
+            		"badges": ["✅", "❌", "⚡", "👎", "👍"]
 				}; break;
 			case 'foresight':
 				graph.theme = {
@@ -163,7 +183,8 @@
 					"edgestroke": "#ccc",
 					"edgeshape": "ortho",
 					"edgestroketype": "solid",
-					"font": "Roboto Condensed"
+					"font": "Roboto Condensed",
+            		"badges": ["✅", "❌", "⚡", "👎", "👍"]
 				}; break;
 			default:
 				graph.theme = {
@@ -176,18 +197,21 @@
 				"nodeborder": "black",
 				"edgestroke": "#4277dd",
 				"edgeshape": "curved",
-				"edgestroketype": "solid"
+				"edgestroketype": "solid",
+            	"badges": ["✅", "❌", "⚡", "👎", "👍"]
 			}
 		};
 		reRender();
 	}
+
+	$: itemsForRender = getItemsForRender(graph, selectedItem);
 </script>
 
 <div class="container">
-<svg tabindex="0" id="mysvg" viewBox={graph.viewBox.join(" ")}
-		on:mousemove="{e => handleMouseMove(e.clientX, e.clientY)}"
-	    on:mousedown="{e => draggingFrom = {x: e.clientX, y: e.clientY}}"
-	    on:mouseup="{() => draggingFrom = null}"
+<svg tabindex="0" id="mysvg" xmlns="http://www.w3.org/2000/svg"
+		viewBox={graph.viewBox.join(" ")}
+	    on:mousedown="{e => { draggingFrom = {x: e.clientX, y: e.clientY}; svgElement.onmousemove = handleMouseMove;}}"
+	    on:mouseup="{() => {draggingFrom = null; svgElement.onmousemove = null; }}"
 		on:click={handleSvgClick}
 		on:contextmenu|preventDefault={handleContextMenu}
 		use:styles={{color: graph.theme.bgfill}}
@@ -205,11 +229,12 @@
   <g bind:this={topGroupElem}>
 	<Grid kind={graph.theme.grid}/> 
 
-    {#each getItemsForRender(graph, selectedItem) as item (item.id)}
+    {#each itemsForRender as item (item.id)}
 		{#if item.kind === 'node'}
     		<Node {item}
 					on:itemMouseDown={handleItemMouseDown} 
 					on:itemMouseUp={handleItemMouseUp}
+					on:itemBadgeClick={handleItemBadgeClick}
 					isSelected={item.id === selectedItem?.id}
 					on:nodeChanged={handleNodeChanged}
 					on:createnode={handleCreateNode}
@@ -248,7 +273,7 @@
 		<option value="foresight">Switch theme to: Foresight</option>
 	</select>
 
-	<ItemEditor {selectedItem} {graph} on:graphchanged="{e => {graph = e.detail; dispatch('graphchanged', graph); }}"/>
+	<ItemEditor {selectedItem} {graph} on:graphchanged />
 
 	{#if graph.debugger}
 	<p>Debugger:
@@ -278,7 +303,7 @@
 <sl-dialog style="--width: 35vw;" open={showJson} label="View or Modify JSON" class="dialog-overview" on:sl-hide={(e) => showJson = false}>
   <textarea 
   	cols="54" rows="20" autofocus
-	on:input={(e) => {graph = JSON.parse(e.target.value); dispatch('graphchanged', graph);}}
+	on:input={(e) => { dispatch('graphchanged', JSON.parse(e.target.value));}}
   >{exportJson(graph)}</textarea>
   
   <sl-button on:click={(e) => showJson = false} slot="footer" variant="primary">Close</sl-button>
@@ -330,7 +355,7 @@
 		z-index: 10;
 		background-color: white;
 		padding: 0 10px;
-		border-left: 3px solid #eeeeee;
+		border-left: 3px solid #666;
 	}
 
 	sl-menu {

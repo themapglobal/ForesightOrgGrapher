@@ -68,8 +68,8 @@
         stroke-width=5
         stroke-dasharray={getDashArray(item.strokeType || graph.theme.edgestroketype)}
         marker-end={(item.directed && false) ? "url(#arrow)" : false}
-        on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
-        on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item})}
+        on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, rawEvent: e})}
+        on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item, rawEvent: e})}
         on:click|stopPropagation
         id={`edgepath${item.id}`}
     >
@@ -78,8 +78,8 @@
         font-family={graph.theme.font}
         font-size=20 
         fill={item.stroke} 
-        on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
-        on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item})}
+        on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, rawEvent: e})}
+        on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item, rawEvent: e})}
         on:click|stopPropagation
     >
 			<textPath 
@@ -90,8 +90,8 @@
                 font-size=20 
                 fill={isSelected ? 'blue' : (item.stroke || graph.theme.edgestroke)}
                 stroke={isSelected ? 'blue' : (item.stroke || graph.theme.edgestroke)}
-                on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
-                on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item})}
+                on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, rawEvent: e})}
+                on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item, rawEvent: e})}
                 on:click|stopPropagation
                 side={getLabelDirection(graph)}>
                     {item.label}
@@ -105,8 +105,8 @@
                 font-size=20 
                 fill={isSelected ? 'blue' : (item.stroke || graph.theme.edgestroke)}
                 stroke={isSelected ? 'blue' : (item.stroke || graph.theme.edgestroke)}
-                on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
-                on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item})}
+                on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, rawEvent: e})}
+                on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item, rawEvent: e})}
                 on:click|stopPropagation
                 side="left">
                 ----&gt;

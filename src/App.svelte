@@ -160,7 +160,7 @@
             "desc": "",
             "link": "",
             "tags": [],
-            "badge": "\u2705",
+            "badge": "👎",
             "parent": 6916,
             "pos": {
                 "x": 25,
@@ -186,7 +186,8 @@
             "nodeborder": "black",
             "edgestroke": "#4277dd",
             "edgeshape": "curved",
-            "edgestroketype": "solid"
+            "edgestroketype": "solid",
+            "badges": ["✅", "❌", "⚡", "👎", "👍"]
         },
         "debugger": false,
         "sidepanel": true,
@@ -208,10 +209,11 @@
             acc[kind] = acc[kind] ?? [];
             acc[kind].push(name);
             return acc;
-        }, {})
-        console.log(groups);
+        }, {});
         return Object.entries(groups);
     }
+
+    $: tagGroups = getTagGroups(graph);
 </script>
 
 <MapEditor unsizedGraph={graph} {highlighted} on:graphchanged="{e => {graph = e.detail;}}"/>
@@ -219,9 +221,10 @@
 <section>
 <sl-select 
     placeholder="Highlight by Tag"
+    clearable pill
     on:sl-change={e => highlighted = graph.items.filter(i => i.kind === 'node' && i.tags.includes(e.target.value)).map(i => i.id)}
 >
-        {#each getTagGroups(graph) as group}
+        {#each tagGroups as group (group[0])}
             <sl-menu-label>{group[0]}</sl-menu-label>
             {#each group[1] as tag}
                 <sl-menu-item value={`${group[0]}:${tag}`}>{tag}</sl-menu-item>
@@ -236,9 +239,6 @@
         position: fixed;
         top: 20px;
         left: 20px;
-        background-color: orange;
-        border-radius: 3px;
-        border: 2px solid red;
     }
 
     sl-select {
