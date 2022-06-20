@@ -38,6 +38,7 @@
 	<h1>{selectedItem.label}</h1>
 	<!-- <p>{selectedItem.kind === 'edge' ? `from ${getGraphNode(selectedItem.fromId, graph)?.label} to ${getGraphNode(selectedItem.toId, graph)?.label}` : `${selectedItem.children.length} children`}</p> -->
 
+	<p class="itemdesc">{selectedItem.notes}</p>
 	<p class="itemdesc">{selectedItem.desc}</p>
 	
 	{#if selectedItem.link && selectedItem.link.toString().length > 0}
@@ -67,6 +68,18 @@
 			>
 		</div>
 		
+		<div class="row">
+			<span><strong>notes</strong></span>
+			<sl-textarea 
+				placeholder="Notes..."
+				size="small"
+				resize="auto"
+				on:sl-input={e => handleInputChange(e, 'text_notes')}
+				value={selectedItem.notes}
+			>
+			</sl-textarea>
+		</div>
+
 		<div class="row">
 			<span><strong>desc</strong></span>
 			<sl-textarea 

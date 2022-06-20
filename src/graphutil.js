@@ -64,7 +64,7 @@ export function resizeGraphNode(item, graph){
 
     item.width = 2 * Math.max(halfLabelWidth, rightchild, leftchild);
 
-    let halfLabelHeight = 15;
+    let halfLabelHeight = 15 ;
 
     let childDownExtents = item.children.map(c => {
         let child = getGraphNode(c, graph);
@@ -77,8 +77,9 @@ export function resizeGraphNode(item, graph){
 
     let childUpExtents = item.children.map(c => {
         let child = getGraphNode(c, graph);
-        return child.pos.y - child.height / 2 - 30;
+        return child.pos.y - child.height / 2 - 30 - (item.notes.length > 0 ? 70 : 0);
     }); 
+    
     
     let upchild = item.pos.y - Math.min(...childUpExtents, item.pos.y);
     // console.log({upchild})

@@ -19,7 +19,7 @@
 <g>
     <rect 
 		x={item.pos.x - item.width/2}
-		y={item.pos.y - item.height/2} 
+		y={(item.pos.y - item.height/2) } 
 		width={item.width}
 		height={item.height}
 		fill={item.fill || theme.nodefill}
@@ -45,6 +45,21 @@
 	>
 			{item.label}
 	</text>
+
+	{#if item.notes}	
+	<foreignObject 
+		x={item.pos.x - item.width/2 + 10} 
+		y={item.pos.y - item.height/2 + 10} 
+		font-family={theme.font}
+		font-weight=300
+		font-size={item.fontSize}	
+		width={item.width - 20}
+		height='100'>
+			<div style="padding:15px; margin-top:10px">
+				{item.notes}
+			</div>	
+	</foreignObject>
+{/if}
 
 	{#if isSelected}
 	  {#each [[1,0],[0,1],[-1,0],[0,-1]] as control}
