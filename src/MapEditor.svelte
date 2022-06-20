@@ -50,7 +50,7 @@
 		selectedItem = e.detail.source;
 
 		// to stop mouse events from firing elsewhere
-		e.detail.rawEvent.target.setPointerCapture(e.detail.rawEvent.pointerId);
+		// e.detail.rawEvent.target.setPointerCapture(e.detail.rawEvent.pointerId);
 
 		draggingFrom = {x: e.detail.rawEvent.clientX, y: e.detail.rawEvent.clientY};
 		contextMenuPosition = null;
@@ -61,7 +61,7 @@
         // console.log('handleItemMouseUp');
 
 		// release pointer lock
-		e.detail.rawEvent.target.releasePointerCapture(e.detail.rawEvent.pointerId);
+		// e.detail.rawEvent.target.releasePointerCapture(e.detail.rawEvent.pointerId);
 
 		selectedItem = e.detail.source;
 		draggingFrom = null;
