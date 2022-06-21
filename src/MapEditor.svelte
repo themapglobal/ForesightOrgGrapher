@@ -8,19 +8,20 @@
 	import ItemEditor from "./ItemEditor.svelte"
 	import { onMount } from 'svelte'
 	import { zoom } from 'd3-zoom'
-  import { select } from 'd3-selection'
+	import { select } from 'd3-selection'
 
 	import { createEventDispatcher } from 'svelte';
 	const dispatch = createEventDispatcher();
 
 	export let unsizedGraph;
-	export let highlighted;
+
 
 	$: graph = layout(unsizedGraph);
+	$: itemsForRender = getItemsForRender(graph, selectedItem);
+	$: tagGroups = getTagGroups(graph);
 	
 	let currentMouse = {};
 	let selectedItem = null;
-	$: console.log(selectedItem?.width, selectedItem?.height)
 	let draggingFrom = null;
 	let contextMenuPosition = null;
 	let showJson = false;
@@ -28,6 +29,7 @@
 	let showSvgExport = false;
 	let svgElement;
 	let topGroupElem;
+	let highlighted = [];
 	
 	onMount(() => {
 		if (svgElement && topGroupElem) {
@@ -204,7 +206,18 @@
 		reRender();
 	}
 
-	$: itemsForRender = getItemsForRender(graph, selectedItem);
+    function getTagGroups(graph){
+        // get unique tags
+        let tags = graph.items.map(i => i.tags).flat().filter((value, index, self) => self.indexOf(value) === index); 
+        let groups = tags.reduce((acc, tag)=> {
+            let [kind,name] = tag.split(":");
+            acc[kind] = acc[kind] ?? [];
+            acc[kind].push(name);
+            return acc;
+        }, {});
+        return Object.entries(groups);
+    }
+    
 </script>
 
 <div class="container">
@@ -254,7 +267,16 @@
 
 {#if graph.sidepanel}
 <section class="sidepanel">
-	{#if graph.jsonview}
+	{#if graph.jsondownload}
+	<sl-button variant="default" href="data:text/json;charset=utf-8,{encodeURIComponent(exportJson(graph))}" download="graph.json">
+		<sl-icon slot="prefix" name="download"></sl-icon>
+		Download file
+	</sl-button>
+	{/if}
+
+	<!-- TODO:  upload file instead of jsonimportexport -->
+
+	{#if graph.jsonimportexport}
 	<button on:click={(e) => showJson = true}>View/Modify JSON</button>
 	{/if}
 
@@ -299,7 +321,8 @@
 {/if}
 
 <!-- textarea for importing/exporting json -->
-{#if graph.jsonview}
+{#if graph.jsonimportexport}
+
 <sl-dialog style="--width: 35vw;" open={showJson} label="View or Modify JSON" class="dialog-overview" on:sl-hide={(e) => showJson = false}>
   <textarea 
   	cols="54" rows="20" autofocus
@@ -334,6 +357,22 @@
 
 </div>
 
+<section class="tagfilter">
+	<sl-select 
+		placeholder="Highlight by Tag"
+		clearable pill
+		on:sl-change={e => highlighted = graph.items.filter(i => i.kind === 'node' && i.tags.includes(e.target.value)).map(i => i.id)}
+	>
+			{#each tagGroups as group (group[0])}
+				<sl-menu-label>{group[0]}</sl-menu-label>
+				{#each group[1] as tag}
+					<sl-menu-item value={`${group[0]}:${tag}`}>{tag}</sl-menu-item>
+				{/each}
+				<sl-divider></sl-divider>
+			{/each}
+	</sl-select>
+</section>
+
 <style>
 	.container{
 		width: 100%;
@@ -367,4 +406,14 @@
 	sl-dialog textarea {
 		resize: none;
 	}
+
+	section.tagfilter {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+    }
+
+    section.tagfilter sl-select {
+        width: 200px;
+    }
 </style>

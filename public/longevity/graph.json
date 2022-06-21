@@ -1,61 +1,69 @@
-<script>
-    import MapEditor from "./MapEditor.svelte"
-	
-    let graph = {
-        "items": [
-            {
+{
+    "items": [
+        {
             "id": 2,
             "kind": "node",
             "label": "Arithmetic",
             "notes": "",
             "desc": "",
             "link": "",
-            "tags": ["org:meta"],
+            "tags": [
+                "org:meta"
+            ],
             "parent": null,
             "pos": {
                 "x": 264,
                 "y": 351
             }
-            },
-            {
+        },
+        {
             "id": 1,
             "kind": "node",
             "label": "Algebra",
             "notes": "",
             "desc": "",
             "link": "",
-            "tags": ["org:google", "lab:cambridge"],
+            "tags": [
+                "org:google",
+                "lab:cambridge"
+            ],
             "parent": null,
             "pos": {
                 "x": 155,
                 "y": 783
             }
-            },
-            {
+        },
+        {
             "id": 4,
             "kind": "edge",
             "label": "is a prerequisite of",
             "desc": "",
             "link": "",
-            "tags": ["org:apple","lab:mit"],
+            "tags": [
+                "org:apple",
+                "lab:mit"
+            ],
             "directed": true,
             "weight": 5,
             "fromId": 3,
             "toId": 1
-            },
-            {
+        },
+        {
             "id": 37845,
             "kind": "edge",
             "label": "",
             "desc": "",
             "link": "",
-            "tags": ["org:apple","org:google"],
+            "tags": [
+                "org:apple",
+                "org:google"
+            ],
             "directed": true,
             "weight": 5,
             "fromId": 3,
             "toId": 94575
-            },
-            {
+        },
+        {
             "id": 3,
             "kind": "node",
             "label": "Subtraction",
@@ -68,36 +76,42 @@
                 "x": 445,
                 "y": 364
             }
-            },
-            {
+        },
+        {
             "id": 94575,
             "kind": "node",
             "label": "Multiplication",
             "notes": "",
             "desc": "",
             "link": "",
-            "tags": ["org:apple","lab:mit"],
+            "tags": [
+                "org:apple",
+                "lab:mit"
+            ],
             "parent": 2,
             "pos": {
                 "x": 70,
                 "y": 410
             }
-            },
-            {
+        },
+        {
             "id": 1550,
             "kind": "node",
             "label": "Quadratic Equations",
             "notes": "",
             "desc": "",
             "link": "",
-            "tags": ["org:apple","org:google"],
+            "tags": [
+                "org:apple",
+                "org:google"
+            ],
             "parent": 1,
             "pos": {
                 "x": 150,
                 "y": 831
             }
-            },
-            {
+        },
+        {
             "id": 17122,
             "kind": "edge",
             "label": "",
@@ -108,9 +122,9 @@
             "weight": 5,
             "fromId": 5699,
             "toId": 10451,
-            "strokeType": "dotted",
-            },
-            {
+            "strokeType": "dotted"
+        },
+        {
             "id": 5699,
             "kind": "node",
             "label": "Arithmetic Sequences",
@@ -123,8 +137,8 @@
                 "x": 465,
                 "y": 274
             }
-            },
-            {
+        },
+        {
             "id": 6916,
             "kind": "node",
             "label": "Factorizing",
@@ -137,8 +151,8 @@
                 "x": 48,
                 "y": 450
             }
-            },
-            {
+        },
+        {
             "id": 10451,
             "kind": "node",
             "label": "Proof by Induction",
@@ -151,8 +165,8 @@
                 "x": 519,
                 "y": 474
             }
-            },
-            {
+        },
+        {
             "id": 3283,
             "kind": "node",
             "label": "Prime Numbers",
@@ -166,82 +180,50 @@
                 "x": 25,
                 "y": 450
             }
-            }
-        ],
-        "extra": [
-            {
-                "kind": "note",
-                pos: {x:200, y:250},
-                value: "hello"
-            }
-        ],
-        "grid": "false",
-        "theme": {
-            "name": "classic",
-            "bgfill": "#f3f3f3",
-            "grid": false,
-            "font": "Balsamiq Sans",
-            "nodefill": "#fbe6a3",
-            "nodelabelstroke": "black",
-            "nodeborder": "black",
-            "edgestroke": "#4277dd",
-            "edgeshape": "curved",
-            "edgestroketype": "solid",
-            "badges": ["✅", "❌", "⚡", "👎", "👍"]
-        },
-        "debugger": false,
-        "sidepanel": true,
-        "jsonview": true,
-        "contextmenu": true,
-        "customjson": false,
-        "exportcytoscape": true,
-        "exportsvg": false,
-        "viewBox": [0,0,1000,1000]
-        };
-
-    let highlighted = [];
-
-    function getTagGroups(graph){
-        // get unique tags
-        let tags = graph.items.map(i => i.tags).flat().filter((value, index, self) => self.indexOf(value) === index); 
-        let groups = tags.reduce((acc, tag)=> {
-            let [kind,name] = tag.split(":");
-            acc[kind] = acc[kind] ?? [];
-            acc[kind].push(name);
-            return acc;
-        }, {});
-        return Object.entries(groups);
-    }
-
-    $: tagGroups = getTagGroups(graph);
-</script>
-
-<MapEditor unsizedGraph={graph} {highlighted} on:graphchanged="{e => {graph = e.detail;}}"/>
-
-<section>
-<sl-select 
-    placeholder="Highlight by Tag"
-    clearable pill
-    on:sl-change={e => highlighted = graph.items.filter(i => i.kind === 'node' && i.tags.includes(e.target.value)).map(i => i.id)}
->
-        {#each tagGroups as group (group[0])}
-            <sl-menu-label>{group[0]}</sl-menu-label>
-            {#each group[1] as tag}
-                <sl-menu-item value={`${group[0]}:${tag}`}>{tag}</sl-menu-item>
-            {/each}
-            <sl-divider></sl-divider>
-        {/each}
-</sl-select>
-</section>
-
-<style>
-    section {
-        position: fixed;
-        top: 20px;
-        left: 20px;
-    }
-
-    sl-select {
-        width: 200px;
-    }
-</style>
+        }
+    ],
+    "extra": [
+        {
+            "kind": "note",
+            "pos": {
+                "x": 200,
+                "y": 250
+            },
+            "value": "hello"
+        }
+    ],
+    "grid": "false",
+    "theme": {
+        "name": "classic",
+        "bgfill": "#f3f3f3",
+        "grid": false,
+        "font": "Balsamiq Sans",
+        "nodefill": "#fbe6a3",
+        "nodelabelstroke": "black",
+        "nodeborder": "black",
+        "edgestroke": "#4277dd",
+        "edgeshape": "curved",
+        "edgestroketype": "solid",
+        "badges": [
+            "✅",
+            "❌",
+            "⚡",
+            "👎",
+            "👍"
+        ]
+    },
+    "debugger": false,
+    "sidepanel": true,
+    "jsondownload": true,
+    "jsonimportexport": true,
+    "contextmenu": true,
+    "customjson": false,
+    "exportcytoscape": false,
+    "exportsvg": false,
+    "viewBox": [
+        0,
+        0,
+        1000,
+        1000
+    ]
+}

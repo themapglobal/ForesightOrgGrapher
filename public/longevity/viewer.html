@@ -4,7 +4,7 @@
 	<meta charset='utf-8'>
 	<meta name='viewport' content='width=device-width,initial-scale=1'>
 
-	<title>Grapher</title>
+	<title>Longevity Tech Tree - Viewer</title>
 
 	<link rel='icon' type='image/png' href='/favicon.png'>
 
@@ -19,8 +19,10 @@
 	<script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.0.0-beta.76/dist/shoelace.js"></script>
 
 	<script>
-		window.graphjsonpath = '/longevity/graph.json';
-        window.overrideOptions = {};
+		window.graphjsonpath = 'graph.json';
+        window.overrideOptions = {
+			"jsonimportexport": false
+		};
 	</script>
 
 	<script defer src='/build/bundle.js'></script>

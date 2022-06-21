@@ -1,7 +1,11 @@
-import App from './App.svelte';
+import GraphEditor from './GraphEditor.svelte';
 
-var app = new App({
-	target: document.body
+var app = new GraphEditor({
+	target: document.body,
+	props: {
+		graphjsonpath: window.graphjsonpath,
+		overrideOptions: (window.overrideOptions || {})
+	}
 });
 
 export default app;
