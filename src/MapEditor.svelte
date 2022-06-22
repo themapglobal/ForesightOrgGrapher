@@ -217,7 +217,18 @@
         }, {});
         return Object.entries(groups);
     }
-    
+
+  // function for upload and displaying the json file 
+	const uploadFile = (e) => {
+		let jsonFile = e.target.files[0];
+			let reader = new FileReader();
+			reader.readAsText(jsonFile);
+			reader.onload = e => {
+				
+				dispatch('graphchanged', JSON.parse(e.target.result))
+			}
+			//console.log(reader)
+	}
 </script>
 
 <div class="container">
@@ -267,42 +278,60 @@
 
 {#if graph.sidepanel}
 <section class="sidepanel">
-	{#if graph.jsondownload}
-	<sl-button variant="default" href="data:text/json;charset=utf-8,{encodeURIComponent(exportJson(graph))}" download="graph.json">
-		<sl-icon slot="prefix" name="download"></sl-icon>
-		Download file
-	</sl-button>
-	{/if}
+	<div class="btn-group">
+		<sl-button variant="default" href="data:text/json;charset=utf-8,{encodeURIComponent(exportJson(graph))}" download="graph.json">
+			<sl-icon slot="prefix" name="download"></sl-icon>
+			Download file
+		</sl-button>
+		
+			<label for="upload" class="custom-file-upload">
+				<svg xmlns="http://www.w3.org/2000/svg" class="upSvg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+				</svg> Load File
+			</label>
+			<input type="file" name="upload" id="upload" accept=".json"
+			on:change="{e => uploadFile(e) }"/>
 
+		<!-- svelte-ignore component-name-lowercase -->
+			<select value={graph.theme.name} on:change="{(e) => switchTheme(e.target.value)}" class="theme" >
+				<option value="classic">Theme: Classic</option>
+				<option value="elegant">Theme: Elegant</option>
+				<option value="foresight">Theme: Foresight</option>
+			</select>
+			
+	</div>
+	
 	<!-- TODO:  upload file instead of jsonimportexport -->
+	<!-- {#if graph.jsonupload}
+		<label for="upload" class="upload">
+			<input type="file" size='30' name="upload" id="file-upload" accept=".json"
+			on:change="{e => uploadFile(e) }">
+			<svg xmlns="http://www.w3.org/2000/svg" style="width: 15px; height: 15px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+				<path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+			</svg>
+			Load File
+		</label>
+		
+	{/if} -->
+	
+	<div class="editor">
+		{#if graph.exportcytoscape}
+		<button on:click={(e) => showCytoscape = true}>View Cytoscape JSON</button>
+		{/if}
 
-	{#if graph.jsonimportexport}
-	<button on:click={(e) => showJson = true}>View/Modify JSON</button>
-	{/if}
+		{#if graph.exportsvg}
+		<button on:click={(e) => showSvgExport = true}>Export as SVG</button>
+		{/if}
 
-	{#if graph.exportcytoscape}
-	<button on:click={(e) => showCytoscape = true}>View Cytoscape JSON</button>
-	{/if}
+		<ItemEditor {selectedItem} {graph} on:graphchanged />
 
-	{#if graph.exportsvg}
-	<button on:click={(e) => showSvgExport = true}>Export as SVG</button>
-	{/if}
-
-	<!-- svelte-ignore component-name-lowercase -->
-	<select value={graph.theme.name} on:change="{(e) => switchTheme(e.target.value)}">
-		<option value="classic">Switch theme to: Classic</option>
-		<option value="elegant">Switch theme to: Elegant</option>
-		<option value="foresight">Switch theme to: Foresight</option>
-	</select>
-
-	<ItemEditor {selectedItem} {graph} on:graphchanged />
-
-	{#if graph.debugger}
-	<p>Debugger:
-		selected = {selectedItem?.label}
-		dragging = from {JSON.stringify(draggingFrom)} till {JSON.stringify(currentMouse)}
-	</p>
-	{/if}
+		{#if graph.debugger}
+		<p>Debugger:
+			selected = {selectedItem?.label}
+			dragging = from {JSON.stringify(draggingFrom)} till {JSON.stringify(currentMouse)}
+		</p>
+		{/if}
+	</div>	
 </section>
 {/if}
 
@@ -318,19 +347,6 @@
   <sl-menu-item value="createnode" on:click={createNode}>Create new node</sl-menu-item>
   {/if}
 </sl-menu>
-{/if}
-
-<!-- textarea for importing/exporting json -->
-{#if graph.jsonimportexport}
-
-<sl-dialog style="--width: 35vw;" open={showJson} label="View or Modify JSON" class="dialog-overview" on:sl-hide={(e) => showJson = false}>
-  <textarea 
-  	cols="54" rows="20" autofocus
-	on:input={(e) => { dispatch('graphchanged', JSON.parse(e.target.value));}}
-  >{exportJson(graph)}</textarea>
-  
-  <sl-button on:click={(e) => showJson = false} slot="footer" variant="primary">Close</sl-button>
-</sl-dialog>
 {/if}
 
 {#if graph.exportcytoscape}
@@ -384,19 +400,21 @@
 		height: 100%;
 		background-color: var(--color);
 	}
-	
 	section.sidepanel {
 		position: absolute;
 		right: 0px;
 		top: 0px;
-		width: 400px;
-		height: 100%;
 		z-index: 10;
-		background-color: white;
-		padding: 0 10px;
+		padding: 0 10px;	
+		background-color: #e3e3e3;
 		border-left: 3px solid #666;
+		border-bottom: 3px solid #666;
+		/* height: 100%; */
 	}
-
+	.editor{
+	text-align: center;
+	padding-bottom: 20px;
+	}
 	sl-menu {
 		position: fixed;
 		z-index: 20;
@@ -416,4 +434,48 @@
     section.tagfilter sl-select {
         width: 200px;
     }
+	
+	
+	input[type="file"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    border: 0;
+}
+.custom-file-upload, .theme{
+		border: 1px solid #ccc;
+    padding-top: 8px;
+		padding-bottom: 8px;
+    cursor: pointer;
+		font-weight: 500;
+		font-size: 14px;
+		border-radius: 5px;
+		display: inline-flex;
+		justify-items: center;
+		align-items: center;
+		gap: 10px;
+		width: 145.66px;
+		background-color: white;
+}
+
+.custom-file-upload:hover, .theme:hover{
+	background-color: #f0f9ff;
+	border-color: #38bdf8;
+}
+.btn-group{
+	display: flex;	
+	flex-direction: column;
+	align-items: end;
+	gap: 5px;
+	margin-top: 5px;
+}
+.upSvg{
+	width: 16px; 
+	height: 16px;
+	padding-left: 10px;
+}
 </style>

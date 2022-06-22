@@ -215,7 +215,7 @@
     "debugger": false,
     "sidepanel": true,
     "jsondownload": true,
-    "jsonimportexport": true,
+    "jsonupload": true,
     "contextmenu": true,
     "customjson": false,
     "exportcytoscape": false,

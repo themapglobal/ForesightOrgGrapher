@@ -244,6 +244,7 @@ export function exportJson(graph){
                 id: item.id,
                 kind: 'node',
                 label: item.label,
+                notes: item.notes,
                 desc: item.desc,
                 link: item.link,
                 tags: item.tags,
@@ -257,6 +258,7 @@ export function exportJson(graph){
                 id: item.id,
                 kind: 'edge',
                 label: item.label,
+                notes: item.notes,
                 desc: item.desc,
                 link: item.link,
                 tags: item.tags,
@@ -277,6 +279,8 @@ export function exportJson(graph){
     data.debugger = graph.debugger;
     data.sidepanel = graph.sidepanel;
     data.jsonview = graph.jsonview;
+    data.jsondownload = graph.jsondownload;
+    data.jsonupload = graph.jsonupload;
     data.contextmenu = graph.contextmenu;
     data.customjson = graph.customjson;
     data.exportcytoscape = graph.exportcytoscape;
