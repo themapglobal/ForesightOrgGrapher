@@ -37,7 +37,7 @@
 		x={item.pos.x - 0.5 * item.label.length * 10 + 5} 
 		y={item.pos.y - item.height/2 + 20} 
 		font-family={theme.font}
-		font-weight={(item.children || []).length > 0 ? '700' : '300'}
+		font-weight={(item.children.length > 0) || (item.notes.length > 0)  ? '700' : '300'}
 		font-size={item.fontSize} 
 		fill={item.labelcolor || theme.nodelabelstroke} 
 		on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, rawEvent: e})}

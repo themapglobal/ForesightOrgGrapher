@@ -32,11 +32,6 @@
         };
 	}
 
-    function getLabelDirection(graph){
-        let angle = Math.atan2(toNode.pos.y - fromNode.pos.y, toNode.pos.x - fromNode.pos.x) * 180 / Math.PI;
-
-        return (angle > 90 || angle < -120) ? 'right' : 'left';
-    }
 
     function handleControlClicked(e){
         let control = e.target.getAttribute('data-handle');
@@ -58,6 +53,17 @@
        else return false;
    }
 
+//    textpath angle  
+   function getTransformLabel(fromNode, toNode){
+    let midPointx = (fromNode.pos.x + toNode.pos.x) /2;
+    let midPointy = (fromNode.pos.y + toNode.pos.y) /2;
+    let angle = Math.atan2(toNode.pos.y - fromNode.pos.y, toNode.pos.x - fromNode.pos.x) * 180 / Math.PI;
+    if(angle < -120 || angle > 120) return `translate(0, -6) rotate(180, ${midPointx}, ${midPointy})`;
+    else return 'translate(0, -6) rotate(0)'
+   }
+
+   $: labelTransform = fromNode && toNode && getTransformLabel(fromNode, toNode)
+       
 </script>
 
 <g>
@@ -66,11 +72,23 @@
         fill="none"
         stroke={isSelected ? 'blue' : (item.stroke || graph.theme.edgestroke)}
         stroke-width=5
+        class="edgePath"
+        id={`edgepathmain${item.id}`}
         stroke-dasharray={getDashArray(item.strokeType || graph.theme.edgestroketype)}
         marker-end={(item.directed && false) ? "url(#arrow)" : false}
         on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, rawEvent: e})}
         on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item, rawEvent: e})}
-        on:click|stopPropagation
+        on:click|stopPropagation    
+    >
+    </path>
+    <!-- this path is created to add offset for label and arrow -->
+    <path 
+        d={getEdgePath(graph)}
+        fill="none"
+        stroke="none"
+        stroke-width=5
+        
+        transform='{labelTransform}'
         id={`edgepath${item.id}`}
     >
     </path>
@@ -88,27 +106,29 @@
                 lengthAdjust="spacingAndGlyphs" 
                 font-family="Verdana"
                 font-size=20 
+            
                 fill={isSelected ? 'blue' : (item.stroke || graph.theme.edgestroke)}
                 stroke={isSelected ? 'blue' : (item.stroke || graph.theme.edgestroke)}
                 on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, rawEvent: e})}
                 on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item, rawEvent: e})}
                 on:click|stopPropagation
-                side={getLabelDirection(graph)}>
+                >
                     {item.label}
             </textPath>
             {#if item.directed}
             <textPath 
-                href={`#edgepath${item.id}`}
+                href={`#edgepathmain${item.id}`}
                 startOffset="20%" 
                 lengthAdjust="spacingAndGlyphs" 
                 font-family="Verdana"
                 font-size=20 
+                start
                 fill={isSelected ? 'blue' : (item.stroke || graph.theme.edgestroke)}
                 stroke={isSelected ? 'blue' : (item.stroke || graph.theme.edgestroke)}
                 on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, rawEvent: e})}
                 on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item, rawEvent: e})}
                 on:click|stopPropagation
-                side="left">
+                >
                 ----&gt;
             </textPath>
             {/if}
@@ -145,7 +165,7 @@
 		stroke: blue;
 	}
 	
-	g:hover path {
+	g:hover path.edgePath {
 		stroke: blue;
 	}
 	
