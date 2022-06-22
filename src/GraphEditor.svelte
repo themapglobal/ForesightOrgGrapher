@@ -41,16 +41,15 @@
 		graphjsonpath && fetch(graphjsonpath)
 		.then(r => r.json())
 		.then(data => {
-			console.log('fetched')
 			graph = layout(Object.assign(data, overrideOptions))
 		});
 	})
 
     function reRender(){
-		console.log("rerendering");
 		svgElement = svgElement;
 		selectedItem = selectedItem;
 		graph = layout(graph);
+		console.log('rerender()')
 	}
 
     function handleItemMouseDown(e){
@@ -127,6 +126,7 @@
 	function handleContextMenu(e){
 		if(!graph.contextmenu) return;
 		contextMenuPosition = [e.clientX, e.clientY];
+		console.log('contextmenu')
 	}
 
 	function handleCreateNode(e){
@@ -158,8 +158,7 @@
 		// draw selected edge on the top (at the end)
 		if(selectedItem?.kind === 'edge')
 			return [
-				...graph.items.sort((a,b) => a.level - b.level)
-				.filter(i => i.id !== selectedItem.id), 
+				...graph.items.sort((a,b) => a.level - b.level).filter(i => i.id !== selectedItem.id), 
 				...graph.items.filter(i => i.id === selectedItem.id)];
 		else 
 			return graph.items.sort((a,b) => a.level - b.level);
@@ -174,10 +173,14 @@
 		if(!graph) return Object.entries({});
         // get unique tags
         let tags = graph.items.map(i => i.tags).flat().filter((value, index, self) => self.indexOf(value) === index); 
+		// console.log(tags);
         let groups = tags.reduce((acc, tag)=> {
             let [kind,name] = tag.split(":");
-            acc[kind] = acc[kind] ?? [];
-            acc[kind].push(name);
+            
+			let group = tag.split(":").length > 1 ? tag.split(":")[0] : 'ungrouped';
+			acc[group] = acc[group] ?? [];
+			acc[group].push({label: tag.split(":").reverse()[0], value: tag});
+
             return acc;
         }, {});
         return Object.entries(groups);
@@ -276,7 +279,7 @@
 </section>
 
 {#if contextMenuPosition}
-<sl-menu style={`left: ${contextMenuPosition[0]}px; top: ${contextMenuPosition[1]}px;`}>
+<sl-menu class="contextmenu" style={`left: ${contextMenuPosition[0]}px; top: ${contextMenuPosition[1]}px;`}>
   {#if selectedItem}
 	{#if selectedItem.kind === 'node'}
 		<sl-menu-item value="createchildnode" on:click={(e) => createChildNode(e, selectedItem)}>Create child node</sl-menu-item>
@@ -332,8 +335,8 @@
 	>
 			{#each tagGroups as group (group[0])}
 				<sl-menu-label>{group[0]}</sl-menu-label>
-				{#each group[1] as tag}
-					<sl-menu-item value={`${group[0]}:${tag}`}>{tag}</sl-menu-item>
+				{#each group[1] as tag (tag.value)}
+					<sl-menu-item value={tag.value}>{tag.label}</sl-menu-item>
 				{/each}
 				<sl-divider></sl-divider>
 			{/each}
@@ -375,5 +378,11 @@
     section.globalmenu sl-select {
         width: 200px;
     }
+
+	sl-menu.contextmenu {
+		position: fixed;
+		z-index: 20;
+		max-width: 380px;
+	}
 
 </style>
