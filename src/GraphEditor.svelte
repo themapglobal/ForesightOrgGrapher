@@ -49,7 +49,7 @@
 		svgElement = svgElement;
 		selectedItem = selectedItem;
 		graph = layout(graph);
-		console.log('rerender()')
+		// console.log('rerender()')
 	}
 
     function handleItemMouseDown(e){
@@ -275,7 +275,7 @@
 
 
 <section class="sidepanel">
-	<ItemEditor {selectedItem} {graph} on:graphchanged={e => graph = e.detail} />
+	<ItemEditor {selectedItem} {graph} on:graphchanged={e => graph = layout(e.detail)} />
 </section>
 
 {#if contextMenuPosition}
