@@ -244,11 +244,25 @@
 			}
 		} else if (value === 'openfile'){
 			console.log(value)
+			let fileinput = document.getElementsByClassName('fileupload')[0];
+			console.log({fileinput})
+			fileinput.click();
 		} else if (value === 'savefile') {
-			downloadFile(exportJson(graph), 'graph.json')
+			downloadFile(exportJson(graph), 'mynetwork.graph')
 		}
 	}
     
+  // function for upload and displaying the json file 
+	const uploadFile = (e) => {
+		let jsonFile = e.target.files[0];
+			let reader = new FileReader();
+			reader.readAsText(jsonFile);
+			reader.onload = e => {
+				
+				dispatch('graphchanged', JSON.parse(e.target.result))
+			}
+			//console.log(reader)
+	}
 </script>
 
 <div class="container">
@@ -296,40 +310,10 @@
   </g>
 </svg>
 
-{#if graph.sidepanel}
+
 <section class="sidepanel">
-	{#if graph.jsondownload}
-	<sl-button variant="default" href="data:text/json;charset=utf-8,{encodeURIComponent(exportJson(graph))}" download="graph.json">
-		<sl-icon slot="prefix" name="download"></sl-icon>
-		Download file
-	</sl-button>
-	{/if}
-
-	<!-- TODO:  upload file instead of jsonimportexport -->
-
-	{#if graph.jsonimportexport}
-	<button on:click={(e) => showJson = true}>View/Modify JSON</button>
-	{/if}
-
-	{#if graph.exportcytoscape}
-	<button on:click={(e) => showCytoscape = true}>View Cytoscape JSON</button>
-	{/if}
-
-	{#if graph.exportsvg}
-	<button on:click={(e) => showSvgExport = true}>Export as SVG</button>
-	{/if}
-
-	<!-- svelte-ignore component-name-lowercase -->
-	<select value={graph.theme.name} on:change="{(e) => switchTheme(e.target.value)}">
-		<option value="classic">Switch theme to: Classic</option>
-		<option value="elegant">Switch theme to: Elegant</option>
-		<option value="foresight">Switch theme to: Foresight</option>
-	</select>
-
 	<ItemEditor {selectedItem} {graph} on:graphchanged />
-
 </section>
-{/if}
 
 {#if contextMenuPosition}
 <sl-menu style={`left: ${contextMenuPosition[0]}px; top: ${contextMenuPosition[1]}px;`}>
@@ -345,44 +329,11 @@
 </sl-menu>
 {/if}
 
-<!-- textarea for importing/exporting json -->
-{#if graph.jsonimportexport}
 
-<sl-dialog style="--width: 35vw;" open={showJson} label="View or Modify JSON" class="dialog-overview" on:sl-hide={(e) => showJson = false}>
-  <textarea 
-  	cols="54" rows="20" autofocus
-	on:input={(e) => { dispatch('graphchanged', JSON.parse(e.target.value));}}
-  >{exportJson(graph)}</textarea>
-  
-  <sl-button on:click={(e) => showJson = false} slot="footer" variant="primary">Close</sl-button>
-</sl-dialog>
-{/if}
-
-{#if graph.exportcytoscape}
-<!-- textarea for exporting Cytoscape compatible json -->
-<sl-dialog style="--width: 35vw;" open={showCytoscape} label="View Cytoscape-compatible JSON" class="dialog-overview" on:sl-hide={(e) => showCytoscape = false}>
-  <textarea 
-  	cols="54" rows="20" autofocus
-  >{exportCytoscape(graph)}</textarea>
-  
-  <sl-button on:click={(e) => showCytoscape = false} slot="footer" variant="primary">Close</sl-button>
-</sl-dialog>
-{/if}
-
-{#if graph.exportsvg}
-<!-- textarea for SVG export -->
-<sl-dialog style="--width: 35vw;" open={showSvgExport} label="Export SVG" class="dialog-overview" on:sl-hide={(e) => showSvgExport = false}>
-	<textarea 
-		cols="54" rows="20" autofocus
-	>{svgElement?.outerHTML}</textarea>
-	
-	<sl-button on:click={(e) => showSvgExport = false} slot="footer" variant="primary">Close</sl-button>
-  </sl-dialog>
-{/if}
 
 </div>
 
-<section class="tagfilter">
+<section class="globalmenu">
 <sl-button-group>
 	<sl-dropdown on:sl-select={handleMenu}>
 		<sl-button slot="trigger" caret>
@@ -390,18 +341,22 @@
 			<sl-icon slot="prefix" name="list"></sl-icon>
 		</sl-button>
 		<sl-menu>
+			{#if graph.jsonupload}
 		  	<sl-menu-item value="openfile">
-				Load File
+				Load File...
 				<sl-icon slot="prefix" name="folder2-open"></sl-icon>
 			</sl-menu-item>
+			{/if}
+			{#if graph.jsondownload}
 		  	<sl-menu-item value="savefile">
 				Save as file...
 				<sl-icon slot="prefix" name="download"></sl-icon>
 			</sl-menu-item>
+			{/if}
 			<sl-divider></sl-divider>
-			<sl-menu-label>Export as ...</sl-menu-label>
-			<sl-menu-item value="export.svg">SVG</sl-menu-item>
-			<sl-menu-item value="export.cytoscape">Cytoscape JSON</sl-menu-item>
+			<sl-menu-label>Export as:.</sl-menu-label>
+			{#if graph.exportsvg}<sl-menu-item value="export.svg">SVG</sl-menu-item>{/if}
+			{#if graph.exportcytoscape}<sl-menu-item value="export.cytoscape">Cytoscape JSON</sl-menu-item>{/if}
 			<sl-divider></sl-divider>
 			<sl-menu-label>Switch Theme To</sl-menu-label>
 			<sl-menu-item value="theme.classic" checked={graph.theme.name === 'classic'}>Classic</sl-menu-item>
@@ -409,6 +364,8 @@
 			<sl-menu-item value="theme.foresight" checked={graph.theme.name === 'foresight'}>Foresight</sl-menu-item>
 		</sl-menu>
 	</sl-dropdown>
+
+	<input class="fileupload" style="display: none;" type="file" name="upload" id="upload" accept=".graph" on:change="{e => uploadFile(e) }"/>
 
 	<sl-select 
 		placeholder="Highlight by Tag"
@@ -437,36 +394,27 @@
 		height: 100%;
 		background-color: var(--color);
 	}
-	
 	section.sidepanel {
 		position: absolute;
 		right: 0px;
 		top: 0px;
-		width: 400px;
-		height: 100%;
 		z-index: 10;
-		background-color: white;
-		padding: 0 10px;
+		text-align: center;
+		padding: 0 10px;	
+		background-color: #e3e3e3;
 		border-left: 3px solid #666;
+		border-bottom: 3px solid #666;
+		/* height: 100%; */
 	}
 
-	sl-menu {
-		position: fixed;
-		z-index: 20;
-		max-width: 380px;
-	}
-
-	sl-dialog textarea {
-		resize: none;
-	}
-
-	section.tagfilter {
+	section.globalmenu {
         position: fixed;
         top: 20px;
         left: 20px;
     }
 
-    section.tagfilter sl-select {
+    section.globalmenu sl-select {
         width: 200px;
     }
+
 </style>
