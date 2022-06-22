@@ -11,6 +11,7 @@ export function prepareGraph(graph){
             console.error(`Got null position for ${item.label}`);
             item.pos = {x: (Math.random() * 600), y: (Math.random() * 600)}
         }
+        item.notes = item.notes ?? '';
         if(!item.hasOwnProperty('parent')){
             item.parent = null
         }

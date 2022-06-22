@@ -32,7 +32,6 @@
 
 </script>
 
-{#if selectedItem}
 	<h1>{selectedItem.label}</h1>
 	<!-- <p>{selectedItem.kind === 'edge' ? `from ${getGraphNode(selectedItem.fromId, graph)?.label} to ${getGraphNode(selectedItem.toId, graph)?.label}` : `${selectedItem.children.length} children`}</p> -->
 
@@ -47,27 +46,28 @@
 	<p class="detachBtn"><button on:click={detachFromParent}>Detach from &quot;{getGraphNode(selectedItem.parent, graph).label}&quot;</button></p>
 	{/if}
 
-	<div class="node-panal">
+	<div class="node-panel">
 		<sl-input 
-			label="id" type='number' size="small"
+			label="ID" type='number' size="small"
 			value={selectedItem.id} 
 			on:input={e => handleInputChange(e, 'number_id')}>
 		</sl-input>
 
-		{#if selectedItem.kind === 'node'}
+		
 		<sl-input 
 			label="Label" type='text' size="small"
 			value={selectedItem.label} 
 			on:input={e => handleInputChange(e, 'text_label')}>
 		</sl-input>	
-		{/if}
 
+		{#if selectedItem.kind === 'node'}
 		<sl-textarea 
-			label="Notes" placeholder="Notes..."
+			label="Notes" placeholder="Notes (these will be shown in the graph)..."
 			size="small"
 			on:sl-input={e => handleInputChange(e, 'text_notes')}
 			value={selectedItem.notes}> 
 		</sl-textarea>
+		{/if}
 
 		<sl-textarea 
 			label="Description" placeholder="Desc..."
@@ -85,9 +85,8 @@
 		<TagsInput tags={selectedItem.tags} on:tagschanged={e => { selectedItem.tags = e.detail.value; dispatch('graphchanged', graph) }}/>
 		
 		{#if selectedItem.kind === 'node'}
-
 		<sl-select 
-			label="badge" clearable value={selectedItem.badge} 
+			label="Badge" clearable value={selectedItem.badge} 
 			placeholder="Select badge" 
 			on:sl-change={e => handleInputChange(e, 'text_badge')}>
 			{#each graph.theme.badges as badge}
@@ -190,13 +189,12 @@
 		{/if}
 
 	</div>
-{/if}
 
 <style>
 	h1, .detachBtn{
 		text-align: center;
 	}
-	.node-panal{
+	.node-panel{
 		width: 80%; 
 		margin:0 auto;
 		display: flex;

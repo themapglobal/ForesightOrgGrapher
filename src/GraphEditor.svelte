@@ -280,9 +280,11 @@
 </svg>
 
 
+{#if selectedItem}
 <section class="sidepanel">
 	<ItemEditor {selectedItem} {graph} on:graphchanged={e => graph = layout(e.detail)} />
 </section>
+{/if}
 
 {#if contextMenuPosition}
 <sl-menu class="contextmenu" style={`left: ${contextMenuPosition[0]}px; top: ${contextMenuPosition[1]}px;`}>
@@ -347,6 +349,7 @@
 			{/each}
 	</sl-select>
 	{/if}
+
 </sl-button-group>
 </section>
 {/if}
@@ -366,10 +369,10 @@
 	section.sidepanel {
 		position: absolute;
 		right: 0px;
-		top: 0px;
+		top: 50px;
 		z-index: 10;
 		background-color: #e3e3e3;
-		border-left: 3px solid #666;
+		border: 3px solid #666;
 		
 		width: 300px;
 		/* height: 100%; */

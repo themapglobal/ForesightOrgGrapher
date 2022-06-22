@@ -21,5 +21,5 @@ Beta:
 - (Rethink) When printed, show QR codes for nodes' links
 
 Firefox bugs:
-- File open dialog does not show.
+- File open dialog does not show reliably.
 - Unicode emojis are not displayed in SVG `<text>`
