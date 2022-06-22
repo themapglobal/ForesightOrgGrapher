@@ -156,7 +156,7 @@
 	}
 
 	function createChildNode(e, item){
-		console.log("createChildNode", item);
+		// console.log("createChildNode", item);
 		createGraphChildNode(e, graph, item, svgElement);
 		reRender();
 		contextMenuPosition = null;
