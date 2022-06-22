@@ -338,6 +338,7 @@
 
 	<input class="fileupload" style="display: none;" type="file" name="upload" id="upload" accept=".graph" on:change="{e => uploadFile(e) }"/>
 
+	{#if false}
 	<sl-select 
 		placeholder="Highlight by Tag"
 		clearable 
@@ -351,6 +352,7 @@
 				<sl-divider></sl-divider>
 			{/each}
 	</sl-select>
+	{/if}
 </sl-button-group>
 </section>
 {/if}
