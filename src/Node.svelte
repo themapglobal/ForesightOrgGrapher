@@ -51,7 +51,7 @@ import { style } from "d3-selection";
 	{#if item.notes}	
 	<foreignObject 
 		x={item.pos.x - notesWidth/2 + 10} 
-		y={item.pos.y - item.height/2 + 10} 
+		y={item.pos.y - item.height/2 + 30} 
 		font-family={theme.font}
 		font-weight=300
 		font-size={item.fontSize}	
@@ -60,7 +60,7 @@ import { style } from "d3-selection";
 		on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
 		on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item})}
 		on:click|stopPropagation>
-			<div style="padding:15px; margin-top:10px">
+			<div class="foreign-obj-div">
 				{item.notes}
 			</div>	
 	</foreignObject>
@@ -120,6 +120,7 @@ import { style } from "d3-selection";
 		filter: drop-shadow(3px 5px 2px rgb(204 204 204 / 0.4));
 		cursor: pointer;
 	}
-
-
+	.foreign-obj-div{
+		width: 85%;
+	}
 </style>
