@@ -44,7 +44,7 @@
 	{/if}
 
 	{#if selectedItem.kind === 'node' && getGraphNode(selectedItem.parent, graph)}
-	<button on:click={detachFromParent}>Detach from &quot;{getGraphNode(selectedItem.parent, graph).label}&quot;</button>
+	<p><button on:click={detachFromParent}>Detach from &quot;{getGraphNode(selectedItem.parent, graph).label}&quot;</button></p>
 	{/if}
 
 	<div class="table">
@@ -208,6 +208,7 @@
 		display: flex;
 		flex-direction: column;
 		margin-top: 30px;
+		margin-bottom: 20px;
 	}
 
 	div.row { 

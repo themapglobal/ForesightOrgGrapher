@@ -94,7 +94,7 @@ function decideNodeLevel(item, graph, currentLevel){
 }
 
 export function layout(graph){
-    // console.log("layout");
+    if(!graph) return null;
     prepareGraph(graph);
     // resize top nodes only because they will recurse
     graph.items.filter(i => (i.kind === 'node' && !i.parent)).forEach(item => {

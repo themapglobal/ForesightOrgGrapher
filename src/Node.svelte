@@ -64,7 +64,7 @@ import { style } from "d3-selection";
 				{item.notes}
 			</div>	
 	</foreignObject>
-{/if}
+	{/if}
 
 	{#if isSelected}
 	  {#each [[1,0],[0,1],[-1,0],[0,-1]] as control}

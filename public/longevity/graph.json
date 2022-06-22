@@ -4,7 +4,7 @@
             "id": 2,
             "kind": "node",
             "label": "Arithmetic",
-            "notes": "",
+            "notes": "some notes here",
             "desc": "",
             "link": "",
             "tags": [
@@ -20,7 +20,7 @@
             "id": 1,
             "kind": "node",
             "label": "Algebra",
-            "notes": "",
+            "notes": "other notes",
             "desc": "",
             "link": "",
             "tags": [
@@ -67,7 +67,7 @@
             "id": 3,
             "kind": "node",
             "label": "Subtraction",
-            "notes": "",
+            "notes": "dangal",
             "desc": "",
             "link": "",
             "tags": [],
