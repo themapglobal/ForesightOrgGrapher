@@ -232,20 +232,6 @@
 		flex-direction: column;
 	}
 
-	/* div.row input[type=text], div.row input[type=number], div.row input[type=url] {
-		width: 280px;
-	}
-
-	div.row input[type=checkbox] {
-		text-align: left;
-		height: 34px;
-	}
-
-	div.row sl-textarea {
-		width: 280px;
-		margin-bottom: 10px;
-	} */
-
 	p.itemdesc {
 		font-size: 14px;
 		color: #888;

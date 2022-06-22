@@ -199,7 +199,7 @@
     "theme": {
         "name": "classic",
         "bgfill": "#f3f3f3",
-        "grid": false,
+        "grid": "cartesian",
         "font": "Balsamiq Sans",
         "nodefill": "#fbe6a3",
         "nodelabelstroke": "black",

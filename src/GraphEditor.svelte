@@ -109,7 +109,16 @@
 		if(e.buttons != 1) return; // only process left-click
 		
 		// move selectedItem along with all its children
-		moveGraphNode(selectedItem, graph, (currentMouse.x - draggingFrom.x), (currentMouse.y - draggingFrom.y))
+		// transform into svg coordinates to handle dragging in zoomed-in/zoomed-out mode correctly
+		let pt1 = svgElement.createSVGPoint();
+		pt1.x = draggingFrom.x; pt1.y = draggingFrom.y;
+		let svgPt1 = pt1.matrixTransform(topGroupElem.getCTM().inverse());
+
+		let pt2 = svgElement.createSVGPoint();
+		pt2.x = currentMouse.x; pt2.y = currentMouse.y;
+		let svgPt2 = pt2.matrixTransform(topGroupElem.getCTM().inverse());
+
+		moveGraphNode(selectedItem, graph, (svgPt2.x - svgPt1.x), (svgPt2.y - svgPt1.y))
 
 		// TODO: if moved on top of another node, create parent-child relationship
 
@@ -329,6 +338,7 @@
 
 	<input class="fileupload" style="display: none;" type="file" name="upload" id="upload" accept=".graph" on:change="{e => uploadFile(e) }"/>
 
+	{#if false}
 	<sl-select 
 		placeholder="Highlight by Tag"
 		clearable 
@@ -342,6 +352,7 @@
 				<sl-divider></sl-divider>
 			{/each}
 	</sl-select>
+	{/if}
 </sl-button-group>
 </section>
 {/if}
