@@ -55,7 +55,7 @@
 	}
 
     function handleItemMouseDown(e){
-        console.log('handleItemMouseDown', e.detail.rawEvent.buttons);
+        // console.log('handleItemMouseDown', e.detail.rawEvent.buttons);
 
 		selectedItem = e.detail.source;
 
@@ -147,7 +147,7 @@
 	}
 
 	function createChildNode(e, item){
-		console.log("createChildNode", item);
+		// console.log("createChildNode", item);
 		createGraphChildNode(e, graph, item, svgElement);
 		reRender();
 		contextMenuPosition = null;
@@ -361,13 +361,12 @@
 	section.sidepanel {
 		position: absolute;
 		right: 0px;
-		top: 50px;
+		top: 0px;
 		z-index: 10;
-		text-align: center;	
 		background-color: #e3e3e3;
-		border: 3px solid #666;
-		border-radius: 6px;
-		max-width: 400px;
+		border-left: 3px solid #666;
+		
+		width: 300px;
 		/* height: 100%; */
 	}
 
