@@ -56,8 +56,8 @@
 		font-size={item.fontSize}	
 		width={notesWidth}
 		height={notesHeight}
-		on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, from: {x: e.clientX, y: e.clientY}})}
-		on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item})}
+		on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, rawEvent: e, from: {x: e.clientX, y: e.clientY}})}
+		on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item, rawEvent: e})}
 		on:click|stopPropagation>
 			<div class="foreign-obj-div">
 				{item.notes}

@@ -55,7 +55,7 @@
 	}
 
     function handleItemMouseDown(e){
-        // console.log('handleItemMouseDown');
+        console.log('handleItemMouseDown', e.detail.rawEvent.buttons);
 
 		selectedItem = e.detail.source;
 
@@ -64,7 +64,6 @@
 
 		draggingFrom = {x: e.detail.rawEvent.clientX, y: e.detail.rawEvent.clientY};
 		contextMenuPosition = null;
-		svgElement.onmousemove = handleMouseMove;
     }
 	
 	function handleItemMouseUp(e){
@@ -75,7 +74,6 @@
 
 		selectedItem = e.detail.source;
 		draggingFrom = null;
-		svgElement.onmousemove = null;
     }
 
 	function handleNodeChanged(e){
@@ -108,6 +106,7 @@
 		// console.log("mousemove");
 		currentMouse = {x: e.clientX, y: e.clientY};
 		if(!selectedItem || !draggingFrom || !selectedItem.pos) return;
+		if(e.buttons != 1) return; // only process left-click
 		
 		// move selectedItem along with all its children
 		moveGraphNode(selectedItem, graph, (currentMouse.x - draggingFrom.x), (currentMouse.y - draggingFrom.y))
@@ -232,9 +231,9 @@
 <div class="container">
 <svg tabindex="0" xmlns="http://www.w3.org/2000/svg"
 		viewBox="0 0 1000 1000"
-	    on:mousedown="{e => { draggingFrom = {x: e.clientX, y: e.clientY}; }}"
+	    on:mousedown="{e => { if(e.buttons === 1) { draggingFrom = {x: e.clientX, y: e.clientY}; } }}"
 		on:mousemove={handleMouseMove}
-	    on:mouseup="{() => {draggingFrom = null;}}"
+	    on:mouseup="{(e) => {if(e.buttons === 1) { draggingFrom = null;} }}"
 		on:click={handleSvgClick}
 		on:contextmenu|preventDefault={handleContextMenu}
 		style={`background-color: ${graph.theme.bgfill}`}
