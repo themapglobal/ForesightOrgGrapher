@@ -1,6 +1,6 @@
 <script>
 	import { styles } from "./styles.js";
-	import {exportJson, moveGraphNode, createGraphNodeEdge, layout, 
+	import {exportJson, moveGraphNode, createGraphNodeEdge, layout, themes,
 		deleteGraphItem, createGraphNode, exportCytoscape, createGraphChildNode} from "./graphutil.js"
 	import Node from "./Node.svelte";
 	import Edge from "./Edge.svelte";
@@ -166,50 +166,7 @@
 	}
 
 	function switchTheme(name){
-		switch(name){
-			case 'elegant':
-				graph.theme = {
-					"name": "elegant",
-					"bgfill": "#334155",
-					"grid": "cartesian",
-					"nodefill": "#bae6fd",
-					"nodelabelstroke": "#334155",
-					"nodeborder": "white",
-					"edgestroke": "red",
-					"edgeshape": "curved",
-					"edgestroketype": "solid",
-					"font": "Dosis",
-            		"badges": ["✅", "❌", "⚡", "👎", "👍"]
-				}; break;
-			case 'foresight':
-				graph.theme = {
-					"name": "foresight",
-					"bgfill": "#1c170b",
-					"grid": false,
-					"nodefill": "#7b9ecb",
-					"nodelabelstroke": "black",
-					"nodeborder": "white",
-					"edgestroke": "#ccc",
-					"edgeshape": "ortho",
-					"edgestroketype": "solid",
-					"font": "Roboto Condensed",
-            		"badges": ["✅", "❌", "⚡", "👎", "👍"]
-				}; break;
-			default:
-				graph.theme = {
-				"name": "classic",
-				"bgfill": "#f3f3f3",
-				"grid": false,
-				"font": "Balsamiq Sans",
-				"nodefill": "#fbe6a3",
-				"nodelabelstroke": "black",
-				"nodeborder": "black",
-				"edgestroke": "#4277dd",
-				"edgeshape": "curved",
-				"edgestroketype": "solid",
-            	"badges": ["✅", "❌", "⚡", "👎", "👍"]
-			}
-		};
+		graph.theme = themes[name];
 		reRender();
 	}
 

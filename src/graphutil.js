@@ -311,3 +311,47 @@ export function exportCytoscape(graph){
 
     return JSON.stringify(cy, null, 2);
 }
+
+export const themes = {
+    elegant: {
+        "name": "elegant",
+        "bgfill": "#334155",
+        "grid": "cartesian",
+        "nodefill": "#bae6fd",
+        "nodelabelstroke": "#334155",
+        "nodeborder": "white",
+        "edgestroke": "red",
+        "edgeshape": "curved",
+        "edgestroketype": "solid",
+        "font": "Dosis",
+        "badges": ["✅", "❌", "⚡", "👎", "👍"]
+    },
+
+    foresight: {
+        "name": "foresight",
+        "bgfill": "#1c170b",
+        "grid": false,
+        "nodefill": "#7b9ecb",
+        "nodelabelstroke": "black",
+        "nodeborder": "white",
+        "edgestroke": "#ccc",
+        "edgeshape": "ortho",
+        "edgestroketype": "solid",
+        "font": "Roboto Condensed",
+        "badges": ["✅", "❌", "⚡", "👎", "👍"]
+    },
+
+    classic: {
+        "name": "classic",
+        "bgfill": "#f3f3f3",
+        "grid": false,
+        "font": "Balsamiq Sans",
+        "nodefill": "#fbe6a3",
+        "nodelabelstroke": "black",
+        "nodeborder": "black",
+        "edgestroke": "#4277dd",
+        "edgeshape": "curved",
+        "edgestroketype": "solid",
+        "badges": ["✅", "❌", "⚡", "👎", "👍"]
+    }
+};
