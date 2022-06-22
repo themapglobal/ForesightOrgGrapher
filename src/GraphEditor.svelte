@@ -366,6 +366,7 @@
 		background-color: #e3e3e3;
 		border: 3px solid #666;
 		border-radius: 6px;
+		max-width: 400px;
 		/* height: 100%; */
 	}
 
