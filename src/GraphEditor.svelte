@@ -1,11 +1,13 @@
 <script>
-	import { styles } from "./styles.js";
+
 	import {exportJson, moveGraphNode, createGraphNodeEdge, layout, themes,
 		deleteGraphItem, createGraphNode, exportCytoscape, createGraphChildNode} from "./graphutil.js"
+
 	import Node from "./Node.svelte";
 	import Edge from "./Edge.svelte";
 	import Grid from "./Grid.svelte";
 	import ItemEditor from "./ItemEditor.svelte"
+
 	import { onMount } from 'svelte'
 	import { zoom } from 'd3-zoom'
 	import { select } from 'd3-selection'
@@ -32,8 +34,7 @@
 	// panning and zooming
 	$: if (svgElement && topGroupElem) {
 			select(svgElement).call(zoom().on('zoom', ({ transform }) => {
-				const { k, x, y } = transform
-				select(topGroupElem).attr('transform', `translate(${x}, ${y}) scale(${k})`)
+				select(topGroupElem).attr('transform', transform)
 			}))
 	}
 	
@@ -47,13 +48,14 @@
 
     function reRender(){
 		svgElement = svgElement;
+		topGroupElem = topGroupElem;
 		selectedItem = selectedItem;
 		graph = layout(graph);
 		// console.log('rerender()')
 	}
 
     function handleItemMouseDown(e){
-        // console.log('handleItemMouseDown');
+        console.log('handleItemMouseDown', e.detail.rawEvent.buttons);
 
 		selectedItem = e.detail.source;
 
@@ -62,7 +64,6 @@
 
 		draggingFrom = {x: e.detail.rawEvent.clientX, y: e.detail.rawEvent.clientY};
 		contextMenuPosition = null;
-		svgElement.onmousemove = handleMouseMove;
     }
 	
 	function handleItemMouseUp(e){
@@ -73,7 +74,6 @@
 
 		selectedItem = e.detail.source;
 		draggingFrom = null;
-		svgElement.onmousemove = null;
     }
 
 	function handleNodeChanged(e){
@@ -106,6 +106,7 @@
 		// console.log("mousemove");
 		currentMouse = {x: e.clientX, y: e.clientY};
 		if(!selectedItem || !draggingFrom || !selectedItem.pos) return;
+		if(e.buttons != 1) return; // only process left-click
 		
 		// move selectedItem along with all its children
 		moveGraphNode(selectedItem, graph, (currentMouse.x - draggingFrom.x), (currentMouse.y - draggingFrom.y))
@@ -126,7 +127,6 @@
 	function handleContextMenu(e){
 		if(!graph.contextmenu) return;
 		contextMenuPosition = [e.clientX, e.clientY];
-		console.log('contextmenu')
 	}
 
 	function handleCreateNode(e){
@@ -229,13 +229,14 @@
 
 {#if graph}
 <div class="container">
-<svg tabindex="0" id="mysvg" xmlns="http://www.w3.org/2000/svg"
-		viewBox={graph.viewBox.join(" ")}
-	    on:mousedown="{e => { draggingFrom = {x: e.clientX, y: e.clientY}; svgElement.onmousemove = handleMouseMove;}}"
-	    on:mouseup="{() => {draggingFrom = null; svgElement.onmousemove = null; }}"
+<svg tabindex="0" xmlns="http://www.w3.org/2000/svg"
+		viewBox="0 0 1000 1000"
+	    on:mousedown="{e => { if(e.buttons === 1) { draggingFrom = {x: e.clientX, y: e.clientY}; } }}"
+		on:mousemove={handleMouseMove}
+	    on:mouseup="{(e) => {if(e.buttons === 1) { draggingFrom = null;} }}"
 		on:click={handleSvgClick}
 		on:contextmenu|preventDefault={handleContextMenu}
-		use:styles={{color: graph.theme.bgfill}}
+		style={`background-color: ${graph.theme.bgfill}`}
 		bind:this={svgElement}
 		on:keydown={handleKeydown}
 >
