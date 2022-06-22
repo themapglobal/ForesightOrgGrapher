@@ -1,7 +1,6 @@
 <script>
 	import ControlPoint from "./ControlPoint.svelte"
     import { createEventDispatcher } from 'svelte';
-import { style } from "d3-selection";
     const dispatch = createEventDispatcher();
 
 	export let theme;

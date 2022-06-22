@@ -8,7 +8,8 @@
             "desc": "",
             "link": "",
             "tags": [
-                "org:meta"
+                "org:meta",
+                "primary"
             ],
             "parent": null,
             "pos": {
@@ -25,7 +26,8 @@
             "link": "",
             "tags": [
                 "org:google",
-                "lab:cambridge"
+                "lab:cambridge",
+                "sponsor"
             ],
             "parent": null,
             "pos": {
@@ -103,7 +105,8 @@
             "link": "",
             "tags": [
                 "org:apple",
-                "org:google"
+                "org:google",
+                "sponsor"
             ],
             "parent": 1,
             "pos": {
