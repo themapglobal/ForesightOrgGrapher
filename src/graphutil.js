@@ -274,7 +274,6 @@ export function exportJson(graph){
 
     data.grid = graph.grid;
     data.theme = graph.theme;
-    data.debugger = graph.debugger;
     data.sidepanel = graph.sidepanel;
     data.jsonview = graph.jsonview;
     data.contextmenu = graph.contextmenu;

@@ -217,6 +217,37 @@
         }, {});
         return Object.entries(groups);
     }
+
+	function downloadFile(content, name){
+		let element = document.createElement('a');
+		element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+		element.setAttribute('download', name);
+
+		element.style.display = 'none';
+		document.body.appendChild(element);
+
+		element.click();
+
+		document.body.removeChild(element);
+	}
+
+	function handleMenu(e){
+		let value = e.detail.item.value;
+		if(value.startsWith("theme.")){
+			switchTheme(value.split(".")[1])
+		} else if (value.startsWith("export.")){
+			let kind = value.split(".")[1]; //svg or cytoscape
+			if(kind === 'svg'){
+				downloadFile(svgElement.outerHTML, 'graph.svg')
+			} else if (kind === 'cytoscape'){
+				downloadFile(exportCytoscape(graph), 'graph-cytoscape.json')
+			}
+		} else if (value === 'openfile'){
+			console.log(value)
+		} else if (value === 'savefile') {
+			downloadFile(exportJson(graph), 'graph.json')
+		}
+	}
     
 </script>
 
@@ -297,12 +328,6 @@
 
 	<ItemEditor {selectedItem} {graph} on:graphchanged />
 
-	{#if graph.debugger}
-	<p>Debugger:
-		selected = {selectedItem?.label}
-		dragging = from {JSON.stringify(draggingFrom)} till {JSON.stringify(currentMouse)}
-	</p>
-	{/if}
 </section>
 {/if}
 
@@ -358,9 +383,36 @@
 </div>
 
 <section class="tagfilter">
+<sl-button-group>
+	<sl-dropdown on:sl-select={handleMenu}>
+		<sl-button slot="trigger" caret>
+			Menu
+			<sl-icon slot="prefix" name="list"></sl-icon>
+		</sl-button>
+		<sl-menu>
+		  	<sl-menu-item value="openfile">
+				Load File
+				<sl-icon slot="prefix" name="folder2-open"></sl-icon>
+			</sl-menu-item>
+		  	<sl-menu-item value="savefile">
+				Save as file...
+				<sl-icon slot="prefix" name="download"></sl-icon>
+			</sl-menu-item>
+			<sl-divider></sl-divider>
+			<sl-menu-label>Export as ...</sl-menu-label>
+			<sl-menu-item value="export.svg">SVG</sl-menu-item>
+			<sl-menu-item value="export.cytoscape">Cytoscape JSON</sl-menu-item>
+			<sl-divider></sl-divider>
+			<sl-menu-label>Switch Theme To</sl-menu-label>
+			<sl-menu-item value="theme.classic" checked={graph.theme.name === 'classic'}>Classic</sl-menu-item>
+			<sl-menu-item value="theme.elegant" checked={graph.theme.name === 'elegant'}>Elegant</sl-menu-item>
+			<sl-menu-item value="theme.foresight" checked={graph.theme.name === 'foresight'}>Foresight</sl-menu-item>
+		</sl-menu>
+	</sl-dropdown>
+
 	<sl-select 
 		placeholder="Highlight by Tag"
-		clearable pill
+		clearable 
 		on:sl-change={e => highlighted = graph.items.filter(i => i.kind === 'node' && i.tags.includes(e.target.value)).map(i => i.id)}
 	>
 			{#each tagGroups as group (group[0])}
@@ -371,6 +423,7 @@
 				<sl-divider></sl-divider>
 			{/each}
 	</sl-select>
+</sl-button-group>
 </section>
 
 <style>

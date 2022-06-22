@@ -212,14 +212,13 @@
             "👍"
         ]
     },
-    "debugger": false,
     "sidepanel": true,
     "jsondownload": true,
     "jsonimportexport": true,
     "contextmenu": true,
-    "customjson": false,
-    "exportcytoscape": false,
-    "exportsvg": false,
+    "customjson": true,
+    "exportcytoscape": true,
+    "exportsvg": true,
     "viewBox": [
         0,
         0,
