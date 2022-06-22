@@ -1,11 +1,13 @@
 <script>
-	import { styles } from "./styles.js";
+
 	import {exportJson, moveGraphNode, createGraphNodeEdge, layout, themes,
 		deleteGraphItem, createGraphNode, exportCytoscape, createGraphChildNode} from "./graphutil.js"
+
 	import Node from "./Node.svelte";
 	import Edge from "./Edge.svelte";
 	import Grid from "./Grid.svelte";
 	import ItemEditor from "./ItemEditor.svelte"
+
 	import { onMount } from 'svelte'
 	import { zoom } from 'd3-zoom'
 	import { select } from 'd3-selection'
@@ -32,9 +34,6 @@
 	// panning and zooming
 	$: if (svgElement && topGroupElem) {
 			select(svgElement).call(zoom().on('zoom', ({ transform }) => {
-				const { k, x, y } = transform
-				console.log({transform})
-				// select(topGroupElem).attr('transform', `translate(${x}, ${y}) scale(${k})`)
 				select(topGroupElem).attr('transform', transform)
 			}))
 	}
@@ -49,6 +48,7 @@
 
     function reRender(){
 		svgElement = svgElement;
+		topGroupElem = topGroupElem;
 		selectedItem = selectedItem;
 		graph = layout(graph);
 		// console.log('rerender()')
@@ -230,13 +230,14 @@
 
 {#if graph}
 <div class="container">
-<svg tabindex="0" id="mysvg" xmlns="http://www.w3.org/2000/svg"
+<svg tabindex="0" xmlns="http://www.w3.org/2000/svg"
 		viewBox="0 0 1000 1000"
-	    on:mousedown="{e => { draggingFrom = {x: e.clientX, y: e.clientY}; svgElement.onmousemove = handleMouseMove;}}"
-	    on:mouseup="{() => {draggingFrom = null; svgElement.onmousemove = null; }}"
+	    on:mousedown="{e => { draggingFrom = {x: e.clientX, y: e.clientY}; }}"
+		on:mousemove={handleMouseMove}
+	    on:mouseup="{() => {draggingFrom = null;}}"
 		on:click={handleSvgClick}
 		on:contextmenu|preventDefault={handleContextMenu}
-		use:styles={{color: graph.theme.bgfill}}
+		style={`background-color: ${graph.theme.bgfill}`}
 		bind:this={svgElement}
 		on:keydown={handleKeydown}
 >
