@@ -33,7 +33,9 @@
 	$: if (svgElement && topGroupElem) {
 			select(svgElement).call(zoom().on('zoom', ({ transform }) => {
 				const { k, x, y } = transform
-				select(topGroupElem).attr('transform', `translate(${x}, ${y}) scale(${k})`)
+				console.log({transform})
+				// select(topGroupElem).attr('transform', `translate(${x}, ${y}) scale(${k})`)
+				select(topGroupElem).attr('transform', transform)
 			}))
 	}
 	
@@ -126,7 +128,6 @@
 	function handleContextMenu(e){
 		if(!graph.contextmenu) return;
 		contextMenuPosition = [e.clientX, e.clientY];
-		console.log('contextmenu')
 	}
 
 	function handleCreateNode(e){
@@ -230,7 +231,7 @@
 {#if graph}
 <div class="container">
 <svg tabindex="0" id="mysvg" xmlns="http://www.w3.org/2000/svg"
-		viewBox={graph.viewBox.join(" ")}
+		viewBox="0 0 1000 1000"
 	    on:mousedown="{e => { draggingFrom = {x: e.clientX, y: e.clientY}; svgElement.onmousemove = handleMouseMove;}}"
 	    on:mouseup="{() => {draggingFrom = null; svgElement.onmousemove = null; }}"
 		on:click={handleSvgClick}

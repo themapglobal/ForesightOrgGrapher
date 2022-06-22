@@ -282,7 +282,6 @@ export function exportJson(graph){
     data.customjson = graph.customjson;
     data.exportcytoscape = graph.exportcytoscape;
     data.exportsvg = graph.exportsvg;
-    data.viewBox = graph.viewBox;
 
     return JSON.stringify(data, null, 2);
 }
