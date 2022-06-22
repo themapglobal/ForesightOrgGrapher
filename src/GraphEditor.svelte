@@ -29,6 +29,7 @@
 
 	let svgElement;
 	let topGroupElem;
+
 	let highlighted = [];
 
 	// panning and zooming
@@ -183,9 +184,7 @@
         // get unique tags
         let tags = graph.items.map(i => i.tags).flat().filter((value, index, self) => self.indexOf(value) === index); 
 		// console.log(tags);
-        let groups = tags.reduce((acc, tag)=> {
-            let [kind,name] = tag.split(":");
-            
+        let groups = tags.reduce((acc, tag)=> {            
 			let group = tag.split(":").length > 1 ? tag.split(":")[0] : 'ungrouped';
 			acc[group] = acc[group] ?? [];
 			acc[group].push({label: tag.split(":").reverse()[0], value: tag});
@@ -217,10 +216,7 @@
 				downloadFile(exportCytoscape(graph), 'graph-cytoscape.json')
 			}
 		} else if (value === 'openfile'){
-			console.log(value)
-			let fileinput = document.getElementsByClassName('fileupload')[0];
-			console.log({fileinput})
-			fileinput.click();
+			// nothing to do, event listener is on file input
 		} else if (value === 'savefile') {
 			downloadFile(exportJson(graph), 'mynetwork.graph')
 		}
@@ -314,7 +310,7 @@
 		<sl-menu>
 			{#if graph.jsonupload}
 		  	<sl-menu-item value="openfile">
-				Load .graph File...
+				<input type="file" name="uploader" accept=".graph" on:change={e => uploadFile(e)} />
 				<sl-icon slot="prefix" name="folder2-open"></sl-icon>
 			</sl-menu-item>
 			{/if}
@@ -335,8 +331,6 @@
 			<sl-menu-item value="theme.foresight" checked={graph.theme.name === 'foresight'}>Foresight</sl-menu-item>
 		</sl-menu>
 	</sl-dropdown>
-
-	<input class="fileupload" style="display: none;" type="file" name="upload" id="upload" accept=".graph" on:change="{e => uploadFile(e) }"/>
 
 	{#if false}
 	<sl-select 

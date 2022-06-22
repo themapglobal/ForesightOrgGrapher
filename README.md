@@ -10,10 +10,7 @@ This is an SVG-based interactive graph dataset editor that allows you to manuall
 - Dropping one node on another to create it as a child
 
 Alpha:
-- Test/fix dragging with zoom/pan enabled, or nodes with notes value
 - Better path calculation for edges
-- Edge label side ("side" attribute on `<textpath>` on non-Firefox browsers
-- Tag filter should work with both kind of tags: `normaltag` and grouped tags like `org:xyz`
 - Performance testing (1000 nodes?)
 
 Beta:
@@ -21,5 +18,8 @@ Beta:
     - User authentication? Consider allowing anonymous comments. Can we require GitHub login?
 - Badges on nodes
     - SVG badges
-    - Workaround for unicode emojis work in badge text in Firefox
 - (Rethink) When printed, show QR codes for nodes' links
+
+Firefox bugs:
+- File open dialog does not show.
+- Unicode emojis are not displayed in SVG `<text>`

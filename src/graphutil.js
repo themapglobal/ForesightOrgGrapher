@@ -6,6 +6,11 @@ export function prepareGraph(graph){
     // populate item.children[] for convenience
     graph.items.filter(i => i.kind === 'node').forEach(item => { 
         item.children = []; 
+        if(!item.pos || !item.pos.x || !item.pos.y){
+            // handle missing position by choosing random x and y
+            console.error(`Got null position for ${item.label}`);
+            item.pos = {x: (Math.random() * 600), y: (Math.random() * 600)}
+        }
         if(!item.hasOwnProperty('parent')){
             item.parent = null
         }
@@ -182,7 +187,8 @@ function getSvgCoordinates(svg, e){
     const pt = svg.createSVGPoint();
     pt.x = e.clientX;
     pt.y = e.clientY;
-    return pt.matrixTransform( svg.getScreenCTM().inverse() );
+    let svgpt = pt.matrixTransform( svg.getScreenCTM().inverse() );
+    return {x: svgpt.x, y: svgpt.y};
 }
 
 export function createGraphChildNode(e, graph, parent, svg){
@@ -258,7 +264,6 @@ export function exportJson(graph){
                 id: item.id,
                 kind: 'edge',
                 label: item.label,
-                notes: item.notes,
                 desc: item.desc,
                 link: item.link,
                 tags: item.tags,
