@@ -25,6 +25,7 @@
 </script>
 
 <sl-input 
+    label="Tags"
     on:keydown={handleKeydown}
     size="small"
 >
@@ -44,8 +45,7 @@
 </sl-input>
 
 <style>
-    sl-input {
-        width: 280px;
+    sl-input {      
         margin-bottom: 10px;
     }
 </style>

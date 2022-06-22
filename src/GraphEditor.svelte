@@ -366,13 +366,12 @@
 	section.sidepanel {
 		position: absolute;
 		right: 0px;
-		top: 50px;
+		top: 0px;
 		z-index: 10;
-		text-align: center;	
 		background-color: #e3e3e3;
-		border: 3px solid #666;
-		border-radius: 6px;
-		max-width: 400px;
+		border-left: 3px solid #666;
+		
+		width: 300px;
 		/* height: 100%; */
 	}
 
