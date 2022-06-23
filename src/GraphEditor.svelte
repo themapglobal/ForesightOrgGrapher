@@ -161,7 +161,7 @@
 	};
 
 	function createNode(e){
-		createGraphNode(e, graph, svgElement);
+		createGraphNode(e, graph, svgElement, topGroupElem);
 		reRender();
 		contextMenuPosition = null;
 	}
@@ -199,7 +199,7 @@
 
 	function createChildNode(e, item){
 		// console.log("createChildNode", item);
-		createGraphChildNode(e, graph, item, svgElement);
+		createGraphChildNode(e, graph, item, svgElement, topGroupElem);
 		reRender();
 		contextMenuPosition = null;
 	}

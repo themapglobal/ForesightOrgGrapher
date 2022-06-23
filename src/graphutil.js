@@ -170,7 +170,7 @@ export function deleteGraphItem(item, graph, deleteDependents){
     }    
 }
 
-export function createGraphNode(e, graph, svg){
+export function createGraphNode(e, graph, svg, topGroupElem){
     // console.log("createGraphNode")
     graph.items.push({
         id: Math.ceil(Math.random() * 10000),
@@ -180,19 +180,19 @@ export function createGraphNode(e, graph, svg){
         link: '',
         tags: [],
         children: [],
-        pos: getSvgCoordinates(svg, e),
+        pos: getSvgCoordinates(svg, e, topGroupElem),
     })
 }
 
-function getSvgCoordinates(svg, e){
+function getSvgCoordinates(svg, e, topGroupElem){
     const pt = svg.createSVGPoint();
     pt.x = e.clientX;
     pt.y = e.clientY;
-    let svgpt = pt.matrixTransform( svg.getScreenCTM().inverse() );
+    let svgpt = pt.matrixTransform( topGroupElem.getCTM().inverse() );
     return {x: svgpt.x, y: svgpt.y};
 }
 
-export function createGraphChildNode(e, graph, parent, svg){
+export function createGraphChildNode(e, graph, parent, svg, topGroupElem){
     // console.log("createGraphNode")
     graph.items.push({
         id: Math.ceil(Math.random() * 10000),
@@ -202,7 +202,7 @@ export function createGraphChildNode(e, graph, parent, svg){
         link: '',
         tags: [],
         children: [],
-        pos: getSvgCoordinates(svg, e),
+        pos: getSvgCoordinates(svg, e, topGroupElem),
         parent: parent.id
     })
 }
