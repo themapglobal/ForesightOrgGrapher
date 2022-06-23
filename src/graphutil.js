@@ -207,6 +207,24 @@ export function createGraphChildNode(e, graph, parent, svg){
     })
 }
 
+export function createGraphEdge(from, toCoords, graph){
+    let edge = {
+        id: Math.ceil(Math.random() * 100000),
+        kind: 'edge',
+        label: '',
+        desc: '',
+        link: '',
+        tags: [],
+        shape: 'straight',
+        fromId: from.id,
+        toOrphan: {pos: {x: toCoords.x, y: toCoords.y}},
+        directed: true, 
+        weight: 5
+    }
+    graph.items.push(edge);
+    return edge;
+}
+
 export function createGraphNodeEdge(from, fromHandle, graph){
     // console.log("createGraphNodeEdge")
     let newId = Math.ceil(Math.random() * 100000);
@@ -234,6 +252,7 @@ export function createGraphNodeEdge(from, fromHandle, graph){
         desc: '',
         link: '',
         tags: [],
+        shape: 'straight',
         fromId: from.id,
         toId: newId,
         directed: true, 

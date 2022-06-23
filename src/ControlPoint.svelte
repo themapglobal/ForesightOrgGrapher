@@ -8,11 +8,25 @@
 </script>
 
 <g>
-    <circle cx={x} cy={y} r={size+2} data-handle={data} on:click {title}/>
+    <circle cx={x} cy={y} r={size+2} {title}
+        data-handle={data} 
+        on:click 
+        on:mousedown|stopPropagation
+    />
     {#if kind === 'plus'}
-        <path d={`M ${x},${y-size} v ${2*size} M ${x-size},${y} h ${2*size}`}  data-handle={data} on:click/>
+        <path 
+            d={`M ${x},${y-size} v ${2*size} M ${x-size},${y} h ${2*size}`}
+            data-handle={data} 
+            on:click
+            on:mousedown|stopPropagation
+        />
     {:else if kind === 'cross'}
-        <path d={`M ${x-size},${y-size} l ${2*size},${2*size} M ${x+size},${y-size} l ${-2*size},${2*size}`}  data-handle={data} on:click/>
+        <path 
+            d={`M ${x-size},${y-size} l ${2*size},${2*size} M ${x+size},${y-size} l ${-2*size},${2*size}`}
+            data-handle={data}
+            on:click
+            on:mousedown|stopPropagation
+        />
     {/if}
 </g>
 

@@ -1,7 +1,7 @@
 <script>
 
 	import {exportJson, moveGraphNode, createGraphNodeEdge, layout, themes,
-		deleteGraphItem, createGraphNode, exportCytoscape, createGraphChildNode} from "./graphutil.js"
+		deleteGraphItem, createGraphNode, createGraphEdge, exportCytoscape, createGraphChildNode} from "./graphutil.js"
 
 	import Node from "./Node.svelte";
 	import Edge from "./Edge.svelte";
@@ -55,6 +55,21 @@
 		// console.log('rerender()')
 	}
 
+	function handleItemControlMouseDown(e){
+		// console.log("handleItemControlMouseDown");
+		draggingFrom = {x: e.detail.rawEvent.clientX, y: e.detail.rawEvent.clientY};
+		contextMenuPosition = null;
+		// create an edge to an orphan node
+		// store it in draggingFrom so that mousemove can change it
+		let pt1 = svgElement.createSVGPoint();
+		pt1.x = draggingFrom.x; pt1.y = draggingFrom.y;
+		let svgPt1 = pt1.matrixTransform(topGroupElem.getCTM().inverse());
+		let toCoords = {x: svgPt1.x, y: svgPt1.y};
+		draggingFrom.edge = createGraphEdge(e.detail.source, toCoords, graph);
+		// console.log(draggingFrom.edge);
+		reRender();
+	}
+
     function handleItemMouseDown(e){
         // console.log('handleItemMouseDown', e.detail.rawEvent.buttons);
 
@@ -74,7 +89,12 @@
 		// e.detail.rawEvent.target.releasePointerCapture(e.detail.rawEvent.pointerId);
 
 		selectedItem = e.detail.source;
+		if(draggingFrom.edge && selectedItem.kind === 'node'){
+			draggingFrom.edge.toId = selectedItem.id
+			delete draggingFrom.edge.toOrphan;
+		}
 		draggingFrom = null;
+		reRender();
     }
 
 	function handleNodeChanged(e){
@@ -103,25 +123,37 @@
 		contextMenuPosition = null;
 	} 
 	
-	function handleMouseMove(e){
+	function handleSvgMouseMove(e){
 		// console.log("mousemove");
 		currentMouse = {x: e.clientX, y: e.clientY};
 		if(!selectedItem || !draggingFrom || !selectedItem.pos) return;
 		if(e.buttons != 1) return; // only process left-click
-		
-		// move selectedItem along with all its children
-		// transform into svg coordinates to handle dragging in zoomed-in/zoomed-out mode correctly
-		let pt1 = svgElement.createSVGPoint();
-		pt1.x = draggingFrom.x; pt1.y = draggingFrom.y;
-		let svgPt1 = pt1.matrixTransform(topGroupElem.getCTM().inverse());
 
-		let pt2 = svgElement.createSVGPoint();
-		pt2.x = currentMouse.x; pt2.y = currentMouse.y;
-		let svgPt2 = pt2.matrixTransform(topGroupElem.getCTM().inverse());
+		if(draggingFrom.edge){
+			// drawing an edge
+			// console.log("moving edge")
+			let pt1 = svgElement.createSVGPoint();
+			pt1.x = draggingFrom.x; pt1.y = draggingFrom.y;
+			let svgPt1 = pt1.matrixTransform(topGroupElem.getCTM().inverse());
 
-		moveGraphNode(selectedItem, graph, (svgPt2.x - svgPt1.x), (svgPt2.y - svgPt1.y))
+			draggingFrom.edge.toOrphan = {pos: {x: svgPt1.x, y: svgPt1.y}}
+		} else {
+			// moving a node
 
-		// TODO: if moved on top of another node, create parent-child relationship
+			// move selectedItem along with all its children
+			// transform into svg coordinates to handle dragging in zoomed-in/zoomed-out mode correctly
+			let pt1 = svgElement.createSVGPoint();
+			pt1.x = draggingFrom.x; pt1.y = draggingFrom.y;
+			let svgPt1 = pt1.matrixTransform(topGroupElem.getCTM().inverse());
+
+			let pt2 = svgElement.createSVGPoint();
+			pt2.x = currentMouse.x; pt2.y = currentMouse.y;
+			let svgPt2 = pt2.matrixTransform(topGroupElem.getCTM().inverse());
+
+			moveGraphNode(selectedItem, graph, (svgPt2.x - svgPt1.x), (svgPt2.y - svgPt1.y))
+
+			// TODO: if moved on top of another node, create parent-child relationship
+		}
 
 		draggingFrom.x = currentMouse.x;
 		draggingFrom.y = currentMouse.y;
@@ -150,6 +182,15 @@
 		if(selectedItem && (e.key === 'Backspace' || e.key === 'Delete')){
 			deleteItem(selectedItem, false)
 		}
+	}
+
+	function handleSvgMouseUp(e){
+		if(draggingFrom.edge){
+			// remove this edge
+			deleteGraphItem(draggingFrom.edge, graph, false)
+		}
+		draggingFrom = null;
+		reRender();
 	}
 
 	function handleEdgeChanged(e){
@@ -237,8 +278,8 @@
 <svg tabindex="0" xmlns="http://www.w3.org/2000/svg"
 		viewBox="0 0 1000 1000"
 	    on:mousedown="{e => { if(e.buttons === 1) { draggingFrom = {x: e.clientX, y: e.clientY}; } }}"
-		on:mousemove={handleMouseMove}
-	    on:mouseup="{(e) => {if(e.buttons === 1) { draggingFrom = null;} }}"
+		on:mousemove={handleSvgMouseMove}
+	    on:mouseup="{handleSvgMouseUp}"
 		on:click={handleSvgClick}
 		on:contextmenu|preventDefault={handleContextMenu}
 		style={`background-color: ${graph.theme.bgfill}`}
@@ -265,6 +306,7 @@
 					isSelected={item.id === selectedItem?.id}
 					on:nodeChanged={handleNodeChanged}
 					on:createnode={handleCreateNode}
+					on:itemcontrolmousedown={handleItemControlMouseDown}
 					theme={graph.theme}
 					isHighlighted={highlighted.includes(item.id)}
 			/>

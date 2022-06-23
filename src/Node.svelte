@@ -13,6 +13,12 @@
 		// console.log(handle)
 		dispatch('createnode', {from: item, handle: handle})
 	}
+
+	function handleControlMouseDown(e){
+		let handle = parseInt(e.target.getAttribute('data-handle'));
+		dispatch('itemcontrolmousedown', {source: item, handle: handle, rawEvent: e})
+	}
+
 	$: notesWidth = Math.min(300, item.notes ? item.notes.length *10 : 0)
 	$: notesHeight = (item.notes ? (Math.ceil(item.notes.length*10 / notesWidth) * 20) : 0)
 </script>
@@ -71,6 +77,7 @@
 			kind='plus'
 			data={22 + control[1] + 10*control[0]}
 			on:click={handleControlClicked}
+			on:mousedown={handleControlMouseDown}
 			x={item.pos.x + control[0] * item.width/2} 
 			y={item.pos.y + control[1] * item.height/2}
 			title="Create new connected node"
