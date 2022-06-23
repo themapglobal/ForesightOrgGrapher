@@ -96,89 +96,89 @@
 		{/if}
 	</div>
 
-	<div class="table">		
+		
 		{#if selectedItem.kind === 'node'}
-
-			<div class="row">				
+		<div class="node-colors">
+			<div class="node-color">				
 				<sl-color-picker format="hex" size="small" 
 					value={selectedItem.fill} 
 					label={`Select fill color`}
 					on:sl-change={e => handleInputChange(e, 'color_fill')}
 				>
 				</sl-color-picker>
-				<span><strong>Fill</strong></span>
+				<span>Fill</span>
 			</div>
 
-			<div class="row">				
+			<div class="node-color">				
 				<sl-color-picker format="hex" size="small" 
 					value={selectedItem.bordercolor} 
 					label={`Select border color`}
 					on:sl-change={e => handleInputChange(e, 'color_bordercolor')}
 				>
 				</sl-color-picker>
-				<span><strong>Border</strong></span>
+				<span>Border</span>
 			</div>
 
-			<div class="row">	
+			<div class="node-color">	
 				<sl-color-picker format="hex" size="small" 
 					value={selectedItem.labelcolor} 
 					label={`Select label color`}
 					on:sl-change={e => handleInputChange(e, 'color_labelcolor')}
 				>
 				</sl-color-picker>
-				<span><strong>Label</strong></span>
+				<span>Label</span>
 			</div>
+		</div>	
 
 		{:else if selectedItem.kind === 'edge'} <!-- edge -->
-		<div class="edge-table">
-			<div class="edge-row">
-				<span><strong>directed</strong></span>
-				<input 
-					type='checkbox' 
-					on:change={e => handleInputChange(e, 'checkbox_directed')}
-					checked={selectedItem.directed}
-				/>
-			</div>
+		<div class="edge-panal">
+			<sl-checkbox 
+				style="width:100%;"
+				on:sl-change={e => handleInputChange(e, 'checkbox_directed')}
+				checked={selectedItem.directed}>
+				Directed
+			</sl-checkbox>
 
-			<div class="edge-row">
-				<span><strong>weight</strong></span>
-				<input 
-					type='number' 
-					step="1"
-					min="1"
-					value={selectedItem.weight} 
-					on:input={e => handleInputChange(e, 'number_weight')}
-				/>
-			</div>
-
-			<div class="edge-row">
-				<span><strong>shape</strong></span>
-				<select value={selectedItem.shape} placeholder="Select shape" on:change={e => handleInputChange(e, 'text_shape')}>
-					<option value="straight" selected={selectedItem.shape === 'straight'}>straight</option>
-					<option value="curved" selected={selectedItem.shape === 'curved'}>curved</option>
-					<option value="ortho" selected={selectedItem.shape === 'ortho'}>ortho</option>
-				</select>
-			</div>
-
-			<div class="edge-row">
-				<span><strong>stroke</strong></span>
-				<sl-color-picker format="hex" size="small" 
+			<div class="edge-stroke">	
+				<sl-color-picker
+					
+					format="hex" size="small" 
 					value={selectedItem.stroke} 
 					label={`Select stroke color`}
 					on:sl-change={e => handleInputChange(e, 'color_stroke')}
 				>
 				</sl-color-picker>
+				<span class="title">Stroke</span>
 			</div>
+
+			<sl-input 
+				label="Weight" type="number"
+				value={selectedItem.weight} 
+				on:sl-change={e => handleInputChange(e, 'number_weight')}>
+			</sl-input>
+
+			<sl-select 
+				
+				label="Shape" value={selectedItem.shape} 
+				placeholder="Select shape" 
+				on:sl-change={e => handleInputChange(e, 'text_shape')}>
+				<sl-menu-item value="straight" selected={selectedItem.shape === 'straight'}>straight</sl-menu-item>
+				<sl-menu-item value="curved" selected={selectedItem.shape === 'curved'}>curved</sl-menu-item>
+				<sl-menu-item value="ortho" selected={selectedItem.shape === 'ortho'}>ortho</sl-menu-item>
+			</sl-select>
+
+			<sl-select 
 			
-			<div class="edge-row">
-				<span><strong>strokeType</strong></span>
-				<select value={selectedItem.strokeType} placeholder="Select strokeType" on:change={e => handleInputChange(e, 'text_strokeType')}>
-					<option value="solid" selected={selectedItem.strokeType === 'solid'}>solid</option>
-					<option value="dashed" selected={selectedItem.strokeType === 'dashed'}>dashed</option>
-					<option value="dotted" selected={selectedItem.strokeType === 'dotted'}>dotted</option>
-				</select>
-			</div>
-		</div>	
+				label="StrokeType" value={selectedItem.strokeType} 
+			  placeholder="Select strokeType" 
+				on:sl-change={e => handleInputChange(e, 'text_strokeType')}>
+				<sl-menu-item value="solid" selected={selectedItem.strokeType === 'solid'}>solid</sl-menu-item>
+				<sl-menu-item value="dashed" selected={selectedItem.strokeType === 'dashed'}>dashed</sl-menu-item>
+				<sl-menu-item value="dotted" selected={selectedItem.strokeType === 'dotted'}>dotted</sl-menu-item>
+			</sl-select>
+
+			
+		</div>		
 		{/if}
 
 		{#if graph.customjson}
@@ -188,29 +188,29 @@
 		</div>
 		{/if}
 
-	</div>
+
 
 <style>
 	h1, .detachBtn{
 		text-align: center;
 	}
-	.node-panel{
-		width: 80%; 
-		margin:0 auto;
+	.node-panel, .edge-panal{
+		width: 90%; 
+		margin:20px auto;
 		display: flex;
 		flex-direction: column;
 		gap: 10px;
 	}
-	div.table { 
+	div.node-colors { 
 		display: flex;
-		margin-top: 30px;
-		margin-bottom: 20px;
 		justify-content: center;
 		align-items: center;
 		gap: 10px;
+		width: 90%;
+		margin: 30px auto;
 	}
 
-	div.row { 
+	div.node-color { 
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -220,14 +220,25 @@
 		background-color: whitesmoke;
 	}
 
-	div.row span {
+	div.node-color span {
 		width: 60px;
 		text-align: center;
-	
 	}
-	div.edge-table{
+
+	
+	div.edge-stroke{
 		display: flex;
-		flex-direction: column;
+		align-items: center;
+		gap:5px;
+		font-size: 16px;
+	}
+	.title{
+		grid-column: 1/3;
+		text-align: end;
+	}
+	
+	.itemlink, .itemdesc{
+		padding: 10px 30px;
 	}
 
 	p.itemdesc {
@@ -238,4 +249,6 @@
 	a.itemlink {
 		font-size: 16px;
 	}
+
+	
 </style>
