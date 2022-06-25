@@ -17,7 +17,6 @@ Beta:
 - Discussion widgets tied to a location (eg: markup.io)
     - User authentication? Consider allowing anonymous comments. Can we require GitHub login?
 - Badges on nodes
-    - SVG badges
 - (Rethink) When printed, show QR codes for nodes' links
 
 Firefox bugs:
