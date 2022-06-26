@@ -38,6 +38,8 @@
 				select(topGroupElem).attr('transform', transform)
 			}))
 	}
+
+	// $: console.log(selectedItem?.level)
 	
 	onMount(() => {
 		graphjsonpath && fetch(graphjsonpath)
@@ -93,7 +95,7 @@
 			draggingFrom.edge.toId = selectedItem.id
 			delete draggingFrom.edge.toOrphan;
 		} else if(draggingFrom.edge && selectedItem.kind === 'edge'){
-			// deleteGraphItem(draggingFrom.edge, graph, false);
+			deleteGraphItem(draggingFrom.edge, graph, false);
 		} else if(!draggingFrom.hasOwnProperty('edge')){
 			//dropped a node on top of another
 			let pt = svgElement.createSVGPoint();

@@ -109,11 +109,11 @@ export function layout(graph, selectedItem){
     });
 
     graph.items.filter(i => (i.kind === 'edge')).forEach(edge => {
-        // handle edges without nodes
-        edge.level = -1 + Math.min(
+        // draw an edge BELOW both connected nodes
+        edge.level =  Math.min(
             edge.fromId ? getGraphNode(edge.fromId, graph).level : 20, 
             edge.toId ? getGraphNode(edge.toId, graph).level : 20
-        )
+        ) - 1;
     });
 
     return graph;
