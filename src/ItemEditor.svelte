@@ -1,5 +1,4 @@
 <script>
-	import {getGraphNode, detachNodeFromParent} from "./graphutil.js"
     export let selectedItem;
     export let graph;
 	import { JSONEditor } from 'svelte-jsoneditor';
@@ -183,7 +182,7 @@
 
 
 <style>
-	h1, .detachBtn{
+	h1 {
 		text-align: center;
 	}
 	.node-panel, .edge-panal{
