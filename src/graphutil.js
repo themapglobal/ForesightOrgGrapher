@@ -94,18 +94,18 @@ export function resizeGraphNode(item, graph){
     // console.log(item.label, item.width, item.height);
 }
 
-function decideNodeLevel(item, graph, currentLevel){
-    item.level = currentLevel;
-    item.children.forEach(c => decideNodeLevel(getGraphNode(c, graph), graph, currentLevel + 2))
+function decideNodeLevel(item, graph, currentLevel, selectedItem){
+    item.level = selectedItem && selectedItem.id === item.id ? (500 + currentLevel) : currentLevel;
+    item.children.forEach(c => decideNodeLevel(getGraphNode(c, graph), graph, item.level + 2, selectedItem))
 }
 
-export function layout(graph){
+export function layout(graph, selectedItem){
     if(!graph) return null;
     prepareGraph(graph);
     // resize top nodes only because they will recurse
     graph.items.filter(i => (i.kind === 'node' && !i.parent)).forEach(item => {
         resizeGraphNode(item, graph);
-        decideNodeLevel(item, graph, 0);
+        decideNodeLevel(item, graph, 0, selectedItem);
     });
 
     graph.items.filter(i => (i.kind === 'edge')).forEach(edge => {
@@ -172,10 +172,11 @@ export function deleteGraphItem(item, graph, deleteDependents){
 
 export function createGraphNode(e, graph, svg, topGroupElem){
     // console.log("createGraphNode")
+    let randomId = Math.ceil(Math.random() * 10000);
     graph.items.push({
-        id: Math.ceil(Math.random() * 10000),
+        id: randomId,
         kind: 'node',
-        label: 'New node',
+        label: `New node ${randomId}`,
         desc: '',
         link: '',
         tags: [],
@@ -258,6 +259,22 @@ export function createGraphNodeEdge(from, fromHandle, graph){
         directed: true, 
         weight: 5
     })
+}
+
+export function findNodeAtPosition(svgPt, excludeNode, graph){
+    let nodes = graph.items.filter(item => item.kind === 'node')
+        .filter(node => node.id != excludeNode.id)
+        .filter(node => {
+            return (
+                svgPt.x > node.pos.x - node.width/2 &&
+                svgPt.x < node.pos.x + node.width/2 &&
+                svgPt.y > node.pos.y - node.height/2 &&
+                svgPt.y < node.pos.y + node.height/2
+            );
+        });
+    
+    // choose the node on top
+    return nodes.sort((a,b) => b.level - a.level)[0];
 }
 
 export function exportJson(graph){

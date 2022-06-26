@@ -25,10 +25,6 @@
 		dispatch('graphchanged', graph);
 	}
 
-	function detachFromParent(){
-		detachNodeFromParent(selectedItem, graph)
-        dispatch('graphchanged', graph);
-	}
 
 </script>
 
@@ -40,10 +36,6 @@
 	
 	{#if selectedItem.link && selectedItem.link.toString().length > 0}
 	<a class="itemlink" href={selectedItem.link} target="_blank">See more at {selectedItem.link}</a>
-	{/if}
-
-	{#if selectedItem.kind === 'node' && getGraphNode(selectedItem.parent, graph)}
-	<p class="detachBtn"><button on:click={detachFromParent}>Detach from &quot;{getGraphNode(selectedItem.parent, graph).label}&quot;</button></p>
 	{/if}
 
 	<div class="node-panel">

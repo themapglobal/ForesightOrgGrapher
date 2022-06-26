@@ -1,7 +1,7 @@
 <script>
 
 	import {exportJson, moveGraphNode, createGraphNodeEdge, layout, themes,
-		deleteGraphItem, createGraphNode, createGraphEdge, exportCytoscape, createGraphChildNode} from "./graphutil.js"
+		deleteGraphItem, createGraphNode, createGraphEdge, exportCytoscape, createGraphChildNode, getGraphNode, detachNodeFromParent, findNodeAtPosition} from "./graphutil.js"
 
 	import Node from "./Node.svelte";
 	import Edge from "./Edge.svelte";
@@ -43,7 +43,7 @@
 		graphjsonpath && fetch(graphjsonpath)
 		.then(r => r.json())
 		.then(data => {
-			graph = layout(Object.assign(data, overrideOptions))
+			graph = layout(Object.assign(data, overrideOptions), null)
 		});
 	})
 
@@ -51,7 +51,7 @@
 		svgElement = svgElement;
 		topGroupElem = topGroupElem;
 		selectedItem = selectedItem;
-		graph = layout(graph);
+		graph = layout(graph, selectedItem);
 		// console.log('rerender()')
 	}
 
@@ -92,6 +92,19 @@
 		if(draggingFrom.edge && selectedItem.kind === 'node'){
 			draggingFrom.edge.toId = selectedItem.id
 			delete draggingFrom.edge.toOrphan;
+		} else if(draggingFrom.edge && selectedItem.kind === 'edge'){
+			// deleteGraphItem(draggingFrom.edge, graph, false);
+		} else if(!draggingFrom.hasOwnProperty('edge')){
+			//dropped a node on top of another
+			let pt = svgElement.createSVGPoint();
+			pt.x = draggingFrom.x;
+			pt.y = draggingFrom.y;
+			let svgPt = pt.matrixTransform(topGroupElem.getCTM().inverse());
+			let destNode = findNodeAtPosition(svgPt, selectedItem, graph);
+			if(destNode && selectedItem.parent != destNode.id){
+				console.log("making ", selectedItem.label, " child of ", destNode.label);
+				selectedItem.parent = destNode.id;
+			}
 		}
 		draggingFrom = null;
 		reRender();
@@ -117,12 +130,6 @@
 		contextMenuPosition = null;
 	}
 	
-	function handleSvgClick(e){ 
-		// console.log("handleSvgClick");
-		selectedItem = null;
-		contextMenuPosition = null;
-	} 
-	
 	function handleSvgMouseMove(e){
 		// console.log("mousemove");
 		currentMouse = {x: e.clientX, y: e.clientY};
@@ -133,9 +140,14 @@
 			// drawing an edge
 			// console.log("moving edge")
 			let pt1 = svgElement.createSVGPoint();
-			pt1.x = draggingFrom.x; pt1.y = draggingFrom.y;
+
+			// Leave 20px gap for mouse events to work correctly
+			pt1.x = draggingFrom.x + 20 * Math.cos(Math.atan2(draggingFrom.y, draggingFrom.x)); 
+			pt1.y = draggingFrom.y + 20 * Math.sin(Math.atan2(draggingFrom.y, draggingFrom.x)); 
+
 			let svgPt1 = pt1.matrixTransform(topGroupElem.getCTM().inverse());
 
+			
 			draggingFrom.edge.toOrphan = {pos: {x: svgPt1.x, y: svgPt1.y}}
 		} else {
 			// moving a node
@@ -167,6 +179,7 @@
 	}
 
 	function handleContextMenu(e){
+		// console.log("handleContextMenu");
 		if(!graph.contextmenu) return;
 		contextMenuPosition = [e.clientX, e.clientY];
 	}
@@ -185,12 +198,25 @@
 	}
 
 	function handleSvgMouseUp(e){
+		// console.log("Svg Mouseup");
 		if(draggingFrom.edge){
 			// remove this edge
 			deleteGraphItem(draggingFrom.edge, graph, false)
 		}
 		draggingFrom = null;
 		reRender();
+	}
+
+	function handleSvgMouseDown(e){
+		// console.log("Svg MouseDown");
+		selectedItem = null;
+		if(e.buttons === 1) { 
+			draggingFrom = {x: e.clientX, y: e.clientY}; 
+			contextMenuPosition = null;
+		} else {
+			// right-click
+			
+		}
 	}
 
 	function handleEdgeChanged(e){
@@ -200,6 +226,12 @@
 	function createChildNode(e, item){
 		// console.log("createChildNode", item);
 		createGraphChildNode(e, graph, item, svgElement, topGroupElem);
+		reRender();
+		contextMenuPosition = null;
+	}
+
+	function detachNode(item){
+		detachNodeFromParent(item, graph);
 		reRender();
 		contextMenuPosition = null;
 	}
@@ -268,7 +300,7 @@
 		let reader = new FileReader();
 		reader.readAsText(jsonFile);
 		reader.onload = e => {
-			graph = layout(JSON.parse(e.target.result))
+			graph = layout(JSON.parse(e.target.result), null)
 		}
 	}
 </script>
@@ -277,10 +309,9 @@
 <div class="container">
 <svg tabindex="0" xmlns="http://www.w3.org/2000/svg"
 		viewBox="0 0 1000 1000"
-	    on:mousedown="{e => { if(e.buttons === 1) { draggingFrom = {x: e.clientX, y: e.clientY}; } }}"
+	    on:mousedown={handleSvgMouseDown}
 		on:mousemove={handleSvgMouseMove}
-	    on:mouseup="{handleSvgMouseUp}"
-		on:click={handleSvgClick}
+	    on:mouseup={handleSvgMouseUp}
 		on:contextmenu|preventDefault={handleContextMenu}
 		style={`background-color: ${graph.theme.bgfill}`}
 		bind:this={svgElement}
@@ -324,7 +355,7 @@
 
 {#if selectedItem}
 <section class="sidepanel">
-	<ItemEditor {selectedItem} {graph} on:graphchanged={e => graph = layout(e.detail)} />
+	<ItemEditor {selectedItem} {graph} on:graphchanged={e => graph = layout(e.detail, selectedItem)} />
 </section>
 {/if}
 
@@ -333,6 +364,9 @@
   {#if selectedItem}
 	{#if selectedItem.kind === 'node'}
 		<sl-menu-item value="createchildnode" on:click={(e) => createChildNode(e, selectedItem)}>Create child node</sl-menu-item>
+		{#if selectedItem.parent }
+			<sl-menu-item value="detach" on:click={(e) => detachNode(selectedItem)}>Detach &quot;{selectedItem.label}&quot; from &quot;{getGraphNode(selectedItem.parent, graph).label}&quot;</sl-menu-item>
+		{/if}
 		<sl-menu-item value="deleteitemwithdependents" on:click={(e) => deleteItem(selectedItem, true)}>Delete &quot;{selectedItem.label}&quot; including dependents</sl-menu-item>
 	{/if}
 	  <sl-menu-item value="deleteitem" on:click={(e) => deleteItem(selectedItem, false)}>Delete &quot;{selectedItem.label}&quot; leaving orphans</sl-menu-item>
@@ -433,7 +467,7 @@
 	sl-menu.contextmenu {
 		position: fixed;
 		z-index: 20;
-		max-width: 380px;
+		max-width: 440px;
 	}
 
 </style>
