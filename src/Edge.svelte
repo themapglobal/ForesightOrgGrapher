@@ -75,7 +75,6 @@
         class="edgePath"
         id={`edgepathmain${item.id}`}
         stroke-dasharray={getDashArray(item.strokeType || graph.theme.edgestroketype)}
-        marker-end={(item.directed && false) ? "url(#arrow)" : false}
         on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, rawEvent: e})}
         on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item, rawEvent: e})}
         on:click|stopPropagation    
@@ -85,7 +84,7 @@
     <path 
         d={getEdgePath(graph)}
         fill="none"
-        stroke="none"
+        stroke="transparent"
         stroke-width=5
         
         transform='{labelTransform}'

@@ -194,12 +194,8 @@ function getSvgCoordinates(svg, e, topGroupElem){
 }
 
 function getNewRandomId(graph){
-    let randomId;
     
-    do {
-        randomId = Math.ceil(Math.random() * 10000);
-    } while(graph.items.find(item => item.id === randomId))
-    return randomId;
+    return Math.max(...graph.items.map(item => item.id), 0)+ 1
 }
 
 export function createGraphChildNode(e, graph, parent, svg, topGroupElem){

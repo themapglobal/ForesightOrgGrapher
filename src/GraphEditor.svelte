@@ -18,6 +18,7 @@
 	let graph;
 	let itemsForRender;
 	let tagGroups;
+	let isInIframe = false;
 
 	$: itemsForRender = getItemsForRender(graph, selectedItem);
 	$: tagGroups = getTagGroups(graph);
@@ -40,14 +41,30 @@
 	}
 
 	// $: console.log(selectedItem?.level)
-	
+	function resetZoomAndPan(){
+		if (svgElement && topGroupElem) {
+			select(topGroupElem).attr('transform', null)	
+		}
+	}
 	onMount(() => {
 		graphjsonpath && fetch(graphjsonpath)
 		.then(r => r.json())
 		.then(data => {
 			graph = layout(Object.assign(data, overrideOptions), null)
 		});
+		inIframe()
 	})
+
+	function inIframe(){
+		if(window.location !== window.parent.location){
+			// show left side bar 
+			console.log('This page is in iframe')
+			isInIframe = true;
+		}
+		else {
+			console.log('this page is not in iframe')
+		}
+	}
 
     function reRender(){
 		svgElement = svgElement;
@@ -319,13 +336,7 @@
 		bind:this={svgElement}
 		on:keydown={handleKeydown}
 >
-  <defs>
-	<marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5"
-        markerWidth="4" markerHeight="4"
-        orient="auto-start-reverse">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="grey" />
-    </marker>
-  </defs>
+  
   
   <g bind:this={topGroupElem}>
 	<Grid kind={graph.theme.grid}/> 
@@ -354,6 +365,11 @@
   </g>
 </svg>
 
+{#if isInIframe}
+<div class="alert">If you adding comment do it in unzoomed / unpanned mode
+	<button on:click={resetZoomAndPan}>Reset Zoom</button>
+</div>
+{/if}
 
 {#if selectedItem}
 <section class="sidepanel">
@@ -471,5 +487,14 @@
 		z-index: 20;
 		max-width: 440px;
 	}
-
+.alert{
+	position: fixed;
+	top: 0;
+	left: 50%;
+	transform: translateX(-50%);
+	padding: 10px;
+	background-color: #fee2e2;
+	color: #b91c1c;
+	border: 1px solid #b91c1c;
+}
 </style>
