@@ -172,7 +172,7 @@ export function deleteGraphItem(item, graph, deleteDependents){
 
 export function createGraphNode(e, graph, svg, topGroupElem){
     // console.log("createGraphNode")
-    let randomId = Math.ceil(Math.random() * 10000);
+    let randomId = getNewRandomId(graph);
     graph.items.push({
         id: randomId,
         kind: 'node',
@@ -193,12 +193,22 @@ function getSvgCoordinates(svg, e, topGroupElem){
     return {x: svgpt.x, y: svgpt.y};
 }
 
+function getNewRandomId(graph){
+    let randomId;
+    
+    do {
+        randomId = Math.ceil(Math.random() * 10000);
+    } while(graph.items.find(item => item.id === randomId))
+    return randomId;
+}
+
 export function createGraphChildNode(e, graph, parent, svg, topGroupElem){
     // console.log("createGraphNode")
+    let randomId = getNewRandomId(graph);
     graph.items.push({
-        id: Math.ceil(Math.random() * 10000),
+        id: randomId,
         kind: 'node',
-        label: 'New node',
+        label: `New node ${randomId}`,
         desc: '',
         link: '',
         tags: [],
@@ -210,7 +220,7 @@ export function createGraphChildNode(e, graph, parent, svg, topGroupElem){
 
 export function createGraphEdge(from, toCoords, graph){
     let edge = {
-        id: Math.ceil(Math.random() * 100000),
+        id: getNewRandomId(graph),
         kind: 'edge',
         label: '',
         desc: '',
@@ -227,12 +237,12 @@ export function createGraphEdge(from, toCoords, graph){
 }
 
 export function createGraphNodeEdge(from, fromHandle, graph){
-    // console.log("createGraphNodeEdge")
-    let newId = Math.ceil(Math.random() * 100000);
+    console.log("createGraphNodeEdge")
+    let newId = getNewRandomId(graph);
     graph.items.push({
         id: newId,
         kind: 'node',
-        label: 'new node',
+        label: `New node ${newId}`,
         desc: '',
         link: '',
         tags: [],
@@ -247,7 +257,7 @@ export function createGraphNodeEdge(from, fromHandle, graph){
     })
 
     graph.items.push({
-        id: Math.ceil(Math.random() * 100000),
+        id: getNewRandomId(graph),
         kind: 'edge',
         label: '',
         desc: '',
