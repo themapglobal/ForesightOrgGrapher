@@ -21,6 +21,7 @@
 
 	$: notesWidth = Math.min(300, item.notes ? item.notes.length *10 : 0)
 	$: notesHeight = (item.notes ? (Math.ceil(item.notes.length*10 / notesWidth) * 20) : 0)
+	// $: console.log(item.id, item.pos, item.width, item.height);
 </script>
 
 <g>

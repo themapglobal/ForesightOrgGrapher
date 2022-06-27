@@ -48,7 +48,7 @@ export function moveGraphNode(item, graph, dx, dy){
 }
 
 export function resizeGraphNode(item, graph){
-    // console.log("resizing", item.label);
+    // console.log("resizing", item.id, item.label);
     // first resize all children
     (item.children || []).forEach(c => {
         let child = getGraphNode(c, graph);
@@ -69,7 +69,14 @@ export function resizeGraphNode(item, graph){
         return child.pos.x - child.width / 2 - 15;
     })), item.pos.x);
 
+    // console.log(item.id, {leftchild}, {rightchild});
+
     item.width = 2 * Math.max(halfLabelAndNotesWidth, rightchild, leftchild);
+
+    // if(!item.width){
+    //     console.log("found missing width");
+    //     console.log(item.id, item.label, item.width, item.height);
+    // }
 
     let halfLabelAndNotesHeight = 15 + notesHeight/2 ;
 
@@ -91,7 +98,11 @@ export function resizeGraphNode(item, graph){
     // console.log({upchild})
 
     item.height = 2 * Math.max(halfLabelAndNotesHeight, upchild, downchild);
-    // console.log(item.label, item.width, item.height);
+
+    // if(!item.height){
+    //     console.log("found missing height");
+    //     console.log(item.id, item.label, item.width, item.height);
+    // }
 }
 
 function decideNodeLevel(item, graph, currentLevel, selectedItem){

@@ -50,8 +50,8 @@
 		graphjsonpath && fetch(graphjsonpath)
 		.then(r => r.json())
 		.then(data => {
-			let localStorageValue = localStorage.getItem(graphjsonpath)
-			graph =  localStorageValue ? JSON.parse(localStorageValue) : layout(Object.assign(data, overrideOptions), null)
+			let localStorageValue = localStorage.getItem(graphjsonpath);
+			graph =  localStorageValue ? layout(JSON.parse(localStorageValue)) : layout(Object.assign(data, overrideOptions), null)
 		});
 		inIframe()
 		
@@ -59,12 +59,7 @@
 
 	function inIframe(){
 		if(window.location !== window.parent.location){
-			// show left side bar 
-			console.log('This page is in iframe')
 			isInIframe = true;
-		}
-		else {
-			console.log('this page is not in iframe')
 		}
 	}
 
@@ -116,14 +111,14 @@
 			delete draggingFrom.edge.toOrphan;
 		} else if(draggingFrom.edge && selectedItem.kind === 'edge'){
 			deleteGraphItem(draggingFrom.edge, graph, false);
-		} else if(!draggingFrom.hasOwnProperty('edge')){
+		} else if(selectedItem && !draggingFrom.hasOwnProperty('edge')){
 			//dropped a node on top of another
 			let pt = svgElement.createSVGPoint();
 			pt.x = draggingFrom.x;
 			pt.y = draggingFrom.y;
 			let svgPt = pt.matrixTransform(topGroupElem.getCTM().inverse());
 			let destNode = findNodeAtPosition(svgPt, selectedItem, graph);
-			if(destNode && selectedItem.parent != destNode.id){
+			if(destNode && (selectedItem.parent != destNode.id) && (selectedItem.id != destNode.parent)){ // prevent cyclic dependency
 				console.log("making ", selectedItem.label, " child of ", destNode.label);
 				selectedItem.parent = destNode.id;
 			}
