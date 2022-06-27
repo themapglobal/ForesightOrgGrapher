@@ -50,9 +50,11 @@
 		graphjsonpath && fetch(graphjsonpath)
 		.then(r => r.json())
 		.then(data => {
-			graph = layout(Object.assign(data, overrideOptions), null)
+			let localStorageValue = localStorage.getItem(graphjsonpath)
+			graph =  localStorageValue ? JSON.parse(localStorageValue) : layout(Object.assign(data, overrideOptions), null)
 		});
 		inIframe()
+		
 	})
 
 	function inIframe(){
@@ -71,6 +73,7 @@
 		topGroupElem = topGroupElem;
 		selectedItem = selectedItem;
 		graph = layout(graph, selectedItem);
+		localStorage.setItem(graphjsonpath, JSON.stringify(graph))
 		// console.log('rerender()')
 	}
 
@@ -294,6 +297,7 @@
 		document.body.appendChild(element);
 		element.click();
 		document.body.removeChild(element);
+		
 	}
 
 	function handleMenu(e){
@@ -320,7 +324,9 @@
 		reader.readAsText(jsonFile);
 		reader.onload = e => {
 			graph = layout(JSON.parse(e.target.result), null)
+			reRender();
 		}
+		
 	}
 </script>
 

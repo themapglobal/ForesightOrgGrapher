@@ -113,7 +113,7 @@
 <style>
 	g:hover rect {
 		filter: invert(10%) drop-shadow(3px 5px 2px rgb(204 204 204 / 0.4));
-	
+		
 	}
 	
 	text {
@@ -122,7 +122,7 @@
 	}
 	
 	rect {
-		fill-opacity: 1;
+		fill-opacity: 0.8;
 		filter: drop-shadow(3px 5px 2px rgb(204 204 204 / 0.4));
 		cursor: pointer;
 	}
