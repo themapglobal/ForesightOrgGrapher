@@ -50,8 +50,12 @@
 		graphjsonpath && fetch(graphjsonpath)
 		.then(r => r.json())
 		.then(data => {
-			let localStorageValue = localStorage.getItem(graphjsonpath);
-			graph =  localStorageValue ? layout(JSON.parse(localStorageValue)) : layout(Object.assign(data, overrideOptions), null)
+			if(window.overrideOptions.persistLocalStorage){
+				let localStorageValue = localStorage.getItem(graphjsonpath);
+				graph =  localStorageValue ? layout(JSON.parse(localStorageValue)) : layout(Object.assign(data, overrideOptions), null);
+			} else {
+				graph = layout(Object.assign(data, overrideOptions), null);
+			}
 		});
 		inIframe()
 		
@@ -68,7 +72,10 @@
 		topGroupElem = topGroupElem;
 		selectedItem = selectedItem;
 		graph = layout(graph, selectedItem);
-		localStorage.setItem(graphjsonpath, JSON.stringify(graph))
+		if(window.overrideOptions.persistLocalStorage){
+			localStorage.setItem(graphjsonpath, JSON.stringify(graph))
+		}
+		
 		// console.log('rerender()')
 	}
 
@@ -374,7 +381,7 @@
 
 {#if selectedItem}
 <section class="sidepanel">
-	<ItemEditor {selectedItem} {graph} on:graphchanged={e => graph = layout(e.detail, selectedItem)} />
+	<ItemEditor {selectedItem} {graph} on:graphchanged={e => { graph = layout(e.detail, selectedItem); reRender(); }} />
 </section>
 {/if}
 
