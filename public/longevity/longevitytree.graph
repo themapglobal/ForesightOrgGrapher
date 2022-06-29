@@ -200,6 +200,7 @@
         "name": "classic",
         "bgfill": "#f3f3f3",
         "grid": "cartesian",
+        "selectionColor": "blue",
         "font": "Balsamiq Sans",
         "nodefill": "#fbe6a3",
         "nodelabelstroke": "black",

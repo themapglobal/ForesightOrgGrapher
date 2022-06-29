@@ -70,7 +70,7 @@
 	<path 
         d={getEdgePath(graph)}
         fill="none"
-        stroke={isSelected ? 'blue' : (item.stroke || graph.theme.edgestroke)}
+        stroke={isSelected ? graph.theme.selectionColor : (item.stroke || graph.theme.edgestroke)}
         stroke-width=5
         class="edgePath"
         id={`edgepathmain${item.id}`}
@@ -106,8 +106,8 @@
                 font-family="Verdana"
                 font-size=20 
             
-                fill={isSelected ? 'blue' : (item.stroke || graph.theme.edgestroke)}
-                stroke={isSelected ? 'blue' : (item.stroke || graph.theme.edgestroke)}
+                fill={isSelected ? graph.theme.selectionColor : (item.stroke || graph.theme.edgestroke)}
+                stroke={isSelected ? graph.theme.selectionColor : (item.stroke || graph.theme.edgestroke)}
                 on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, rawEvent: e})}
                 on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item, rawEvent: e})}
                 on:click|stopPropagation
@@ -122,8 +122,8 @@
                 font-family="Verdana"
                 font-size=20 
                 start
-                fill={isSelected ? 'blue' : (item.stroke || graph.theme.edgestroke)}
-                stroke={isSelected ? 'blue' : (item.stroke || graph.theme.edgestroke)}
+                fill={isSelected ? graph.theme.selectionColor : (item.stroke || graph.theme.edgestroke)}
+                stroke={isSelected ? graph.theme.selectionColor : (item.stroke || graph.theme.edgestroke)}
                 on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, rawEvent: e})}
                 on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item, rawEvent: e})}
                 on:click|stopPropagation

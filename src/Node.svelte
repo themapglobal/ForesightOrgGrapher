@@ -31,7 +31,7 @@
 		width={item.width}
 		height={item.height}
 		fill={item.fill || theme.nodefill}
-		stroke={isSelected ? 'blue' : (isHighlighted ? 'red' : (item.bordercolor || theme.nodeborder))}
+		stroke={isSelected ? theme.selectionColor : (isHighlighted ? 'red' : (item.bordercolor || theme.nodeborder))}
 		stroke-width={(isSelected || isHighlighted) ? '6px' : '3px'}
 		rx={8+Math.floor(item.height/50)}	
 		on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, rawEvent: e})}
