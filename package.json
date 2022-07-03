@@ -21,6 +21,7 @@
   "dependencies": {
     "d3-selection": "^3.0.0",
     "d3-zoom": "^3.0.0",
+    "marked": "^4.0.17",
     "sirv-cli": "^2.0.0",
     "svelte-jsoneditor": "^0.3.60"
   }

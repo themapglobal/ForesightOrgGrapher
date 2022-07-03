@@ -6,7 +6,6 @@
             "label": "Arithmetic",
             "notes": "some notes here",
             "desc": "",
-            "link": "",
             "tags": [
                 "org:meta",
                 "primary"
@@ -23,7 +22,6 @@
             "label": "Algebra",
             "notes": "other notes",
             "desc": "",
-            "link": "",
             "tags": [
                 "org:google",
                 "lab:cambridge",
@@ -40,7 +38,6 @@
             "kind": "edge",
             "label": "is a prerequisite of",
             "desc": "",
-            "link": "",
             "tags": [
                 "org:apple",
                 "lab:mit"
@@ -55,7 +52,6 @@
             "kind": "edge",
             "label": "",
             "desc": "",
-            "link": "",
             "tags": [
                 "org:apple",
                 "org:google"
@@ -71,7 +67,6 @@
             "label": "Subtraction",
             "notes": "dangal",
             "desc": "",
-            "link": "",
             "tags": [],
             "parent": 2,
             "pos": {
@@ -85,7 +80,6 @@
             "label": "Multiplication",
             "notes": "",
             "desc": "",
-            "link": "",
             "tags": [
                 "org:apple",
                 "lab:mit"
@@ -102,7 +96,6 @@
             "label": "Quadratic Equations",
             "notes": "",
             "desc": "",
-            "link": "",
             "tags": [
                 "org:apple",
                 "org:google",
@@ -119,7 +112,6 @@
             "kind": "edge",
             "label": "",
             "desc": "",
-            "link": "",
             "tags": [],
             "directed": true,
             "weight": 5,
@@ -133,7 +125,6 @@
             "label": "Arithmetic Sequences",
             "notes": "",
             "desc": "",
-            "link": "",
             "tags": [],
             "parent": 3,
             "pos": {
@@ -147,7 +138,6 @@
             "label": "Factorizing",
             "notes": "",
             "desc": "",
-            "link": "",
             "tags": [],
             "parent": 94575,
             "pos": {
@@ -161,7 +151,6 @@
             "label": "Proof by Induction",
             "notes": "",
             "desc": "",
-            "link": "",
             "tags": [],
             "parent": 3,
             "pos": {
@@ -175,7 +164,6 @@
             "label": "Prime Numbers",
             "notes": "",
             "desc": "",
-            "link": "",
             "tags": [],
             "badge": "👎",
             "parent": 6916,

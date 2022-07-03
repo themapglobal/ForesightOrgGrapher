@@ -2,6 +2,7 @@
     export let selectedItem;
     export let graph;
 	import { JSONEditor } from 'svelte-jsoneditor';
+	import { marked } from "marked";
 	import TagsInput from "./TagsInput.svelte";
     import { createEventDispatcher } from 'svelte';
 	const dispatch = createEventDispatcher();
@@ -24,18 +25,14 @@
 		dispatch('graphchanged', graph);
 	}
 
-
 </script>
 
 	<h1>{selectedItem.label}</h1>
 	<!-- <p>{selectedItem.kind === 'edge' ? `from ${getGraphNode(selectedItem.fromId, graph)?.label} to ${getGraphNode(selectedItem.toId, graph)?.label}` : `${selectedItem.children.length} children`}</p> -->
 
 
-	<p class="itemdesc">{selectedItem.desc}</p>
+	<p class="itemdesc">{@html marked(selectedItem.desc)}</p>
 	
-	{#if selectedItem.link && selectedItem.link.toString().length > 0}
-	<a class="itemlink" href={selectedItem.link} target="_blank">See more at {selectedItem.link}</a>
-	{/if}
 
 	<div class="node-panel">
 		<sl-input 
@@ -61,17 +58,11 @@
 		{/if}
 
 		<sl-textarea 
-			label="Description" placeholder="Desc..."
+			label="Description" placeholder="Description in markdown..."
 			size="small"
 			on:sl-input={e => handleInputChange(e, 'text_desc')}
 			value={selectedItem.desc}> 
 		</sl-textarea>
-
-		<sl-input 
-			label="Link" type='url' size="small"
-			value={selectedItem.link} 
-			on:input={e => handleInputChange(e, 'url_link')}>
-		</sl-input>
 
 		<TagsInput tags={selectedItem.tags} on:tagschanged={e => { selectedItem.tags = e.detail.value; dispatch('graphchanged', graph) }}/>
 		
@@ -228,7 +219,7 @@
 		text-align: end;
 	}
 	
-	.itemlink, .itemdesc{
+	.itemdesc{
 		padding: 10px 30px;
 	}
 
@@ -236,10 +227,5 @@
 		font-size: 14px;
 		color: #888;
 	}
-
-	a.itemlink {
-		font-size: 16px;
-	}
-
 	
 </style>
