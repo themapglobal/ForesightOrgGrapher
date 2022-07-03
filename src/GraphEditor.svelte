@@ -438,7 +438,6 @@
 		</sl-menu>
 	</sl-dropdown>
 
-	{#if false}
 	<sl-select 
 		placeholder="Highlight by Tag"
 		clearable 
@@ -452,7 +451,6 @@
 				<sl-divider></sl-divider>
 			{/each}
 	</sl-select>
-	{/if}
 
 </sl-button-group>
 </section>

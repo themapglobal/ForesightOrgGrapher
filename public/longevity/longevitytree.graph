@@ -201,6 +201,7 @@
         "bgfill": "#f3f3f3",
         "grid": "cartesian",
         "selectionColor": "blue",
+        "highlightColor": "red",
         "font": "Balsamiq Sans",
         "nodefill": "#fbe6a3",
         "nodelabelstroke": "black",

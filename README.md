@@ -7,5 +7,6 @@ This is an SVG-based interactive graph dataset editor that allows you to manuall
 ## TODO
 
 - Better path and z-index calculation for edges
-- Performance testing (1000 nodes?)
-
+- Edge label readability
+- Performance testing (1000+ nodes)
+- Minimal theme
