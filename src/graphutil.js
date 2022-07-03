@@ -311,7 +311,8 @@ export function exportJson(graph){
                 parent: item.parent,
                 pos: item.pos,
                 fill: item.fill,
-                stroke: item.stroke
+                stroke: item.stroke,
+                badge: item.badge
             };
         else if(item.kind === 'edge')
             return {
