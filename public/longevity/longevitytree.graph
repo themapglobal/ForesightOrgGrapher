@@ -220,7 +220,7 @@
     "jsondownload": true,
     "jsonupload": true,
     "contextmenu": true,
-    "customjson": false,
+    "customjson": true,
     "exportcytoscape": true,
     "exportsvg": true
 }
