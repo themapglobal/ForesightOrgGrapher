@@ -374,7 +374,8 @@
 </svg>
 
 {#if isInIframe}
-<div class="alert">If you adding comment do it in unzoomed / unpanned mode
+<div class="alert">
+	Please add comments only in the unzoomed, unpanned view.
 	<button on:click={resetZoomAndPan}>Reset Zoom</button>
 </div>
 {/if}
@@ -433,6 +434,7 @@
 			<sl-menu-item value="theme.classic" checked={graph.theme.name === 'classic'}>Classic</sl-menu-item>
 			<sl-menu-item value="theme.elegant" checked={graph.theme.name === 'elegant'}>Elegant</sl-menu-item>
 			<sl-menu-item value="theme.foresight" checked={graph.theme.name === 'foresight'}>Foresight</sl-menu-item>
+			<sl-menu-item value="theme.minimal" checked={graph.theme.name === 'minimal'}>Minimal</sl-menu-item>
 		</sl-menu>
 	</sl-dropdown>
 

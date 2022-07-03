@@ -56,7 +56,7 @@
 
 	{#if item.notes}	
 	<foreignObject 
-		x={item.pos.x - notesWidth/2 + 10} 
+		x={item.pos.x - notesWidth/2} 
 		y={item.pos.y - item.height/2 + 30} 
 		font-family={theme.font}
 		font-weight=300
@@ -129,5 +129,6 @@
 	}
 	.foreign-obj-div{
 		width: 85%;
+		margin: 0 auto;
 	}
 </style>

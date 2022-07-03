@@ -401,6 +401,21 @@ export const themes = {
         "badges": ["✅", "❌", "⚡", "👎", "👍"]
     },
 
+    minimal: {
+        "name": "minimal",
+        "bgfill": "#e5e7eb",
+        "grid": false,
+        "selectionColor": "#1f2937",
+        "nodefill": "white",
+        "nodelabelstroke": "black",
+        "nodeborder": "black",
+        "edgestroke": "#1f2937",
+        "edgeshape": "curved",
+        "edgestroketype": "solid",
+        "font": "PT Mono",
+        "badges": ["✅", "❌", "⚡", "👎", "👍"]
+    },
+
     classic: {
         "name": "classic",
         "bgfill": "#f3f3f3",
