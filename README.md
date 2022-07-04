@@ -10,3 +10,4 @@ This is an SVG-based interactive graph dataset editor that allows you to manuall
 - Edge label readability
 - Performance testing (1000+ nodes)
 - Minimal theme
+- Improve TagsInput accessibility

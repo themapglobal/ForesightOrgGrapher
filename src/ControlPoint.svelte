@@ -1,28 +1,37 @@
 <script>
-  export let kind = 'plus'; // plus or cross
-  export let x;
-  export let y;
-  export let size = 4;
-  export let data;
-  export let title; 
+    export let kind = "plus"; // plus or cross
+    export let x;
+    export let y;
+    export let size = 4;
+    export let data;
+    export let title;
 </script>
 
 <g>
-    <circle cx={x} cy={y} r={size+2} {title}
-        data-handle={data} 
-        on:click 
+    <circle
+        cx={x}
+        cy={y}
+        r={size + 2}
+        {title}
+        data-handle={data}
+        on:click
         on:mousedown|stopPropagation
     />
-    {#if kind === 'plus'}
-        <path 
-            d={`M ${x},${y-size} v ${2*size} M ${x-size},${y} h ${2*size}`}
-            data-handle={data} 
+    
+    {#if kind === "plus"}
+        <path
+            d={`M ${x},${y - size} v ${2 * size} M ${x - size},${y} h ${
+                2 * size
+            }`}
+            data-handle={data}
             on:click
             on:mousedown|stopPropagation
         />
-    {:else if kind === 'cross'}
-        <path 
-            d={`M ${x-size},${y-size} l ${2*size},${2*size} M ${x+size},${y-size} l ${-2*size},${2*size}`}
+    {:else if kind === "cross"}
+        <path
+            d={`M ${x - size},${y - size} l ${2 * size},${2 * size} M ${
+                x + size
+            },${y - size} l ${-2 * size},${2 * size}`}
             data-handle={data}
             on:click
             on:mousedown|stopPropagation
@@ -31,11 +40,11 @@
 </g>
 
 <style>
-	circle {
-		fill: white;
-		stroke: black;
-		cursor: pointer;
-	}
+    circle {
+        fill: white;
+        stroke: black;
+        cursor: pointer;
+    }
 
     path {
         fill: black;
@@ -44,10 +53,10 @@
         cursor: pointer;
     }
 
-	g:hover circle {
-		fill: magenta;
-		stroke: magenta;
-	}
+    g:hover circle {
+        fill: magenta;
+        stroke: magenta;
+    }
 
     g:hover path {
         fill: white;
