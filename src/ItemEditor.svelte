@@ -85,6 +85,7 @@
 				<sl-color-picker format="hex" size="small" 
 					value={selectedItem.fill} 
 					label={`Select fill color`}
+					opacity
 					on:sl-change={e => handleInputChange(e, 'color_fill')}
 				>
 				</sl-color-picker>
@@ -95,6 +96,7 @@
 				<sl-color-picker format="hex" size="small" 
 					value={selectedItem.bordercolor} 
 					label={`Select border color`}
+					opacity
 					on:sl-change={e => handleInputChange(e, 'color_bordercolor')}
 				>
 				</sl-color-picker>
@@ -105,6 +107,7 @@
 				<sl-color-picker format="hex" size="small" 
 					value={selectedItem.labelcolor} 
 					label={`Select label color`}
+					opacity
 					on:sl-change={e => handleInputChange(e, 'color_labelcolor')}
 				>
 				</sl-color-picker>
@@ -123,10 +126,10 @@
 
 			<div class="edge-stroke">	
 				<sl-color-picker
-					
 					format="hex" size="small" 
 					value={selectedItem.stroke} 
 					label={`Select stroke color`}
+					opacity
 					on:sl-change={e => handleInputChange(e, 'color_stroke')}
 				>
 				</sl-color-picker>
