@@ -62,6 +62,7 @@
 			size="small"
 			on:sl-input={e => handleInputChange(e, 'text_desc')}
 			value={selectedItem.desc}> 
+				<p slot="help-text"><a href="https://www.markdownguide.org/cheat-sheet/" target="_blank">Learn about MarkDown</a></p>
 		</sl-textarea>
 
 		<TagsInput tags={selectedItem.tags} on:tagschanged={e => { selectedItem.tags = e.detail.value; dispatch('graphchanged', graph) }}/>

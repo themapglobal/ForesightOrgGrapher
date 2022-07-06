@@ -12,13 +12,18 @@
             if(str.length > 0) { tags = [...tags, str]; }
             e.target.value = '';
             dispatch('tagschanged', {value: tags});
+        } else if (e.key === 'Backspace') {
+            if(e.target.value.length == 0) {
+                tags = tags.slice(0, -1);
+                dispatch('tagschanged', {value: tags});
+            }
         } else {
-            // console.log("got", e.key);
+            // console.log("got", e.key, e.code);
         }
     }
 
-    function handleTagRemove(e){
-        tags = tags.filter(t => t !== e.target.dataset.value)
+    function handleTagRemove(idx){
+        tags = tags.filter((_, index) => index != idx)
         dispatch('tagschanged', {value: tags});
     }
 
@@ -28,16 +33,17 @@
     label="Tags"
     on:keydown={handleKeydown}
     size="small"
+    help-text="Use SPACE to create tags"
 >
     <span slot="prefix">
-        {#each tags as tag}
+        {#each tags as tag, idx}
             <sl-tag 
                 removable
                 pill
                 size="small"
                 variant="success"
                 data-value={tag}
-                on:sl-remove={handleTagRemove}
+                on:sl-remove={e => handleTagRemove(idx)}
             >{tag}
             </sl-tag>
         {/each}
