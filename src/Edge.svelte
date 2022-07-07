@@ -68,7 +68,7 @@
             ) *
                 180) /
             Math.PI;
-        if (angle < -120 || angle > 120)
+        if (angle < -90 || angle > 90)
             return `translate(0, -6) rotate(180, ${midPointx}, ${midPointy})`;
         else return "translate(0, -6) rotate(0)";
     }
