@@ -31,7 +31,6 @@
 
 <sl-input 
     label="Tags"
-    help-text="press spacebar after the name to create a tag"
     on:keydown={handleKeydown}
     size="small"
     help-text="Use SPACE to create tags"
