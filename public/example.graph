@@ -171,16 +171,16 @@
                 "x": 25,
                 "y": 450
             }
-        }
-    ],
-    "extra": [
+        },
         {
+            "id": 56,
             "kind": "note",
             "pos": {
-                "x": 200,
+                "x": 850,
                 "y": 250
             },
-            "value": "hello"
+            "label": "hello",
+            "notes": "extra content goes here"
         }
     ],
     "grid": "false",

@@ -27,11 +27,10 @@
 
 </script>
 
-	<h1>{selectedItem.label}</h1>
-	<!-- <p>{selectedItem.kind === 'edge' ? `from ${getGraphNode(selectedItem.fromId, graph)?.label} to ${getGraphNode(selectedItem.toId, graph)?.label}` : `${selectedItem.children.length} children`}</p> -->
-
-
-	<p class="itemdesc">{@html marked(selectedItem.desc)}</p>
+	{#if selectedItem.kind === 'node' || selectedItem.kind === 'edge'}
+		<h1>{selectedItem.label}</h1>
+		<p class="itemdesc">{@html marked(selectedItem.desc)}</p>
+	{/if}
 	
 
 	<div class="node-panel">
@@ -48,7 +47,7 @@
 			on:input={e => handleInputChange(e, 'text_label')}>
 		</sl-input>	
 
-		{#if selectedItem.kind === 'node'}
+		{#if selectedItem.kind === 'node' || selectedItem.kind === 'note'}
 		<sl-textarea 
 			label="Notes" placeholder="Notes (these will be shown in the graph)..."
 			size="small"
@@ -57,15 +56,18 @@
 		</sl-textarea>
 		{/if}
 
-		<sl-textarea 
-			label="Description" placeholder="Description in markdown..."
-			size="small"
-			on:sl-input={e => handleInputChange(e, 'text_desc')}
-			value={selectedItem.desc}> 
-				<p slot="help-text"><a href="https://www.markdownguide.org/cheat-sheet/" target="_blank">Learn about MarkDown</a></p>
-		</sl-textarea>
+		{#if selectedItem.kind !== 'note'}
+			<sl-textarea 
+				label="Description" placeholder="Description in markdown..."
+				size="small"
+				on:sl-input={e => handleInputChange(e, 'text_desc')}
+				value={selectedItem.desc}> 
+					<p slot="help-text"><a href="https://www.markdownguide.org/cheat-sheet/" target="_blank">Learn about MarkDown</a></p>
+			</sl-textarea>
+		
 
-		<TagsInput tags={selectedItem.tags} on:tagschanged={e => { selectedItem.tags = e.detail.value; dispatch('graphchanged', graph) }}/>
+			<TagsInput tags={selectedItem.tags} on:tagschanged={e => { selectedItem.tags = e.detail.value; dispatch('graphchanged', graph) }}/>
+		{/if}
 		
 		{#if selectedItem.kind === 'node'}
 		<sl-select 
@@ -80,7 +82,7 @@
 	</div>
 
 		
-		{#if selectedItem.kind === 'node'}
+		{#if selectedItem.kind === 'node' || selectedItem.kind === 'note'}
 		<div class="node-colors">
 			<div class="node-color">				
 				<sl-color-picker format="hex" size="small" 
@@ -167,7 +169,7 @@
 		</div>		
 		{/if}
 
-		{#if graph.customjson}
+		{#if graph.customjson && (selectedItem.kind === 'node' || selectedItem.kind === 'edge')}
 		<div class="row">
 			<span><strong>custom</strong></span>
 			<JSONEditor content={{json: selectedItem.custom || {}}} onChange={handleJsonChange} />

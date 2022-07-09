@@ -6,7 +6,7 @@ export function prepareGraph(graph){
     // populate item.children[] for convenience
     graph.items.filter(i => i.kind === 'node').forEach(item => { 
         item.children = []; 
-        if(!item.pos || !item.pos.x || !item.pos.y){
+        if(!item.pos || !item.pos.hasOwnProperty('x') || !item.pos.hasOwnProperty('y')){
             // handle missing position by choosing random x and y
             console.error(`Got null position for ${item.label}`);
             item.pos = {x: (Math.random() * 600), y: (Math.random() * 600)}
@@ -16,6 +16,11 @@ export function prepareGraph(graph){
             item.parent = null
         }
     });
+
+    graph.items.filter(i => i.kind === 'note').forEach(item => { 
+        item.children = [];
+    });
+
     graph.items.forEach(item => {
         if(item.parent){
             let parent = getGraphNode(item.parent, graph);
@@ -119,6 +124,10 @@ export function layout(graph, selectedItem){
         decideNodeLevel(item, graph, 0, selectedItem);
     });
 
+    graph.items.filter(i => (i.kind === 'note')).forEach(item => {
+        resizeGraphNode(item, graph);
+    });
+
     graph.items.filter(i => (i.kind === 'edge')).forEach(edge => {
         // draw an edge BELOW both connected nodes
         edge.level =  Math.min(
@@ -192,6 +201,18 @@ export function createGraphNode(e, graph, svg, topGroupElem){
         link: '',
         tags: [],
         children: [],
+        pos: getSvgCoordinates(svg, e, topGroupElem),
+    })
+}
+
+export function createGraphNote(e, graph, svg, topGroupElem){
+    // console.log("createGraphNote")
+    let randomId = getNewRandomId(graph);
+    graph.items.push({
+        id: randomId,
+        kind: 'note',
+        label: `Add your notes here`,
+        notes: 'some extra content',
         pos: getSvgCoordinates(svg, e, topGroupElem),
     })
 }

@@ -7,6 +7,7 @@
 		themes,
 		deleteGraphItem,
 		createGraphNode,
+		createGraphNote,
 		createGraphEdge,
 		exportCytoscape,
 		createGraphChildNode,
@@ -18,6 +19,7 @@
 	import Node from "./Node.svelte";
 	import Edge from "./Edge.svelte";
 	import Grid from "./Grid.svelte";
+	import Note from "./Note.svelte";
 	import ItemEditor from "./ItemEditor.svelte";
 
 	import { onMount } from "svelte";
@@ -32,6 +34,7 @@
 	let tagGroups;
 	let isInIframe = false;
 
+	$: window.graph = graph;
 	$: itemsForRender = getItemsForRender(graph, selectedItem);
 	$: tagGroups = getTagGroups(graph);
 
@@ -254,6 +257,12 @@
 		contextMenuPosition = null;
 	}
 
+	function createNote(e){
+		createGraphNote(e, graph, svgElement, topGroupElem);
+		reRender();
+		contextMenuPosition = null;
+	}
+
 	function handleContextMenu(e) {
 		// console.log("handleContextMenu");
 		if (!graph.contextmenu) return;
@@ -333,6 +342,7 @@
 		if (!graph) return Object.entries({});
 		// get unique tags
 		let tags = graph.items
+		    .filter(i => ['node','edge'].includes(i.kind))
 			.map((i) => i.tags)
 			.flat()
 			.filter((value, index, self) => self.indexOf(value) === index);
@@ -430,6 +440,14 @@
 							on:edgeChanged={handleEdgeChanged}
 							isSelected={item.id === selectedItem?.id}
 						/>
+					{:else if item.kind === "note"}
+						<Note
+							{item}
+							theme={graph.theme}
+							isSelected={item.id === selectedItem?.id}
+							on:itemMouseDown={handleItemMouseDown}
+							on:itemMouseUp={handleItemMouseUp}
+						/>
 					{/if}
 				{/each}
 			</g>
@@ -488,8 +506,8 @@
 						>Delete &quot;{selectedItem.label}&quot; leaving orphans</sl-menu-item
 					>
 				{:else}
-					<sl-menu-item value="createnode" on:click={createNode}
-						>Create new node</sl-menu-item>
+					<sl-menu-item value="createnode" on:click={createNode}>Create new Node</sl-menu-item>
+					<sl-menu-item value="createnote" on:click={createNote}>Create new Text Note</sl-menu-item>
 				{/if}
 			</sl-menu>
 		{/if}
