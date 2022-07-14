@@ -33,7 +33,7 @@
     label="Tags"
     on:keydown={handleKeydown}
     size="small"
-    help-text="Use SPACE to create tags"
+    help-text="Use SPACE to create tags and : for a tag group"
 >
     <span slot="prefix">
         {#each tags as tag, idx}

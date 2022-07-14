@@ -141,7 +141,7 @@ export function layout(graph, selectedItem){
 
 export function deleteGraphItem(item, graph, deleteDependents){
     // console.log("deleteItem", item.label);
-    if(item.kind === 'edge'){
+    if(item.kind === 'edge' || item.kind === 'note'){
         // can be deleted safely
         graph.items = graph.items.filter(i => i != item);
     } else if(item.kind === 'node'){
@@ -313,6 +313,17 @@ export function findNodeAtPosition(svgPt, excludeNode, graph){
     
     // choose the node on top
     return nodes.sort((a,b) => b.level - a.level)[0];
+}
+
+export function getAncestors(graph, node, depth){
+    // Follow directed edges backwards and collect ancestor nodes
+    return [];
+    // let incoming = graph.items.filter(item => item.kind === 'edge' && item.toId === node.id);
+    // let parents = incoming.map(edge => { 
+    //     let p = getGraphNode(edge.fromId, graph);
+    //     return {node: p, parents: (depth == 2 ? [] : getAncestors(graph, p, depth+1))}; 
+    // });
+    // return parents;
 }
 
 export function exportJson(graph){

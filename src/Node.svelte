@@ -5,8 +5,10 @@
 
 	export let theme;
     export let item;
+	export let graph; // is useful for getTags() which is used for dynamicNotes
 	export let isSelected;
 	export let isHighlighted;
+	export let isHidden = false;
 
 	function handleControlClicked(e){
 		let handle = parseInt(e.target.getAttribute('data-handle'));
@@ -19,8 +21,17 @@
 		dispatch('itemcontrolmousedown', {source: item, handle: handle, rawEvent: e})
 	}
 
+	function getTags(graph, item){
+		let showDynamicNotes = false;
+		if(showDynamicNotes)
+			return "dynamic";
+		else return null;
+	}
+
 	$: notesWidth = Math.min(300, item.notes ? item.notes.length *10 : 0)
 	$: notesHeight = (item.notes ? (Math.ceil(item.notes.length*10 / notesWidth) * 20) : 0)
+	// $: dynamicNotes = getTags(graph, item)
+
 	// $: console.log(item.id, item.pos, item.width, item.height);
 </script>
 
@@ -30,7 +41,7 @@
 		y={item.pos.y - item.height/2} 
 		width={item.width}
 		height={item.height}
-		fill={item.fill || theme.nodefill}
+		fill={isHidden ? 'transparent' : (item.fill || theme.nodefill)}
 		stroke={isSelected ? theme.selectionColor : (isHighlighted ? theme.highlightColor : (item.bordercolor || theme.nodeborder))}
 		stroke-width={(isSelected || isHighlighted) ? '6px' : '3px'}
 		rx={8+Math.floor(item.height/50)}	
@@ -68,6 +79,7 @@
 		on:click|stopPropagation>
 			<div class="foreign-obj-div">
 				{item.notes}
+				<!-- {#if dynamicNotes}<p>{dynamicNotes}</p>{/if} -->
 			</div>	
 	</foreignObject>
 	{/if}
@@ -131,4 +143,5 @@
 		width: 85%;
 		margin: 0 auto;
 	}
+	
 </style>

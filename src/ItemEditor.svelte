@@ -4,10 +4,12 @@
 	import { JSONEditor } from 'svelte-jsoneditor';
 	import { marked } from "marked";
 	import TagsInput from "./TagsInput.svelte";
+	import { getAncestors } from "./graphutil.js";
+
     import { createEventDispatcher } from 'svelte';
 	const dispatch = createEventDispatcher();
 
-    function handleInputChange(e, field){
+	function handleInputChange(e, field){
 		if(field.split("_")[0] == 'text' || field.split("_")[0] == 'color' || field.split("_")[0] == 'url'){
 			selectedItem[field.split("_")[1]] = e.target.value;
 		} else if( field.split("_")[0] == 'number'){
@@ -25,11 +27,32 @@
 		dispatch('graphchanged', graph);
 	}
 
+	// $: ancestors = getAncestors(graph, selectedItem, 0);
+
 </script>
 
 	{#if selectedItem.kind === 'node' || selectedItem.kind === 'edge'}
 		<h1>{selectedItem.label}</h1>
 		<p class="itemdesc">{@html marked(selectedItem.desc)}</p>
+
+		<!-- {#each ancestors as anc1}
+		<details>
+			<summary>{anc1.node.label}</summary>
+			<p class="itemdesc">{@html marked(anc1.node.desc)}</p>
+			{#each anc1.parents as anc2}
+			<details>
+				<summary>{anc2.node.label}</summary>
+				<p class="itemdesc">{@html marked(anc2.node.desc)}</p>
+				{#each anc2.parents as anc3}
+				<details>
+					<summary>{anc3.node.label}</summary>
+					<p class="itemdesc">{@html marked(anc3.node.desc)}</p>
+				</details>
+				{/each}
+			</details>
+			{/each}
+		</details>
+		{/each} -->
 	{/if}
 	
 

@@ -420,7 +420,7 @@
 				{#each itemsForRender as item (item.id)}
 					{#if item.kind === "node"}
 						<Node
-							{item}
+							{item} {graph}
 							on:itemMouseDown={handleItemMouseDown}
 							on:itemMouseUp={handleItemMouseUp}
 							on:itemBadgeClick={handleItemBadgeClick}
@@ -430,6 +430,7 @@
 							on:itemcontrolmousedown={handleItemControlMouseDown}
 							theme={graph.theme}
 							isHighlighted={highlighted.includes(item.id)}
+							isHidden={highlighted.length > 0 && !highlighted.includes(item.id)}
 						/>
 					{:else if item.kind === "edge"}
 						<Edge
