@@ -1,6 +1,8 @@
 <script>
     export let selectedItem;
     export let graph;
+	let showLitReview = false;
+
 	import { JSONEditor } from 'svelte-jsoneditor';
 	import { marked } from "marked";
 	import TagsInput from "./TagsInput.svelte";
@@ -27,32 +29,21 @@
 		dispatch('graphchanged', graph);
 	}
 
-	// $: ancestors = getAncestors(graph, selectedItem, 0);
+	$: ancestors = getAncestors(graph, selectedItem, 0);
 
 </script>
 
 	{#if selectedItem.kind === 'node' || selectedItem.kind === 'edge'}
-		<h1>{selectedItem.label}</h1>
-		<p class="itemdesc">{@html marked(selectedItem.desc)}</p>
+		<h1>
+			{selectedItem.label}
+			{#if selectedItem.kind === 'node'}
+			<sl-button variant="default" size="small" circle on:click={e => showLitReview = true}>
+				<sl-icon name="gear" label="Settings"></sl-icon>
+			</sl-button>
+			{/if}
+		</h1>
 
-		<!-- {#each ancestors as anc1}
-		<details>
-			<summary>{anc1.node.label}</summary>
-			<p class="itemdesc">{@html marked(anc1.node.desc)}</p>
-			{#each anc1.parents as anc2}
-			<details>
-				<summary>{anc2.node.label}</summary>
-				<p class="itemdesc">{@html marked(anc2.node.desc)}</p>
-				{#each anc2.parents as anc3}
-				<details>
-					<summary>{anc3.node.label}</summary>
-					<p class="itemdesc">{@html marked(anc3.node.desc)}</p>
-				</details>
-				{/each}
-			</details>
-			{/each}
-		</details>
-		{/each} -->
+		<p class="itemdesc">{@html marked(selectedItem.desc)}</p>
 	{/if}
 	
 
@@ -199,6 +190,29 @@
 		</div>
 		{/if}
 
+		<sl-dialog label="Literature Review for {selectedItem.label}" style="--width: 50vw;" open={showLitReview} on:sl-hide={e => showLitReview = false}>
+			<p class="itemdesc">{@html marked(selectedItem.desc)}</p>
+			{#each ancestors as anc1}
+			<details open>
+				<summary>{anc1.node.label}</summary>
+				<p class="itemdesc">{@html marked(anc1.node.desc)}</p>
+				{#each anc1.parents as anc2}
+				<details open>
+					<summary>{anc2.node.label}</summary>
+					<p class="itemdesc">{@html marked(anc2.node.desc)}</p>
+					{#each anc2.parents as anc3}
+					<details open>
+						<summary>{anc3.node.label}</summary>
+						<p class="itemdesc">{@html marked(anc3.node.desc)}</p>
+					</details>
+					{/each}
+				</details>
+				{/each}
+			</details>
+			{/each}
+			<sl-button slot="footer" variant="primary">Close</sl-button>
+		</sl-dialog>
+
 
 
 <style>
@@ -255,6 +269,10 @@
 	p.itemdesc {
 		font-size: 14px;
 		color: #888;
+	}
+
+	details {
+		padding-left: 15px;;
 	}
 	
 </style>

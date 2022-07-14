@@ -22,7 +22,7 @@
 	}
 
 	function getTags(graph, item){
-		let showDynamicNotes = false;
+		let showDynamicNotes = true;
 		if(showDynamicNotes)
 			return "dynamic";
 		else return null;
@@ -30,7 +30,7 @@
 
 	$: notesWidth = Math.min(300, item.notes ? item.notes.length *10 : 0)
 	$: notesHeight = (item.notes ? (Math.ceil(item.notes.length*10 / notesWidth) * 20) : 0)
-	// $: dynamicNotes = getTags(graph, item)
+	$: dynamicNotes = getTags(graph, item)
 
 	// $: console.log(item.id, item.pos, item.width, item.height);
 </script>
@@ -79,7 +79,7 @@
 		on:click|stopPropagation>
 			<div class="foreign-obj-div">
 				{item.notes}
-				<!-- {#if dynamicNotes}<p>{dynamicNotes}</p>{/if} -->
+				{#if dynamicNotes}<p>{dynamicNotes}</p>{/if}
 			</div>	
 	</foreignObject>
 	{/if}

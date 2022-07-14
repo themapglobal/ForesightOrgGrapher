@@ -152,7 +152,7 @@
 			delete draggingFrom.edge.toOrphan;
 		} else if (draggingFrom.edge && selectedItem.kind === "edge") {
 			deleteGraphItem(draggingFrom.edge, graph, false);
-		} else if (selectedItem && !draggingFrom.hasOwnProperty("edge")) {
+		} else if (selectedItem?.kind === 'node' && !draggingFrom.hasOwnProperty("edge")) {
 			//dropped a node on top of another
 			let pt = svgElement.createSVGPoint();
 			pt.x = draggingFrom.x;

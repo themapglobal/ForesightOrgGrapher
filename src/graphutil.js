@@ -317,13 +317,13 @@ export function findNodeAtPosition(svgPt, excludeNode, graph){
 
 export function getAncestors(graph, node, depth){
     // Follow directed edges backwards and collect ancestor nodes
-    return [];
-    // let incoming = graph.items.filter(item => item.kind === 'edge' && item.toId === node.id);
-    // let parents = incoming.map(edge => { 
-    //     let p = getGraphNode(edge.fromId, graph);
-    //     return {node: p, parents: (depth == 2 ? [] : getAncestors(graph, p, depth+1))}; 
-    // });
-    // return parents;
+    if(node.kind !== 'node') return [];
+    let incoming = graph.items.filter(item => item.kind === 'edge' && item.toId === node.id);
+    let parents = incoming.map(edge => { 
+        let p = getGraphNode(edge.fromId, graph);
+        return {node: p, parents: (depth == 2 ? [] : getAncestors(graph, p, depth+1))}; 
+    });
+    return parents;
 }
 
 export function exportJson(graph){

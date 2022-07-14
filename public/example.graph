@@ -58,15 +58,15 @@
             ],
             "directed": true,
             "weight": 5,
-            "fromId": 3,
-            "toId": 94575
+            "fromId": 94575,
+            "toId": 3
         },
         {
             "id": 3,
             "kind": "node",
             "label": "Subtraction",
             "notes": "",
-            "desc": "",
+            "desc": "inverse of addition",
             "tags": [],
             "parent": 2,
             "pos": {
@@ -79,7 +79,7 @@
             "kind": "node",
             "label": "Multiplication",
             "notes": "",
-            "desc": "",
+            "desc": "repeated addition",
             "tags": [
                 "org:apple",
                 "lab:mit"
