@@ -210,7 +210,7 @@
 				{/each}
 			</details>
 			{/each}
-			<sl-button slot="footer" variant="primary">Close</sl-button>
+			<sl-button slot="footer" variant="primary" on:click={e => showLitReview = false}>Close</sl-button>
 		</sl-dialog>
 
 
