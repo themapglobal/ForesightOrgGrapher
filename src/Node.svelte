@@ -73,7 +73,7 @@
 		font-weight=300
 		font-size={item.fontSize}	
 		width={notesWidth}
-		height={notesHeight}
+		height={notesHeight + 40}
 		on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, rawEvent: e, from: {x: e.clientX, y: e.clientY}})}
 		on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item, rawEvent: e})}
 		on:click|stopPropagation>

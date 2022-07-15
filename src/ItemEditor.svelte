@@ -193,22 +193,30 @@
 		<sl-dialog label="Literature Review for {selectedItem.label}" style="--width: 50vw;" open={showLitReview} on:sl-hide={e => showLitReview = false}>
 			<p class="itemdesc">{@html marked(selectedItem.desc)}</p>
 			{#each ancestors as anc1}
-			<details open>
-				<summary>{anc1.node.label}</summary>
-				<p class="itemdesc">{@html marked(anc1.node.desc)}</p>
-				{#each anc1.parents as anc2}
-				<details open>
-					<summary>{anc2.node.label}</summary>
-					<p class="itemdesc">{@html marked(anc2.node.desc)}</p>
-					{#each anc2.parents as anc3}
-					<details open>
-						<summary>{anc3.node.label}</summary>
-						<p class="itemdesc">{@html marked(anc3.node.desc)}</p>
-					</details>
+			<div class="details-group-example">
+				<sl-details summary={anc1.node.label} open>
+					<!-- <summary>{anc1.node.label}</summary> -->
+					{#if anc1.node.desc}
+					<p class="itemdesc">{@html marked(anc1.node.desc)}</p>
+					{/if}
+					{#each anc1.parents as anc2}
+					<sl-details summary={anc2.node.label}>
+						<!-- <summary>{anc2.node.label}</summary> -->
+						{#if anc2.node.desc}
+						<p class="itemdesc">{@html marked(anc2.node.desc)}</p>
+						{/if}
+						{#each anc2.parents as anc3}
+						<sl-details summary={anc2.node.label}>
+							<!-- <summary>{anc3.node.label}</summary> -->
+							{#if anc3.node.desc}
+							<p class="itemdesc">{@html marked(anc3.node.desc)}</p>
+							{/if}
+						</sl-details>
+						{/each}
+					</sl-details>
 					{/each}
-				</details>
-				{/each}
-			</details>
+				</sl-details>
+			</div>
 			{/each}
 			<sl-button slot="footer" variant="primary" on:click={e => showLitReview = false}>Close</sl-button>
 		</sl-dialog>
@@ -271,8 +279,10 @@
 		color: #888;
 	}
 
-	details {
+	/* details {
 		padding-left: 15px;;
-	}
+	} */
+
+	
 	
 </style>
