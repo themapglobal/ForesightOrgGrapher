@@ -43,8 +43,11 @@
 	let draggingFrom = null;
 	let contextMenuPosition = null;
 
+	let svgForTextBBox;
 	let svgElement;
 	let topGroupElem;
+
+	$: svgForTextBBox && reRender();
 
 	let highlighted = [];
 
@@ -73,15 +76,17 @@
 						let localStorageValue =
 							localStorage.getItem(graphjsonpath);
 						graph = localStorageValue
-							? layout(JSON.parse(localStorageValue))
+							? layout(JSON.parse(localStorageValue), null, svgForTextBBox)
 							: layout(
 									Object.assign(data, overrideOptions),
-									null
+									null,
+									svgForTextBBox
 							  );
 					} else {
 						graph = layout(
 							Object.assign(data, overrideOptions),
-							null
+							null,
+							svgForTextBBox
 						);
 					}
 				});
@@ -95,15 +100,14 @@
 	}
 
 	function reRender() {
+		console.log('rerender()', svgForTextBBox)
 		svgElement = svgElement;
 		topGroupElem = topGroupElem;
 		selectedItem = selectedItem;
-		graph = layout(graph, selectedItem);
+		graph = layout(graph, selectedItem, svgForTextBBox);
 		if (window.overrideOptions.persistLocalStorage) {
 			localStorage.setItem(graphjsonpath, JSON.stringify(graph));
 		}
-
-		// console.log('rerender()')
 	}
 
 	function handleItemControlMouseDown(e) {
@@ -394,7 +398,7 @@
 		let reader = new FileReader();
 		reader.readAsText(jsonFile);
 		reader.onload = (e) => {
-			graph = layout(JSON.parse(e.target.result), null);
+			graph = layout(JSON.parse(e.target.result), null, svgForTextBBox);
 			reRender();
 		};
 	}
@@ -402,6 +406,13 @@
 
 {#if graph}
 	<div class="container">
+		<div style="position:absolute;left:-9999cm;top:-9999cm;visibility:hidden;">
+			<svg
+				bind:this={svgForTextBBox}
+				xmlns="http://www.w3.org/2000/svg"
+				viewBox="0 0 1000 1000"
+			></svg>
+		</div>
 		<svg
 			tabindex="0"
 			xmlns="http://www.w3.org/2000/svg"
@@ -467,7 +478,7 @@
 					{selectedItem}
 					{graph}
 					on:graphchanged={(e) => {
-						graph = layout(e.detail, selectedItem);
+						graph = layout(e.detail, selectedItem, svgForTextBBox);
 						reRender();
 					}}
 				/>
@@ -504,7 +515,7 @@
 					<sl-menu-item
 						value="deleteitem"
 						on:click={(e) => deleteItem(selectedItem, false)}
-						>Delete &quot;{selectedItem.label}&quot; leaving orphans</sl-menu-item
+						>Delete &quot;{selectedItem.label}&quot; {#if ["node","edge"].includes(selectedItem.kind) }leaving orphans{/if}</sl-menu-item
 					>
 				{:else}
 					<sl-menu-item value="createnode" on:click={createNode}>Create new Node</sl-menu-item>

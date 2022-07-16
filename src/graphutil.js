@@ -52,17 +52,25 @@ export function moveGraphNode(item, graph, dx, dy){
     })
 }
 
-export function resizeGraphNode(item, graph){
+export function resizeGraphNode(item, graph, svgForTextBBox){
     // console.log("resizing", item.id, item.label);
     // first resize all children
     (item.children || []).forEach(c => {
         let child = getGraphNode(c, graph);
-        resizeGraphNode(child, graph)
+        resizeGraphNode(child, graph, svgForTextBBox)
     })
     let notesWidth = Math.min(300, item.notes ? item.notes.length *10 : 0)
     let notesHeight = (item.notes ? (Math.ceil(item.notes.length*9 / notesWidth) * 20) : 0)
+    let dynamicNotesHeight = item.has_dynamic_notes ? 140 : 0;
     // make sure label and children nodes fit inside width
-    let halfLabelAndNotesWidth = Math.max(25 + (0.5 * item.label.length *9), notesWidth/2);
+    let fontweight = (item.children.length > 0) || (item.notes?.length > 0) ? '700' : '300';
+    let fontsize = 16;
+    // console.log({svgForTextBBox});
+    let labelWidth = svgForTextBBox ? (20 + getTextBbox(svgForTextBBox, item.label, graph.theme.font, fontsize, fontweight).width) : (item.label.length * 5);
+    item.labelwidth = labelWidth;
+    // console.log({labelWidth})
+
+    let halfLabelAndNotesWidth = Math.max(labelWidth / 2, notesWidth / 2);
 
     let rightchild = Math.max(...(item.children.map(c => {
         let child = getGraphNode(c, graph);
@@ -78,16 +86,18 @@ export function resizeGraphNode(item, graph){
 
     item.width = 2 * Math.max(halfLabelAndNotesWidth, rightchild, leftchild);
 
+    // console.log("itemwidth", item.width);
+
     // if(!item.width){
     //     console.log("found missing width");
     //     console.log(item.id, item.label, item.width, item.height);
     // }
 
-    let halfLabelAndNotesHeight = 15 + notesHeight/2 ;
+    let halfLabelAndNotesHeight = 15 + notesHeight/2 + dynamicNotesHeight/2;
 
     let childDownExtents = item.children.map(c => {
         let child = getGraphNode(c, graph);
-        return child.pos.y + child.height / 2 + 30;
+        return child.pos.y + child.height / 2 + 20;
     });
     // console.log({childDownExtents});
 
@@ -96,13 +106,19 @@ export function resizeGraphNode(item, graph){
 
     let childUpExtents = item.children.map(c => {
         let child = getGraphNode(c, graph);
-        return child.pos.y - child.height / 2 - 30 - notesHeight;
+        return child.pos.y - child.height / 2 - 20 - 30 - notesHeight - dynamicNotesHeight;
     }); 
   
     let upchild = item.pos.y - Math.min(...childUpExtents, item.pos.y);
     // console.log({upchild})
 
+    if(item.id === 1){
+        // console.log({halfLabelAndNotesHeight}, {upchild}, {downchild}, {notesHeight}, {dynamicNotesHeight});
+    }
+
     item.height = 2 * Math.max(halfLabelAndNotesHeight, upchild, downchild);
+
+    // if(item.id === 1) console.log("height", item.height);
 
     // if(!item.height){
     //     console.log("found missing height");
@@ -115,17 +131,17 @@ function decideNodeLevel(item, graph, currentLevel, selectedItem){
     item.children.forEach(c => decideNodeLevel(getGraphNode(c, graph), graph, item.level + 2, selectedItem))
 }
 
-export function layout(graph, selectedItem){
+export function layout(graph, selectedItem, svgForTextBBox){
     if(!graph) return null;
     prepareGraph(graph);
     // resize top nodes only because they will recurse
     graph.items.filter(i => (i.kind === 'node' && !i.parent)).forEach(item => {
-        resizeGraphNode(item, graph);
+        resizeGraphNode(item, graph, svgForTextBBox);
         decideNodeLevel(item, graph, 0, selectedItem);
     });
 
     graph.items.filter(i => (i.kind === 'note')).forEach(item => {
-        resizeGraphNode(item, graph);
+        resizeGraphNode(item, graph, svgForTextBBox);
     });
 
     graph.items.filter(i => (i.kind === 'edge')).forEach(edge => {
@@ -223,6 +239,32 @@ function getSvgCoordinates(svg, e, topGroupElem){
     pt.y = e.clientY;
     let svgpt = pt.matrixTransform( topGroupElem.getCTM().inverse() );
     return {x: svgpt.x, y: svgpt.y};
+}
+
+function getTextBbox(svg, text, font, fontsize, fontweight){
+    // console.log("in getTextBbox()", svg);
+    let svgns = "http://www.w3.org/2000/svg";
+
+    // var data = svg.createTextNode( text );
+    var svgElement = document.createElementNS( svgns, "text" );
+    svgElement.setAttributeNS(svgns, "font-family", font);
+    svgElement.setAttributeNS(svgns, "font-size", fontsize);
+    svgElement.setAttributeNS(svgns, "font-weight", fontweight);
+    svgElement.setAttributeNS(svgns, "x", 200);
+    svgElement.setAttributeNS(svgns, "y", 300);
+    svgElement.textContent = text;
+
+    // svgElement.appendChild(data);
+
+    svg.appendChild( svgElement );
+
+    var bbox = svgElement.getBBox();
+
+    svgElement.parentNode.removeChild(svgElement);
+
+    // console.log({bbox});
+
+    return bbox;
 }
 
 function getNewRandomId(graph){

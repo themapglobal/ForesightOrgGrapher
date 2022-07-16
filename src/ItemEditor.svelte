@@ -33,17 +33,19 @@
 
 </script>
 
-	{#if selectedItem.kind === 'node' || selectedItem.kind === 'edge'}
+	{#if ["node","edge", "note"].includes(selectedItem?.kind)}
 		<h1>
 			{selectedItem.label}
-			{#if selectedItem.kind === 'node'}
+			{#if ["node"].includes(selectedItem?.kind)}
 			<sl-button variant="default" size="small" circle on:click={e => showLitReview = true}>
 				<sl-icon name="gear" label="Settings"></sl-icon>
 			</sl-button>
 			{/if}
 		</h1>
 
+		{#if ["node", "edge"].includes(selectedItem?.kind)}
 		<p class="itemdesc">{@html marked(selectedItem.desc)}</p>
+		{/if}
 	{/if}
 	
 
@@ -190,6 +192,7 @@
 		</div>
 		{/if}
 
+		{#if ["node"].includes(selectedItem?.kind)}
 		<sl-dialog label="Literature Review for {selectedItem.label}" style="--width: 50vw;" open={showLitReview} on:sl-hide={e => showLitReview = false}>
 			<p class="itemdesc">{@html marked(selectedItem.desc)}</p>
 			{#each ancestors as anc1}
@@ -220,7 +223,7 @@
 			{/each}
 			<sl-button slot="footer" variant="primary" on:click={e => showLitReview = false}>Close</sl-button>
 		</sl-dialog>
-
+		{/if}
 
 
 <style>

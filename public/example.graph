@@ -22,6 +22,7 @@
             "label": "Algebra",
             "notes": "other notes",
             "desc": "",
+            "has_dynamic_notes": true,
             "tags": [
                 "org:google",
                 "lab:cambridge",
@@ -187,7 +188,7 @@
     "theme": {
         "name": "classic",
         "bgfill": "#f3f3f3",
-        "grid": "cartesian",
+        "grid": false,
         "selectionColor": "blue",
         "highlightColor": "red",
         "font": "Balsamiq Sans",

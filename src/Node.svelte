@@ -1,6 +1,8 @@
 <script>
 	import ControlPoint from "./ControlPoint.svelte"
     import { createEventDispatcher } from 'svelte';
+	import { getGraphNode } from "./graphutil.js";
+
     const dispatch = createEventDispatcher();
 
 	export let theme;
@@ -21,16 +23,35 @@
 		dispatch('itemcontrolmousedown', {source: item, handle: handle, rawEvent: e})
 	}
 
-	function getTags(graph, item){
-		let showDynamicNotes = true;
-		if(showDynamicNotes)
-			return "dynamic";
-		else return null;
+	function getTags(graph, item, tagset){
+		// Look at all descendent nodes of item and extract information like tags as text
+		// Can return HTML like <table>, <p> or <button>
+		// console.log({item}, {tagset});
+		item.tags.forEach(t => tagset.add(t));
+
+		item.children.forEach(c => {
+			getTags(graph, getGraphNode(c, graph), tagset)
+		})
+		return tagset;
+	}
+
+	function getDynamicNotesHtml(tagset){
+		let tags = Array.from(tagset);
+		let groups = tags.reduce((acc, tag) => {
+			let group =
+				tag.split(":").length > 1 ? tag.split(":")[0] : "ungrouped";
+			acc[group] = acc[group] ?? [];
+			acc[group].push({ label: tag.split(":").reverse()[0], value: tag });
+
+			return acc;
+		}, {});
+
+		return `<table>` + Object.entries(groups).map(e => `<tr><td>${e[0]}</td><td>` + e[1].map(t => t.label).join(',') + `</td></tr>`).join('') + `</table>`
 	}
 
 	$: notesWidth = Math.min(300, item.notes ? item.notes.length *10 : 0)
 	$: notesHeight = (item.notes ? (Math.ceil(item.notes.length*10 / notesWidth) * 20) : 0)
-	$: dynamicNotes = getTags(graph, item)
+	$: dynamicNotes = getDynamicNotesHtml(getTags(graph, item, new Set()));
 
 	// $: console.log(item.id, item.pos, item.width, item.height);
 </script>
@@ -52,11 +73,11 @@
 	</rect>
 	
 	<text 
-		x={item.pos.x - 0.5 * item.label.length * 10 + 5} 
+		x={item.pos.x - item.labelwidth / 2 + 2} 
 		y={item.pos.y - item.height/2 + 20} 
 		font-family={theme.font}
 		font-weight={(item.children.length > 0) || (item.notes?.length > 0) ? '700' : '300'}
-		font-size={item.fontSize} 
+		font-size=16
 		fill={item.labelcolor || theme.nodelabelstroke} 
 		on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, rawEvent: e})}
 		on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item, rawEvent: e})}
@@ -71,15 +92,32 @@
 		y={item.pos.y - item.height/2 + 30} 
 		font-family={theme.font}
 		font-weight=300
-		font-size={item.fontSize}	
+		font-size=16
 		width={notesWidth}
-		height={notesHeight + 40}
+		height={notesHeight}
 		on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, rawEvent: e, from: {x: e.clientX, y: e.clientY}})}
 		on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item, rawEvent: e})}
 		on:click|stopPropagation>
 			<div class="foreign-obj-div">
 				{item.notes}
-				{#if dynamicNotes}<p>{dynamicNotes}</p>{/if}
+			</div>	
+	</foreignObject>
+	{/if}
+
+	{#if item.has_dynamic_notes}	
+	<foreignObject 
+		x={item.pos.x - item.width/2} 
+		y={item.pos.y - item.height/2 + 30 + notesHeight} 
+		font-family={theme.font}
+		font-weight=300
+		font-size=16
+		width={item.width}
+		height={140}
+		on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, rawEvent: e, from: {x: e.clientX, y: e.clientY}})}
+		on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item, rawEvent: e})}
+		on:click|stopPropagation>
+			<div class="dynamicnotes-div">
+				{@html dynamicNotes}
 			</div>	
 	</foreignObject>
 	{/if}
@@ -142,6 +180,16 @@
 	.foreign-obj-div{
 		width: 85%;
 		margin: 0 auto;
+	}
+
+	.dynamicnotes-div {
+		width: 100%;
+		height: 100%;
+		background-color: yellow;
+	}
+
+	p {
+		margin: 0;
 	}
 	
 </style>
