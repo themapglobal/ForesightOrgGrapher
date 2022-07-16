@@ -27,6 +27,7 @@
 	import { select } from "d3-selection";
 
 	export let graphjsonpath;
+	export let svgForTextBBox;
 	export let overrideOptions = {};
 
 	let graph;
@@ -43,11 +44,9 @@
 	let draggingFrom = null;
 	let contextMenuPosition = null;
 
-	let svgForTextBBox;
+	
 	let svgElement;
 	let topGroupElem;
-
-	$: svgForTextBBox && reRender();
 
 	let highlighted = [];
 
@@ -100,7 +99,7 @@
 	}
 
 	function reRender() {
-		console.log('rerender()', svgForTextBBox)
+		// console.log('rerender()', svgForTextBBox)
 		svgElement = svgElement;
 		topGroupElem = topGroupElem;
 		selectedItem = selectedItem;
@@ -406,13 +405,6 @@
 
 {#if graph}
 	<div class="container">
-		<div style="position:absolute;left:-9999cm;top:-9999cm;visibility:hidden;">
-			<svg
-				bind:this={svgForTextBBox}
-				xmlns="http://www.w3.org/2000/svg"
-				viewBox="0 0 1000 1000"
-			></svg>
-		</div>
 		<svg
 			tabindex="0"
 			xmlns="http://www.w3.org/2000/svg"

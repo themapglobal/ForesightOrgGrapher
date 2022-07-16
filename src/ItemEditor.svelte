@@ -90,8 +90,17 @@
 			label="Badge" clearable value={selectedItem.badge} 
 			placeholder="Select badge" 
 			on:sl-change={e => handleInputChange(e, 'text_badge')}>
+			{#if selectedItem.badge.startsWith("http")}
+				<img width="30" height="28" alt="badge" src={selectedItem.badge} slot="prefix"/>
+			{/if}
 			{#each graph.theme.badges as badge}
-			<sl-menu-item value={badge} selected={selectedItem.badge === badge}>{badge}</sl-menu-item>
+			<sl-menu-item value={badge} selected={selectedItem.badge === badge}>
+				{#if badge.startsWith("http")}
+				<img width="30" height="28" alt="badge" src={badge} />
+				{:else}
+				{badge}
+				{/if}
+			</sl-menu-item>
 			{/each}
 		</sl-select>
 		{/if}

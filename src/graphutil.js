@@ -53,7 +53,7 @@ export function moveGraphNode(item, graph, dx, dy){
 }
 
 export function resizeGraphNode(item, graph, svgForTextBBox){
-    // console.log("resizing", item.id, item.label);
+    // console.log("resizing", item.id, item.label, svgForTextBBox);
     // first resize all children
     (item.children || []).forEach(c => {
         let child = getGraphNode(c, graph);
@@ -66,7 +66,7 @@ export function resizeGraphNode(item, graph, svgForTextBBox){
     let fontweight = (item.children.length > 0) || (item.notes?.length > 0) ? '700' : '300';
     let fontsize = 16;
     // console.log({svgForTextBBox});
-    let labelWidth = svgForTextBBox ? (20 + getTextBbox(svgForTextBBox, item.label, graph.theme.font, fontsize, fontweight).width) : (item.label.length * 5);
+    let labelWidth = getTextBbox(svgForTextBBox, item.label, graph.theme.font, fontsize, fontweight).width;
     item.labelwidth = labelWidth;
     // console.log({labelWidth})
 
@@ -84,7 +84,7 @@ export function resizeGraphNode(item, graph, svgForTextBBox){
 
     // console.log(item.id, {leftchild}, {rightchild});
 
-    item.width = 2 * Math.max(halfLabelAndNotesWidth, rightchild, leftchild);
+    item.width = 2 * Math.max(halfLabelAndNotesWidth, rightchild, leftchild) + 20;;
 
     // console.log("itemwidth", item.width);
 
