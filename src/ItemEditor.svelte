@@ -90,13 +90,13 @@
 			label="Badge" clearable value={selectedItem.badge} 
 			placeholder="Select badge" 
 			on:sl-change={e => handleInputChange(e, 'text_badge')}>
-			{#if selectedItem.badge.startsWith("http")}
+			{#if selectedItem.badge?.startsWith("http")}
 				<img width="30" height="28" alt="badge" src={selectedItem.badge} slot="prefix"/>
 			{/if}
 			{#each graph.theme.badges as badge}
 			<sl-menu-item value={badge} selected={selectedItem.badge === badge}>
 				{#if badge.startsWith("http")}
-				<img width="30" height="28" alt="badge" src={badge} />
+				<img width="30" height="28" alt="badge" src={badge} class="http-badge"/>
 				{:else}
 				{badge}
 				{/if}
@@ -291,6 +291,10 @@
 		color: #888;
 	}
 
+	.http-badge{
+		display: flex;
+		justify-self: center;
+	}
 	/* details {
 		padding-left: 15px;;
 	} */
