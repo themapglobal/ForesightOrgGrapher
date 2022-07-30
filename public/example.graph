@@ -22,6 +22,7 @@
             "label": "Algebra",
             "notes": "other notes",
             "desc": "",
+            "has_dynamic_notes": true,
             "tags": [
                 "org:google",
                 "lab:cambridge",
@@ -58,15 +59,15 @@
             ],
             "directed": true,
             "weight": 5,
-            "fromId": 3,
-            "toId": 94575
+            "fromId": 94575,
+            "toId": 3
         },
         {
             "id": 3,
             "kind": "node",
             "label": "Subtraction",
             "notes": "",
-            "desc": "",
+            "desc": "inverse of addition",
             "tags": [],
             "parent": 2,
             "pos": {
@@ -79,7 +80,7 @@
             "kind": "node",
             "label": "Multiplication",
             "notes": "",
-            "desc": "",
+            "desc": "repeated addition",
             "tags": [
                 "org:apple",
                 "lab:mit"
@@ -165,7 +166,7 @@
             "notes": "",
             "desc": "",
             "tags": [],
-            "badge": "👎",
+            "badge": "https://cdn.discordapp.com/attachments/987690735639875584/997881951534981203/hexbadge.png",
             "parent": 6916,
             "pos": {
                 "x": 25,
@@ -187,7 +188,7 @@
     "theme": {
         "name": "classic",
         "bgfill": "#f3f3f3",
-        "grid": "cartesian",
+        "grid": false,
         "selectionColor": "blue",
         "highlightColor": "red",
         "font": "Balsamiq Sans",
@@ -198,11 +199,7 @@
         "edgeshape": "curved",
         "edgestroketype": "solid",
         "badges": [
-            "✅",
-            "❌",
-            "⚡",
-            "👎",
-            "👍"
+            "https://cdn.discordapp.com/attachments/987690735639875584/997881951534981203/hexbadge.png"
         ]
     },
     "jsondownload": true,

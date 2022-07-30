@@ -1,13 +1,17 @@
 <script>
     export let selectedItem;
     export let graph;
+	let showLitReview = false;
+
 	import { JSONEditor } from 'svelte-jsoneditor';
 	import { marked } from "marked";
 	import TagsInput from "./TagsInput.svelte";
+	import { getAncestors } from "./graphutil.js";
+
     import { createEventDispatcher } from 'svelte';
 	const dispatch = createEventDispatcher();
 
-    function handleInputChange(e, field){
+	function handleInputChange(e, field){
 		if(field.split("_")[0] == 'text' || field.split("_")[0] == 'color' || field.split("_")[0] == 'url'){
 			selectedItem[field.split("_")[1]] = e.target.value;
 		} else if( field.split("_")[0] == 'number'){
@@ -25,11 +29,23 @@
 		dispatch('graphchanged', graph);
 	}
 
+	$: ancestors = getAncestors(graph, selectedItem, 0);
+
 </script>
 
-	{#if selectedItem.kind === 'node' || selectedItem.kind === 'edge'}
-		<h1>{selectedItem.label}</h1>
+	{#if ["node","edge", "note"].includes(selectedItem?.kind)}
+		<h1>
+			{selectedItem.label}
+			{#if ["node"].includes(selectedItem?.kind)}
+			<sl-button variant="default" size="small" circle on:click={e => showLitReview = true}>
+				<sl-icon name="gear" label="Settings"></sl-icon>
+			</sl-button>
+			{/if}
+		</h1>
+
+		{#if ["node", "edge"].includes(selectedItem?.kind)}
 		<p class="itemdesc">{@html marked(selectedItem.desc)}</p>
+		{/if}
 	{/if}
 	
 
@@ -74,8 +90,17 @@
 			label="Badge" clearable value={selectedItem.badge} 
 			placeholder="Select badge" 
 			on:sl-change={e => handleInputChange(e, 'text_badge')}>
+			{#if selectedItem.badge?.startsWith("http")}
+				<img width="30" height="28" alt="badge" src={selectedItem.badge} slot="prefix"/>
+			{/if}
 			{#each graph.theme.badges as badge}
-			<sl-menu-item value={badge} selected={selectedItem.badge === badge}>{badge}</sl-menu-item>
+			<sl-menu-item value={badge} selected={selectedItem.badge === badge}>
+				{#if badge.startsWith("http")}
+				<img width="30" height="28" alt="badge" src={badge} class="http-badge"/>
+				{:else}
+				{badge}
+				{/if}
+			</sl-menu-item>
 			{/each}
 		</sl-select>
 		{/if}
@@ -176,6 +201,38 @@
 		</div>
 		{/if}
 
+		{#if ["node"].includes(selectedItem?.kind)}
+		<sl-dialog label="Literature Review for {selectedItem.label}" style="--width: 50vw;" open={showLitReview} on:sl-hide={e => showLitReview = false}>
+			<p class="itemdesc">{@html marked(selectedItem.desc)}</p>
+			{#each ancestors as anc1}
+			<div class="details-group-example">
+				<sl-details summary={anc1.node.label} open>
+					<!-- <summary>{anc1.node.label}</summary> -->
+					{#if anc1.node.desc}
+					<p class="itemdesc">{@html marked(anc1.node.desc)}</p>
+					{/if}
+					{#each anc1.parents as anc2}
+					<sl-details summary={anc2.node.label}>
+						<!-- <summary>{anc2.node.label}</summary> -->
+						{#if anc2.node.desc}
+						<p class="itemdesc">{@html marked(anc2.node.desc)}</p>
+						{/if}
+						{#each anc2.parents as anc3}
+						<sl-details summary={anc2.node.label}>
+							<!-- <summary>{anc3.node.label}</summary> -->
+							{#if anc3.node.desc}
+							<p class="itemdesc">{@html marked(anc3.node.desc)}</p>
+							{/if}
+						</sl-details>
+						{/each}
+					</sl-details>
+					{/each}
+				</sl-details>
+			</div>
+			{/each}
+			<sl-button slot="footer" variant="primary" on:click={e => showLitReview = false}>Close</sl-button>
+		</sl-dialog>
+		{/if}
 
 
 <style>
@@ -233,5 +290,15 @@
 		font-size: 14px;
 		color: #888;
 	}
+
+	.http-badge{
+		display: flex;
+		justify-self: center;
+	}
+	/* details {
+		padding-left: 15px;;
+	} */
+
+	
 	
 </style>
