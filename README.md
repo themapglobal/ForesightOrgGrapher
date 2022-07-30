@@ -20,6 +20,10 @@ Graphs can be saved in a `.graph` file which stores the array of nodes and edges
 
 ## TODO
 
+- Select and move multiple nodes at once
+- Change history with Undo/Redo
+- Collapsible parent nodes in zommed-out mode
+- Alignment / snap-to-grid
 - Better path and z-index calculation for edges
 - Edge label readability
 - Performance testing (1000+ nodes)
