@@ -10,6 +10,7 @@
 
     import { createEventDispatcher } from 'svelte';
 	const dispatch = createEventDispatcher();
+	const swatch_colors = [ '#d0021bff', '#f5a623ff', '#bbae0eff', '#8b572aff', '#7ed321ff', '#417505ff', '#b00b0bff', '#9013feff', '#4a90e2ff', '#16b591ff', '#b8e986ff', '#000000ff', '#444444ff', '#888888ff', '#ccccccff', '#ffffffff' ]
 
 	function handleInputChange(e, field){
 		if(field.split("_")[0] == 'text' || field.split("_")[0] == 'color' || field.split("_")[0] == 'url'){
@@ -114,6 +115,7 @@
 					value={selectedItem.fill} 
 					label={`Select fill color`}
 					opacity
+					swatches={swatch_colors}
 					on:sl-change={e => handleInputChange(e, 'color_fill')}
 				>
 				</sl-color-picker>
@@ -125,6 +127,7 @@
 					value={selectedItem.bordercolor} 
 					label={`Select border color`}
 					opacity
+					swatches={swatch_colors}
 					on:sl-change={e => handleInputChange(e, 'color_bordercolor')}
 				>
 				</sl-color-picker>
@@ -136,6 +139,7 @@
 					value={selectedItem.labelcolor} 
 					label={`Select label color`}
 					opacity
+					swatches={swatch_colors}
 					on:sl-change={e => handleInputChange(e, 'color_labelcolor')}
 				>
 				</sl-color-picker>
@@ -158,6 +162,7 @@
 					value={selectedItem.stroke} 
 					label={`Select stroke color`}
 					opacity
+					swatches={swatch_colors}
 					on:sl-change={e => handleInputChange(e, 'color_stroke')}
 				>
 				</sl-color-picker>

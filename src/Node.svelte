@@ -199,8 +199,4 @@
 		background-color: yellow;
 	}
 
-	p {
-		margin: 0;
-	}
-	
 </style>
