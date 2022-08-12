@@ -54,23 +54,31 @@ export function moveGraphNode(item, graph, dx, dy){
 
 export function resizeGraphNode(item, graph, svgForTextBBox){
     // console.log("resizing", item.id, item.label, svgForTextBBox);
+    // console.log({item});
     // first resize all children
     (item.children || []).forEach(c => {
         let child = getGraphNode(c, graph);
         resizeGraphNode(child, graph, svgForTextBBox)
     })
-    let notesWidth = Math.min(300, item.notes ? item.notes.length *10 : 0)
-    let notesHeight = (item.notes ? (Math.ceil(item.notes.length*9 / notesWidth) * 20) : 0)
+    let notesWidth = Math.min(300, item.notes ? item.notes.length * ((item.nodenotesfontsize || graph.theme.nodenotesfontsize || 16) - 6) : 0)
+    let notesHeight = item.notes ? (Math.ceil(item.notes.length * ((item.nodenotesfontsize || graph.theme.nodenotesfontsize || 16) - 6) / notesWidth) * ((item.nodenotesfontsize || graph.theme.nodenotesfontsize || 16) + 4)) : 0;
+    
+    item.noteswidth = notesWidth;
+    item.notesheight = notesHeight;
+    
     let dynamicNotesHeight = item.has_dynamic_notes ? 140 : 0;
     // make sure label and children nodes fit inside width
     let fontweight = (item.children.length > 0) || (item.notes?.length > 0) ? '700' : '300';
-    let fontsize = 16;
+    let fontsize = item.nodelabelfontsize || graph.theme.nodelabelfontsize || 16;
+    // console.log({fontsize});
     // console.log({svgForTextBBox});
-    let labelWidth = getTextBbox(svgForTextBBox, item.label, graph.theme.font, fontsize, fontweight).width;
-    item.labelwidth = labelWidth;
-    // console.log({labelWidth})
+    let bbox = getTextBbox(svgForTextBBox, item.label, graph.theme.font, fontsize, fontweight);
+    
+    item.labelwidth = bbox.width;
+    item.labelheight = bbox.height;
+    // console.log({bbox});
 
-    let halfLabelAndNotesWidth = Math.max(labelWidth / 2, notesWidth / 2);
+    let halfLabelAndNotesWidth = Math.max(item.labelwidth / 2, notesWidth / 2);
 
     let rightchild = Math.max(...(item.children.map(c => {
         let child = getGraphNode(c, graph);
@@ -93,7 +101,7 @@ export function resizeGraphNode(item, graph, svgForTextBBox){
     //     console.log(item.id, item.label, item.width, item.height);
     // }
 
-    let halfLabelAndNotesHeight = 15 + notesHeight/2 + dynamicNotesHeight/2;
+    let halfLabelAndNotesHeight = item.labelheight/2 + notesHeight/2 + dynamicNotesHeight/2;
 
     let childDownExtents = item.children.map(c => {
         let child = getGraphNode(c, graph);
@@ -110,20 +118,13 @@ export function resizeGraphNode(item, graph, svgForTextBBox){
     }); 
   
     let upchild = item.pos.y - Math.min(...childUpExtents, item.pos.y);
-    // console.log({upchild})
 
-    if(item.id === 1){
-        // console.log({halfLabelAndNotesHeight}, {upchild}, {downchild}, {notesHeight}, {dynamicNotesHeight});
-    }
-
-    item.height = 2 * Math.max(halfLabelAndNotesHeight, upchild, downchild);
-
-    // if(item.id === 1) console.log("height", item.height);
-
-    // if(!item.height){
-    //     console.log("found missing height");
-    //     console.log(item.id, item.label, item.width, item.height);
-    // }
+    item.height = 2 * Math.max(halfLabelAndNotesHeight, upchild, downchild) + 20;
+    
+    // console.log(item.labelheight);
+    // console.log({halfLabelAndNotesHeight});
+    // console.log({upchild}, {downchild});
+    // console.log(item.height);
 }
 
 function decideNodeLevel(item, graph, currentLevel, selectedItem){
@@ -218,6 +219,8 @@ export function createGraphNode(e, graph, svg, topGroupElem){
         tags: [],
         children: [],
         pos: getSvgCoordinates(svg, e, topGroupElem),
+        nodelabelfontsize: null,
+        nodenotesfontsize: null
     })
 }
 
@@ -230,6 +233,8 @@ export function createGraphNote(e, graph, svg, topGroupElem){
         label: `Add your notes here`,
         notes: 'some extra content',
         pos: getSvgCoordinates(svg, e, topGroupElem),
+        nodelabelfontsize: null,
+        nodenotesfontsize: null
     })
 }
 
@@ -247,9 +252,9 @@ function getTextBbox(svg, text, font, fontsize, fontweight){
 
     // var data = svg.createTextNode( text );
     var svgElement = document.createElementNS( svgns, "text" );
-    svgElement.setAttributeNS(svgns, "font-family", font);
-    svgElement.setAttributeNS(svgns, "font-size", fontsize);
-    svgElement.setAttributeNS(svgns, "font-weight", fontweight);
+    svgElement.setAttribute("font-family", font);
+    svgElement.setAttribute("font-size", fontsize);
+    svgElement.setAttribute("font-weight", fontweight);
     svgElement.setAttributeNS(svgns, "x", 200);
     svgElement.setAttributeNS(svgns, "y", 300);
     svgElement.textContent = text;
@@ -260,9 +265,12 @@ function getTextBbox(svg, text, font, fontsize, fontweight){
 
     var bbox = svgElement.getBBox();
 
+    // console.log({bbox});
+    // console.log(svgElement);
+
     svgElement.parentNode.removeChild(svgElement);
 
-    // console.log({bbox});
+    
 
     return bbox;
 }
@@ -284,6 +292,8 @@ export function createGraphChildNode(e, graph, parent, svg, topGroupElem){
         tags: [],
         children: [],
         pos: getSvgCoordinates(svg, e, topGroupElem),
+        nodelabelfontsize: null,
+        nodenotesfontsize: null,
         parent: parent.id
     })
 }
@@ -322,6 +332,8 @@ export function createGraphNodeEdge(from, fromHandle, graph){
             x: (from.pos.x + (100 + from.width/2 + Math.random()*100) * (Math.floor(fromHandle / 10) - 2)),
             y: (from.pos.y + (100 + from.height/2 + Math.random()*100) * ((fromHandle % 10) - 2)),
         },
+        nodelabelfontsize: null,
+        nodenotesfontsize: null,
         fill: from.fill,
         stroke: from.stroke
     })
@@ -386,7 +398,9 @@ export function exportJson(graph){
                 pos: item.pos,
                 fill: item.fill,
                 stroke: item.stroke,
-                badge: item.badge
+                badge: item.badge,
+                nodelabelfontsize: item.nodelabelfontsize,
+                nodenotesfontsize: item.nodenotesfontsize
             };
         else if(item.kind === 'edge')
             return {
@@ -405,6 +419,16 @@ export function exportJson(graph){
                 shape: item.shape,
                 fromOrphan: item.fromOrphan,
                 toOrphan: item.toOrphan
+            }
+        else if(item.kind === 'note')
+            return {
+                id: item.id,
+                kind: item.kind,
+                pos: item.pos,
+                label: item.label,
+                notes: item.notes,
+                nodelabelfontsize: item.nodelabelfontsize,
+                nodenotesfontsize: item.nodenotesfontsize
             }
     })
 
@@ -454,6 +478,8 @@ export const themes = {
         "highlightColor": "red",
         "nodefill": "#bae6fd",
         "nodelabelstroke": "#334155",
+        "nodelabelfontsize": 16,
+        "nodenotesfontsize": 16,
         "nodeborder": "white",
         "edgestroke": "red",
         "edgeshape": "curved",
@@ -470,12 +496,14 @@ export const themes = {
         "highlightColor": "red",
         "nodefill": "#7b9ecb",
         "nodelabelstroke": "black",
+        "nodelabelfontsize": 16,
+        "nodenotesfontsize": 16,
         "nodeborder": "white",
         "edgestroke": "#ccc",
         "edgeshape": "ortho",
         "edgestroketype": "solid",
         "font": "Roboto Condensed",
-        "badges": ["✅", "❌", "⚡", "👎", "👍"]
+        "badges": ["✅", "❌", "⚡", "👎", "👍", "https://cdn.discordapp.com/attachments/987690735639875584/997881951534981203/hexbadge.png"]
     },
 
     minimal: {
@@ -486,6 +514,8 @@ export const themes = {
         "highlightColor": "red",
         "nodefill": "white",
         "nodelabelstroke": "black",
+        "nodelabelfontsize": 16,
+        "nodenotesfontsize": 16,
         "nodeborder": "black",
         "edgestroke": "#1f2937",
         "edgeshape": "curved",
@@ -503,6 +533,8 @@ export const themes = {
         "font": "Balsamiq Sans",
         "nodefill": "#fbe6a3",
         "nodelabelstroke": "black",
+        "nodelabelfontsize": 16,
+        "nodenotesfontsize": 16,
         "nodeborder": "black",
         "edgestroke": "#4277dd",
         "edgeshape": "curved",

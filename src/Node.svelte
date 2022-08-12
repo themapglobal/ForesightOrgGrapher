@@ -49,11 +49,8 @@
 		return `<table>` + Object.entries(groups).map(e => `<tr><td>${e[0]}</td><td>` + e[1].map(t => t.label).join(',') + `</td></tr>`).join('') + `</table>`
 	}
 
-	$: notesWidth = Math.min(300, item.notes ? item.notes.length *10 : 0)
-	$: notesHeight = (item.notes ? (Math.ceil(item.notes.length*10 / notesWidth) * 20) : 0)
 	$: dynamicNotes = getDynamicNotesHtml(getTags(graph, item, new Set()));
 
-	// $: console.log(item.id, item.pos, item.width, item.height);
 </script>
 
 <g>
@@ -74,10 +71,10 @@
 	
 	<text 
 		x={item.pos.x - item.labelwidth / 2 + 2} 
-		y={item.pos.y - item.height/2 + 20} 
+		y={item.pos.y - item.height/2 + item.labelheight} 
 		font-family={theme.font}
 		font-weight={(item.children.length > 0) || (item.notes?.length > 0) ? '700' : '300'}
-		font-size=16
+		font-size={item.nodelabelfontsize || theme.nodelabelfontsize || 16}
 		fill={item.labelcolor || theme.nodelabelstroke} 
 		on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, rawEvent: e})}
 		on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item, rawEvent: e})}
@@ -88,13 +85,13 @@
 
 	{#if item.notes}	
 	<foreignObject 
-		x={item.pos.x - notesWidth/2} 
-		y={item.pos.y - item.height/2 + 30} 
+		x={item.pos.x - item.noteswidth/2} 
+		y={item.pos.y - item.height/2 + item.labelheight + 10} 
 		font-family={theme.font}
 		font-weight=300
-		font-size=16
-		width={notesWidth}
-		height={notesHeight}
+		font-size={item.nodenotesfontsize || theme.nodenotesfontsize || 16}
+		width={item.noteswidth}
+		height={item.notesheight}
 		on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, rawEvent: e, from: {x: e.clientX, y: e.clientY}})}
 		on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item, rawEvent: e})}
 		on:click|stopPropagation>
@@ -107,16 +104,16 @@
 	{#if item.has_dynamic_notes}	
 	<foreignObject 
 		x={item.pos.x - item.width/2} 
-		y={item.pos.y - item.height/2 + 30 + notesHeight} 
+		y={item.pos.y - item.height/2 + 30 + item.notesheight} 
 		font-family={theme.font}
 		font-weight=300
-		font-size=16
+		font-size={item.nodenotesfontsize || theme.nodenotesfontsize || 16}
 		width={item.width}
 		height={140}
 		on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, rawEvent: e, from: {x: e.clientX, y: e.clientY}})}
 		on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item, rawEvent: e})}
 		on:click|stopPropagation>
-			<div class="dynamicnotes-div">
+			<div xmlns="http://www.w3.org/1999/xhtml" class="dynamicnotes-div">
 				{@html dynamicNotes}
 			</div>	
 	</foreignObject>

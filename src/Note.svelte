@@ -6,10 +6,6 @@
 	export let theme;
     export let item;
 	export let isSelected;
-
-	$: notesWidth = Math.min(300, item.notes ? item.notes.length *10 : 0)
-	$: notesHeight = (item.notes ? (Math.ceil(item.notes.length*10 / notesWidth) * 20) : 0)
-	// $: console.log(item.id, item.pos, item.width, item.height);
 </script>
 
 <g>
@@ -33,7 +29,7 @@
 		y={item.pos.y - item.height/2 + 20} 
 		font-family={theme.font}
 		font-weight={(item.notes?.length > 0) ? '700' : '300'}
-		font-size={item.fontSize} 
+		font-size={item.nodelabelfontsize || theme.nodelabelfontsize || 16}
 		fill={item.labelcolor || theme.nodelabelstroke} 
 		on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, rawEvent: e})}
 		on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item, rawEvent: e})}
@@ -44,13 +40,13 @@
 
 	{#if item.notes}	
 	<foreignObject 
-		x={item.pos.x - notesWidth/2} 
-		y={item.pos.y - item.height/2 + 30} 
+		x={item.pos.x - item.noteswidth/2} 
+		y={item.pos.y - item.height/2 + item.labelheight + 10} 
 		font-family={theme.font}
 		font-weight=300
-		font-size={item.fontSize}	
-		width={notesWidth}
-		height={notesHeight}
+		font-size={item.nodenotesfontsize || theme.nodenotesfontsize || 16}
+		width={item.noteswidth}
+		height={item.notesheight}
 		on:mousedown|stopPropagation={(e) => dispatch('itemMouseDown', {source: item, rawEvent: e, from: {x: e.clientX, y: e.clientY}})}
 		on:mouseup|stopPropagation={(e) => dispatch('itemMouseUp', {source: item, rawEvent: e})}
 		on:click|stopPropagation>

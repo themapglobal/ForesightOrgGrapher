@@ -146,9 +146,24 @@
 				<span>Label</span>
 			</div>
 		</div>	
+		
+		<div class="node-colors">
+			<sl-input 
+				label="Label Font Size" type='number' size="small" placeholder="16" min="12" max="32" step="1"
+				value={selectedItem.nodelabelfontsize || graph.theme.nodelabelfontsize || 16} 
+				on:input={e => handleInputChange(e, 'number_nodelabelfontsize')}>
+			</sl-input>
+
+			<sl-input 
+				label="Notes Font Size" type='number' size="small" placeholder="16" min="12" max="32" step="1"
+				value={selectedItem.nodenotesfontsize || graph.theme.nodenotesfontsize || 16} 
+				on:input={e => handleInputChange(e, 'number_nodenotesfontsize')}>
+			</sl-input>
+		</div>
+
 
 		{:else if selectedItem.kind === 'edge'} <!-- edge -->
-		<div class="edge-panal">
+		<div class="edge-panel">
 			<sl-checkbox 
 				style="width:100%;"
 				on:sl-change={e => handleInputChange(e, 'checkbox_directed')}
@@ -244,7 +259,7 @@
 	h1 {
 		text-align: center;
 	}
-	.node-panel, .edge-panal{
+	.node-panel, .edge-panel{
 		width: 90%; 
 		margin:20px auto;
 		display: flex;
