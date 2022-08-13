@@ -51,11 +51,11 @@
 	
 
 	<div class="node-panel">
-		<sl-input 
+		<!-- <sl-input 
 			label="ID" type='number' size="small"
 			value={selectedItem.id} 
 			on:input={e => handleInputChange(e, 'number_id')}>
-		</sl-input>
+		</sl-input> -->
 
 		
 		<sl-input 
