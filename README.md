@@ -6,6 +6,16 @@ This is an SVG-based interactive graph dataset editor that allows you to manuall
 
 Graphs can be saved in a `.graph` file which stores the array of nodes and edges and some other metadata in JSON format. To see an example of page where this .graph gets pre-loaded, see `index.html`. The page can also enable/disable features of the editor via `window.overrideOptions`. We use this to build a separate "editor" mode where any changes made by the users are saved automatically in browser's localStorage. 
 
+## QuickStart
+
+```bash
+npm install
+npm audit fix
+npm run build
+npm run dev
+```
+
+
 ## Features
 
 - Infinite panning and zooming
