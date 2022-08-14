@@ -40,6 +40,7 @@
 
 	$: window.graph = graph;
 	$: window.graphHistory = graphHistory;
+	$: onlyNodes = graph ? graph.items.filter(i => i.kind === "node").sort((a,b) => a.label.localeCompare(b.label)) : [];
 	$: itemsForRender = getItemsForRender(graph, selectedItem);
 	$: tagGroups = getTagGroups(graph);
 
@@ -106,27 +107,27 @@
 
 	function undoGraph() {
 		if(graphHistory.current <= 0) return;
-		console.log("undoing");
+		// console.log("undoing");
 		graph = structuredClone(graphHistory.versions[graphHistory.current - 1]);
 		graphHistory = {versions: graphHistory.versions, current: (graphHistory.current - 1)};
-		console.log(graphHistory);
+		// console.log(graphHistory);
 	}
 
 	function redoGraph() {
 		if(graphHistory.current >= maxversions-1) return;
-		console.log("redoing");
+		// console.log("redoing");
 		graph = structuredClone(graphHistory.versions[graphHistory.current + 1]);
 		graphHistory = {versions: graphHistory.versions, current: (graphHistory.current + 1)};
-		console.log(graphHistory);
+		// console.log(graphHistory);
 	}
 
 	function addGraphVersionHistory(newgraph){
-		console.log("adding version");
+		// console.log("adding version");
 		graphHistory = {
 			versions: [...graphHistory.versions.slice(0,Math.min(graphHistory.current + 1, maxversions)), structuredClone(newgraph)], 
 			current: (graphHistory.current+1)
 		};
-		console.log(graphHistory);
+		// console.log(graphHistory);
 	}
 
 	function reRender() {
@@ -378,6 +379,15 @@
 	function switchTheme(name) {
 		graph.theme = themes[name];
 		reRender();
+	}
+
+	function panToNode(target){
+		// console.log("panning to node: ", target, "value: ", target.value, "cv:" , target.currentValue);
+		let node = graph.items.find(i => i.kind === "node" && i.label === target.value);
+		// console.log("current transform: ", select(topGroupElem).attr("transform"));
+		let transform = `translate(${500 - node.pos.x},${500 - node.pos.y})`; // should be viewport width/2, height/2
+		select(topGroupElem).transition().duration(300).attr("transform", `scale(1)`);
+		select(topGroupElem).transition().duration(700).attr("transform", transform);
 	}
 
 	function getTagGroups(graph) {
@@ -636,6 +646,14 @@
 						>Minimal</sl-menu-item>
 				</sl-menu>
 			</sl-dropdown>
+
+			{#if graph}
+			<fluent-combobox autocomplete="both" placeholder="Jump to node" on:change="{e => panToNode(e.target)}">
+				{#each onlyNodes as node (node.id)}
+				  <fluent-option value={node.id}>{node.label}</fluent-option>
+				{/each}
+			</fluent-combobox>
+			{/if}
 
 			<sl-select
 				placeholder="Highlight by Tag"

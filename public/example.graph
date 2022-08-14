@@ -184,11 +184,10 @@
             "notes": "extra content goes here"
         }
     ],
-    "grid": "false",
     "theme": {
         "name": "classic",
         "bgfill": "#f3f3f3",
-        "grid": false,
+        "grid": "cartesian",
         "selectionColor": "blue",
         "highlightColor": "red",
         "font": "Balsamiq Sans",
