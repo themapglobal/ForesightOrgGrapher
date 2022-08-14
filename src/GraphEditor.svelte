@@ -32,7 +32,7 @@
 
 	let graph;
 	let graphHistory = {versions: [], current: -1};
-	const maxversions = 3;
+	const maxversions = 5;
 
 	let itemsForRender;
 	let tagGroups;
@@ -117,7 +117,7 @@
 	}
 
 	function redoGraph() {
-		if(graphHistory.current >= maxversions-1) return;
+		if(graphHistory.current >= graphHistory.versions.length-1) return;
 		// console.log("redoing");
 		graph = structuredClone(graphHistory.versions[graphHistory.current + 1]);
 		reRender();
@@ -127,9 +127,13 @@
 
 	function addGraphVersionHistory(newgraph){
 		// console.log("adding version");
+		let keep = graphHistory.versions.slice(
+						graphHistory.versions.length == maxversions ? 1 : 0, // drop the oldest version from history
+						graphHistory.current + 1 // new version will create a new branch so redo becomes disabled
+					);
 		graphHistory = {
-			versions: [...graphHistory.versions.slice(0,Math.min(graphHistory.current + 1, maxversions)), structuredClone(newgraph)], 
-			current: (graphHistory.current+1)
+			versions: [...keep, structuredClone(newgraph)], 
+			current: Math.min(graphHistory.current+1, maxversions - 1)
 		};
 		// console.log(graphHistory);
 	}
@@ -266,7 +270,7 @@
 				20 * Math.cos(Math.atan2(draggingFrom.y, draggingFrom.x));
 			pt1.y =
 				draggingFrom.y +
-				20 * Math.sin(Math.atan2(draggingFrom.y, draggingFrom.x));
+				20 * Math.sin(Math.atan2(draggingFrom.y, draggingFrom.x)) - 20;
 
 			let svgPt1 = pt1.matrixTransform(topGroupElem.getCTM().inverse());
 
