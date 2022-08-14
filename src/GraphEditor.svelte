@@ -31,11 +31,15 @@
 	export let overrideOptions = {};
 
 	let graph;
+	let graphHistory = {versions: [], current: -1};
+	const maxversions = 3;
+
 	let itemsForRender;
 	let tagGroups;
 	let isInIframe = false;
 
 	$: window.graph = graph;
+	$: window.graphHistory = graphHistory;
 	$: itemsForRender = getItemsForRender(graph, selectedItem);
 	$: tagGroups = getTagGroups(graph);
 
@@ -88,6 +92,8 @@
 							svgForTextBBox
 						);
 					}
+
+					addGraphVersionHistory(graph);
 				});
 		inIframe();
 	});
@@ -96,6 +102,31 @@
 		if (window.location !== window.parent.location) {
 			isInIframe = true;
 		}
+	}
+
+	function undoGraph() {
+		if(graphHistory.current <= 0) return;
+		console.log("undoing");
+		graph = structuredClone(graphHistory.versions[graphHistory.current - 1]);
+		graphHistory = {versions: graphHistory.versions, current: (graphHistory.current - 1)};
+		console.log(graphHistory);
+	}
+
+	function redoGraph() {
+		if(graphHistory.current >= maxversions-1) return;
+		console.log("redoing");
+		graph = structuredClone(graphHistory.versions[graphHistory.current + 1]);
+		graphHistory = {versions: graphHistory.versions, current: (graphHistory.current + 1)};
+		console.log(graphHistory);
+	}
+
+	function addGraphVersionHistory(newgraph){
+		console.log("adding version");
+		graphHistory = {
+			versions: [...graphHistory.versions.slice(0,Math.min(graphHistory.current + 1, maxversions)), structuredClone(newgraph)], 
+			current: (graphHistory.current+1)
+		};
+		console.log(graphHistory);
 	}
 
 	function reRender() {
@@ -155,6 +186,7 @@
 			delete draggingFrom.edge.toOrphan;
 		} else if (draggingFrom.edge && selectedItem.kind === "edge") {
 			deleteGraphItem(draggingFrom.edge, graph, false);
+			addGraphVersionHistory(graph);
 		} else if (selectedItem?.kind === 'node' && !draggingFrom.hasOwnProperty("edge")) {
 			//dropped a node on top of another
 			let pt = svgElement.createSVGPoint();
@@ -175,6 +207,7 @@
 					destNode.label
 				);
 				selectedItem.parent = destNode.id;
+				addGraphVersionHistory(graph);
 			}
 		}
 		draggingFrom = null;
@@ -197,6 +230,7 @@
 
 	function deleteItem(item, deleteDependents) {
 		deleteGraphItem(item, graph, deleteDependents);
+		addGraphVersionHistory(graph);
 		selectedItem = null;
 		reRender();
 		contextMenuPosition = null;
@@ -256,6 +290,7 @@
 
 	function createNode(e) {
 		createGraphNode(e, graph, svgElement, topGroupElem);
+		addGraphVersionHistory(graph);
 		reRender();
 		contextMenuPosition = null;
 	}
@@ -273,8 +308,9 @@
 	}
 
 	function handleCreateNode(e) {
-		// console.log("createnode", e.detail)
+		console.log("handleCreateNode", e.detail)
 		createGraphNodeEdge(e.detail.from, e.detail.handle, graph);
+		addGraphVersionHistory(graph);
 		reRender();
 	}
 
@@ -282,6 +318,7 @@
 		// console.log(e.key, e.keyCode, e.target)
 		if (selectedItem && (e.key === "Backspace" || e.key === "Delete")) {
 			deleteItem(selectedItem, false);
+			addGraphVersionHistory(graph);
 		}
 	}
 
@@ -313,12 +350,14 @@
 	function createChildNode(e, item) {
 		// console.log("createChildNode", item);
 		createGraphChildNode(e, graph, item, svgElement, topGroupElem);
+		addGraphVersionHistory(graph);
 		reRender();
 		contextMenuPosition = null;
 	}
 
 	function detachNode(item) {
 		detachNodeFromParent(item, graph);
+		addGraphVersionHistory(graph);
 		reRender();
 		contextMenuPosition = null;
 	}
@@ -389,6 +428,14 @@
 			// nothing to do, event listener is on file input
 		} else if (value === "savefile") {
 			downloadFile(exportJson(graph), "mynetwork.graph");
+		} else if (value === "undo") {
+			undoGraph();
+		} else if (value === "redo") {
+			redoGraph();
+		} else if (value === "clear") {
+			console.log("clearing graph");
+			graph.items = [];
+			addGraphVersionHistory(graph);
 		}
 	}
 
@@ -401,7 +448,16 @@
 			reRender();
 		};
 	}
+
+	const handle_keydown = e => {
+		if ((e.metaKey || e.ctrlKey) && e.which === 90) { // Z
+			e.preventDefault();
+			(e.shiftKey ? redoGraph : undoGraph)();
+		}
+	};
 </script>
+
+<svelte:window on:keydown={handle_keydown}/>
 
 {#if graph}
 	<div class="container">
@@ -542,6 +598,16 @@
 							<sl-icon slot="prefix" name="download" />
 						</sl-menu-item>
 					{/if}
+					<sl-divider />
+					<sl-menu-item value="undo" disabled={graphHistory.current <= 0}>
+						Undo (⌘-Z or ⌃Z)
+						<sl-icon slot="prefix" name="arrow-counterclockwise" />
+					</sl-menu-item>
+					<sl-menu-item value="redo" disabled={graphHistory.versions[graphHistory.current + 1] === undefined}>
+						Redo (⇧-⌘-Z or ⇧⌃Z)
+						<sl-icon slot="prefix" name="arrow-clockwise" />
+					</sl-menu-item>
+					<sl-menu-item value="clear" disabled={graph.items.length == 0}>Clear</sl-menu-item>
 					<sl-divider />
 					<sl-menu-label>Export as:</sl-menu-label>
 					{#if graph.exportsvg}
