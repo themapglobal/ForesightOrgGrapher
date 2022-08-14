@@ -23,7 +23,7 @@
 	import ItemEditor from "./ItemEditor.svelte";
 
 	import { onMount } from "svelte";
-	import { zoom } from "d3-zoom";
+	import { zoom, zoomIdentity } from "d3-zoom";
 	import { select } from "d3-selection";
 
 	export let graphjsonpath;
@@ -44,30 +44,32 @@
 	$: itemsForRender = getItemsForRender(graph, selectedItem);
 	$: tagGroups = getTagGroups(graph);
 
+	// $: window.d3s = select;
+
 	let currentMouse = {};
 	let selectedItem = null;
 	let draggingFrom = null;
 	let contextMenuPosition = null;
-
 	
 	let svgElement;
+	// $: window.svgg = svgElement;
 	let topGroupElem;
 
 	let highlighted = [];
+	let zoomer;
 
 	// panning and zooming
 	$: if (svgElement && topGroupElem) {
-		select(svgElement).call(
-			zoom().on("zoom", ({ transform }) => {
-				select(topGroupElem).attr("transform", transform);
-			})
-		);
+		zoomer = zoom().on("zoom", ({ transform }) => {
+			select(topGroupElem).attr("transform", transform);
+		});
+		select(svgElement).call(zoomer);
 	}
 
 	// $: console.log(selectedItem?.level)
 	function resetZoomAndPan() {
 		if (svgElement && topGroupElem) {
-			select(topGroupElem).attr("transform", null);
+			select(svgElement).transition().duration(300).call(zoomer.transform, zoomIdentity.translate(0,0).scale(1));
 		}
 	}
 
@@ -109,6 +111,7 @@
 		if(graphHistory.current <= 0) return;
 		// console.log("undoing");
 		graph = structuredClone(graphHistory.versions[graphHistory.current - 1]);
+		reRender();
 		graphHistory = {versions: graphHistory.versions, current: (graphHistory.current - 1)};
 		// console.log(graphHistory);
 	}
@@ -117,6 +120,7 @@
 		if(graphHistory.current >= maxversions-1) return;
 		// console.log("redoing");
 		graph = structuredClone(graphHistory.versions[graphHistory.current + 1]);
+		reRender();
 		graphHistory = {versions: graphHistory.versions, current: (graphHistory.current + 1)};
 		// console.log(graphHistory);
 	}
@@ -128,6 +132,14 @@
 			current: (graphHistory.current+1)
 		};
 		// console.log(graphHistory);
+	}
+
+	function clearGraph(){
+		// console.log("clearing graph");
+		graph.items = [];
+		contextMenuPosition = null;
+		reRender();
+		addGraphVersionHistory(graph);
 	}
 
 	function reRender() {
@@ -384,10 +396,7 @@
 	function panToNode(target){
 		// console.log("panning to node: ", target, "value: ", target.value, "cv:" , target.currentValue);
 		let node = graph.items.find(i => i.kind === "node" && i.label === target.value);
-		// console.log("current transform: ", select(topGroupElem).attr("transform"));
-		let transform = `translate(${500 - node.pos.x},${500 - node.pos.y})`; // should be viewport width/2, height/2
-		select(topGroupElem).transition().duration(300).attr("transform", `scale(1)`);
-		select(topGroupElem).transition().duration(700).attr("transform", transform);
+		select(svgElement).transition().duration(800).call(zoomer.transform, zoomIdentity.translate(500,500).scale(1.8).translate(0 - node.pos.x, 0 - node.pos.y));
 	}
 
 	function getTagGroups(graph) {
@@ -443,9 +452,7 @@
 		} else if (value === "redo") {
 			redoGraph();
 		} else if (value === "clear") {
-			console.log("clearing graph");
-			graph.items = [];
-			addGraphVersionHistory(graph);
+			clearGraph();
 		}
 	}
 
@@ -578,6 +585,7 @@
 				{:else}
 					<sl-menu-item value="createnode" on:click={createNode}>Create new Node</sl-menu-item>
 					<sl-menu-item value="createnote" on:click={createNote}>Create new Text Note</sl-menu-item>
+					<sl-menu-item value="cleargraph" on:click={clearGraph}>Clear Graph</sl-menu-item>
 				{/if}
 			</sl-menu>
 		{/if}
