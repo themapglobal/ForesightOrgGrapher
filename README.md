@@ -30,13 +30,12 @@ npm run dev
 
 ## TODO
 
-- Select and move multiple nodes at once
-- Change history with Undo/Redo
+- Performance testing (1000+ nodes)
 - Collapsible parent nodes in zommed-out mode
+- Select and move multiple nodes at once
 - Alignment / snap-to-grid
 - Better path and z-index calculation for edges
 - Edge label readability
-- Performance testing (1000+ nodes)
 - Minimal theme
 - Improve TagsInput accessibility
 
@@ -44,3 +43,8 @@ npm run dev
 
 - [SvelteJS](https://svelte.dev/) for reactivity
 - [Shoelace.Style](https://shoelace.style/) for misc WebComponents
+
+## Related Tools
+
+- [PRSM](https://prsm.uk/)
+- [JointJS](https://resources.jointjs.com/demos/kitchensink)
