@@ -2,7 +2,7 @@ export function getGraphNode(nodeid, graph){
     return graph && nodeid && graph.items.find(n => n.id === nodeid);
 }
 
-export function prepareGraph(graph){
+export function prepareGraph(graph, action){
     // populate item.children[] for convenience
     graph.items.filter(i => i.kind === 'node').forEach(item => { 
         item.children = []; 
@@ -52,14 +52,21 @@ export function moveGraphNode(item, graph, dx, dy){
     })
 }
 
-export function resizeGraphNode(item, graph, svgForTextBBox){
-    // console.log("resizing", item.id, item.label, svgForTextBBox);
+export function resizeGraphNode(item, graph, svgForTextBBox, action){
+    
     // console.log({item});
     // first resize all children
     (item.children || []).forEach(c => {
         let child = getGraphNode(c, graph);
-        resizeGraphNode(child, graph, svgForTextBBox)
+        resizeGraphNode(child, graph, svgForTextBBox, action)
     })
+    
+    // performance optimization
+    if(action && action.kind === 'movingitem' && !getParentAncestors(graph, action.item).includes(item)){
+        console.log(`skipping ${item.label} because ${action.item.label} doesn't affect its size`);
+        return;
+    }
+
     let notesWidth = Math.min(300, item.notes ? item.notes.length * ((item.nodenotesfontsize || graph.theme.nodenotesfontsize || 16) - 6) : 0)
     let notesHeight = item.notes ? (Math.ceil(item.notes.length * ((item.nodenotesfontsize || graph.theme.nodenotesfontsize || 16) - 6) / notesWidth) * ((item.nodenotesfontsize || graph.theme.nodenotesfontsize || 16) + 4)) : 0;
     
@@ -132,17 +139,17 @@ function decideNodeLevel(item, graph, currentLevel, selectedItem){
     item.children.forEach(c => decideNodeLevel(getGraphNode(c, graph), graph, item.level + 2, selectedItem))
 }
 
-export function layout(graph, selectedItem, svgForTextBBox){
+export function layout(graph, selectedItem, svgForTextBBox, action){
     if(!graph) return null;
-    prepareGraph(graph);
+    prepareGraph(graph, action);
     // resize top nodes only because they will recurse
     graph.items.filter(i => (i.kind === 'node' && !i.parent)).forEach(item => {
-        resizeGraphNode(item, graph, svgForTextBBox);
+        resizeGraphNode(item, graph, svgForTextBBox, action);
         decideNodeLevel(item, graph, 0, selectedItem);
     });
 
     graph.items.filter(i => (i.kind === 'note')).forEach(item => {
-        resizeGraphNode(item, graph, svgForTextBBox);
+        resizeGraphNode(item, graph, svgForTextBBox, action);
     });
 
     graph.items.filter(i => (i.kind === 'edge')).forEach(edge => {
@@ -371,6 +378,7 @@ export function findNodeAtPosition(svgPt, excludeNode, graph){
 
 export function getAncestors(graph, node, depth){
     // Follow directed edges backwards and collect ancestor nodes
+    // Note: This does not follow the parent relationship
     if(node.kind !== 'node') return [];
     let incoming = graph.items.filter(item => item.kind === 'edge' && item.toId === node.id);
     let parents = incoming.map(edge => { 
@@ -378,6 +386,15 @@ export function getAncestors(graph, node, depth){
         return {node: p, parents: (depth == 2 ? [] : getAncestors(graph, p, depth+1))}; 
     });
     return parents;
+}
+
+export function getParentAncestors(graph, item){
+    // Follow parent backwards and collect ancestor nodes
+    if(item == null) return [];
+    if(item.kind !== 'node') return [];
+    if(item.parent == null) return [];
+    let parent = getGraphNode(item.parent, graph);
+    return [...getParentAncestors(parent), parent];
 }
 
 export function exportJson(graph){

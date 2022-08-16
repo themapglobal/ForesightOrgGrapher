@@ -146,12 +146,12 @@
 		addGraphVersionHistory(graph);
 	}
 
-	function reRender() {
+	function reRender(action) {
 		// console.log('rerender()', svgForTextBBox)
 		svgElement = svgElement;
 		topGroupElem = topGroupElem;
 		selectedItem = selectedItem;
-		graph = layout(graph, selectedItem, svgForTextBBox);
+		graph = layout(graph, selectedItem, svgForTextBBox, action);
 		if (window.overrideOptions.persistLocalStorage) {
 			localStorage.setItem(graphjsonpath, JSON.stringify(graph));
 		}
@@ -302,7 +302,7 @@
 
 		draggingFrom.x = currentMouse.x;
 		draggingFrom.y = currentMouse.y;
-		reRender();
+		reRender({kind: "movingitem", item: selectedItem});
 	}
 
 	function createNode(e) {
@@ -400,7 +400,7 @@
 	function panToNode(target){
 		// console.log("panning to node: ", target, "value: ", target.value, "cv:" , target.currentValue);
 		let node = graph.items.find(i => i.kind === "node" && i.label === target.value);
-		select(svgElement).transition().duration(800).call(zoomer.transform, zoomIdentity.translate(500,500).scale(1.8).translate(0 - node.pos.x, 0 - node.pos.y));
+		select(svgElement).transition().duration(1500).call(zoomer.transform, zoomIdentity.translate(500,500).scale(1.8).translate(0 - node.pos.x, 0 - node.pos.y));
 	}
 
 	function getTagGroups(graph) {
