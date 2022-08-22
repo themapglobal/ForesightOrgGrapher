@@ -30,6 +30,8 @@
 	export let svgForTextBBox;
 	export let overrideOptions = {};
 
+	let showAboutBox = false;
+
 	let graph;
 	let graphHistory = {versions: [], current: -1};
 	const maxversions = 5;
@@ -457,6 +459,8 @@
 			redoGraph();
 		} else if (value === "clear") {
 			clearGraph();
+		} else if (value === "about") {
+			showAboutBox = true;
 		}
 	}
 
@@ -656,6 +660,8 @@
 						value="theme.minimal"
 						checked={graph.theme.name === "minimal"}
 						>Minimal</sl-menu-item>
+					<sl-divider />
+					<sl-menu-item value="about">About Grapher...</sl-menu-item>
 				</sl-menu>
 			</sl-dropdown>
 
@@ -690,6 +696,24 @@
 		</sl-button-group>
 	</section>
 {/if}
+
+<sl-dialog 
+	open={showAboutBox} 
+	on:sl-hide={e => showAboutBox = false} 
+	on:sl-show={e => showAboutBox = true} 
+	label="About Grapher" 
+	class="dialog-overview"
+>
+	<p>
+	This tool was created by <a href="https://github.com/nileshtrivedi" target="_blank">@nileshtrivedi</a> 
+	while being supported by <a href="https://foresight.org/tech-tree/" target="_blank">The Foresight Institute</a> who is using it for their 
+	<a href="https://github.com/foresight-org/LongevityTechTree" target="_blank">Nanotech, Neurotech, Healthspan, Space and Intelligent Cooperation tech trees</a>.
+	</p>
+
+	<p>The code for this tool is <a href="https://codeberg.org/nilesh/grapher" target="_blank">available as open-source</a>.</p>
+
+	<sl-button slot="footer" variant="primary" on:click={e => showAboutBox = false}>Close</sl-button>
+</sl-dialog>
 
 <style>
 	.container {
