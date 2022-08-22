@@ -63,7 +63,7 @@ export function resizeGraphNode(item, graph, svgForTextBBox, action){
     
     // performance optimization
     if(action && action.kind === 'movingitem' && !getParentAncestors(graph, action.item).includes(item)){
-        console.log(`skipping ${item.label} because ${action.item.label} doesn't affect its size`);
+        // console.log(`skipping ${item.label} because ${action.item.label} doesn't affect its size`);
         return;
     }
 

@@ -61,14 +61,14 @@
 		<sl-input 
 			label="Label" type='text' size="small"
 			value={selectedItem.label} 
-			on:input={e => handleInputChange(e, 'text_label')}>
+			on:sl-change={e => handleInputChange(e, 'text_label')}>
 		</sl-input>	
 
 		{#if selectedItem.kind === 'node' || selectedItem.kind === 'note'}
 		<sl-textarea 
 			label="Notes" placeholder="Notes (these will be shown in the graph)..."
 			size="small"
-			on:sl-input={e => handleInputChange(e, 'text_notes')}
+			on:sl-change={e => handleInputChange(e, 'text_notes')}
 			value={selectedItem.notes}> 
 		</sl-textarea>
 		{/if}
@@ -77,7 +77,7 @@
 			<sl-textarea 
 				label="Description" placeholder="Description in markdown..."
 				size="small"
-				on:sl-input={e => handleInputChange(e, 'text_desc')}
+				on:sl-change={e => handleInputChange(e, 'text_desc')}
 				value={selectedItem.desc}> 
 					<p slot="help-text"><a href="https://www.markdownguide.org/cheat-sheet/" target="_blank">Learn about MarkDown</a></p>
 			</sl-textarea>
