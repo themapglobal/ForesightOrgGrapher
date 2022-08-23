@@ -46,7 +46,13 @@
 			return acc;
 		}, {});
 
-		return `<table>` + Object.entries(groups).map(e => `<tr><td>${e[0]}</td><td>` + e[1].map(t => t.label).join(',') + `</td></tr>`).join('') + `</table>`
+		return `<table>` 
+			+ Object.entries(groups).map(e => 
+				`<tr><td>${e[0]}</td><td>` 
+				+ "<div style='display: flex'>" + e[1].map(t => `<div style='background-color: yellow; padding: 2px 4px; border: thin solid black; margin-right: 4px'>${t.label}</div>`).join('') + "</div>"
+				+ `</td></tr>`
+			  ).join('') 
+			+ `</table>`;
 	}
 
 	$: dynamicNotes = getDynamicNotesHtml(getTags(graph, item, new Set()));
@@ -193,7 +199,6 @@
 	.dynamicnotes-div {
 		width: 100%;
 		height: 100%;
-		background-color: yellow;
 	}
 
 </style>

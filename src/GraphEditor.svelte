@@ -31,9 +31,10 @@
 	export let overrideOptions = {};
 
 	let showAboutBox = false;
+	let showHelpBox = false;
 
 	let graph;
-	let graphHistory = {versions: [], current: -1};
+	let graphHistory = { versions: [], current: -1 };
 	const maxversions = 5;
 
 	let itemsForRender;
@@ -42,7 +43,11 @@
 
 	$: window.graph = graph;
 	$: window.graphHistory = graphHistory;
-	$: onlyNodes = graph ? graph.items.filter(i => i.kind === "node").sort((a,b) => a.label.localeCompare(b.label)) : [];
+	$: onlyNodes = graph
+		? graph.items
+				.filter((i) => i.kind === "node")
+				.sort((a, b) => a.label.localeCompare(b.label))
+		: [];
 	$: itemsForRender = getItemsForRender(graph, selectedItem);
 	$: tagGroups = getTagGroups(graph);
 
@@ -52,7 +57,7 @@
 	let selectedItem = null;
 	let draggingFrom = null;
 	let contextMenuPosition = null;
-	
+
 	let svgElement;
 	// $: window.svgg = svgElement;
 	let topGroupElem;
@@ -71,7 +76,10 @@
 	// $: console.log(selectedItem?.level)
 	function resetZoomAndPan() {
 		if (svgElement && topGroupElem) {
-			select(svgElement).transition().duration(300).call(zoomer.transform, zoomIdentity.translate(0,0).scale(1));
+			select(svgElement)
+				.transition()
+				.duration(300)
+				.call(zoomer.transform, zoomIdentity.translate(0, 0).scale(1));
 		}
 	}
 
@@ -84,7 +92,11 @@
 						let localStorageValue =
 							localStorage.getItem(graphjsonpath);
 						graph = localStorageValue
-							? layout(JSON.parse(localStorageValue), null, svgForTextBBox)
+							? layout(
+									JSON.parse(localStorageValue),
+									null,
+									svgForTextBBox
+							  )
 							: layout(
 									Object.assign(data, overrideOptions),
 									null,
@@ -110,37 +122,47 @@
 	}
 
 	function undoGraph() {
-		if(graphHistory.current <= 0) return;
+		if (graphHistory.current <= 0) return;
 		// console.log("undoing");
-		graph = structuredClone(graphHistory.versions[graphHistory.current - 1]);
+		graph = structuredClone(
+			graphHistory.versions[graphHistory.current - 1]
+		);
 		reRender();
-		graphHistory = {versions: graphHistory.versions, current: (graphHistory.current - 1)};
-		// console.log(graphHistory);
-	}
-
-	function redoGraph() {
-		if(graphHistory.current >= graphHistory.versions.length-1) return;
-		// console.log("redoing");
-		graph = structuredClone(graphHistory.versions[graphHistory.current + 1]);
-		reRender();
-		graphHistory = {versions: graphHistory.versions, current: (graphHistory.current + 1)};
-		// console.log(graphHistory);
-	}
-
-	function addGraphVersionHistory(newgraph){
-		// console.log("adding version");
-		let keep = graphHistory.versions.slice(
-						graphHistory.versions.length == maxversions ? 1 : 0, // drop the oldest version from history
-						graphHistory.current + 1 // new version will create a new branch so redo becomes disabled
-					);
 		graphHistory = {
-			versions: [...keep, structuredClone(newgraph)], 
-			current: Math.min(graphHistory.current+1, maxversions - 1)
+			versions: graphHistory.versions,
+			current: graphHistory.current - 1,
 		};
 		// console.log(graphHistory);
 	}
 
-	function clearGraph(){
+	function redoGraph() {
+		if (graphHistory.current >= graphHistory.versions.length - 1) return;
+		// console.log("redoing");
+		graph = structuredClone(
+			graphHistory.versions[graphHistory.current + 1]
+		);
+		reRender();
+		graphHistory = {
+			versions: graphHistory.versions,
+			current: graphHistory.current + 1,
+		};
+		// console.log(graphHistory);
+	}
+
+	function addGraphVersionHistory(newgraph) {
+		// console.log("adding version");
+		let keep = graphHistory.versions.slice(
+			graphHistory.versions.length == maxversions ? 1 : 0, // drop the oldest version from history
+			graphHistory.current + 1 // new version will create a new branch so redo becomes disabled
+		);
+		graphHistory = {
+			versions: [...keep, structuredClone(newgraph)],
+			current: Math.min(graphHistory.current + 1, maxversions - 1),
+		};
+		// console.log(graphHistory);
+	}
+
+	function clearGraph() {
 		// console.log("clearing graph");
 		graph.items = [];
 		contextMenuPosition = null;
@@ -206,7 +228,10 @@
 		} else if (draggingFrom.edge && selectedItem.kind === "edge") {
 			deleteGraphItem(draggingFrom.edge, graph, false);
 			addGraphVersionHistory(graph);
-		} else if (selectedItem?.kind === 'node' && !draggingFrom.hasOwnProperty("edge")) {
+		} else if (
+			selectedItem?.kind === "node" &&
+			!draggingFrom.hasOwnProperty("edge")
+		) {
 			//dropped a node on top of another
 			let pt = svgElement.createSVGPoint();
 			pt.x = draggingFrom.x;
@@ -272,7 +297,8 @@
 				20 * Math.cos(Math.atan2(draggingFrom.y, draggingFrom.x));
 			pt1.y =
 				draggingFrom.y +
-				20 * Math.sin(Math.atan2(draggingFrom.y, draggingFrom.x)) - 20;
+				20 * Math.sin(Math.atan2(draggingFrom.y, draggingFrom.x)) -
+				20;
 
 			let svgPt1 = pt1.matrixTransform(topGroupElem.getCTM().inverse());
 
@@ -304,7 +330,7 @@
 
 		draggingFrom.x = currentMouse.x;
 		draggingFrom.y = currentMouse.y;
-		reRender({kind: "movingitem", item: selectedItem});
+		reRender({ kind: "movingitem", item: selectedItem });
 	}
 
 	function createNode(e) {
@@ -314,7 +340,7 @@
 		contextMenuPosition = null;
 	}
 
-	function createNote(e){
+	function createNote(e) {
 		createGraphNote(e, graph, svgElement, topGroupElem);
 		reRender();
 		contextMenuPosition = null;
@@ -327,7 +353,7 @@
 	}
 
 	function handleCreateNode(e) {
-		console.log("handleCreateNode", e.detail)
+		console.log("handleCreateNode", e.detail);
 		createGraphNodeEdge(e.detail.from, e.detail.handle, graph);
 		addGraphVersionHistory(graph);
 		reRender();
@@ -343,7 +369,7 @@
 
 	function handleSvgMouseUp(e) {
 		// console.log("Svg Mouseup");
-		if (draggingFrom.edge) {
+		if (draggingFrom?.edge) {
 			// remove this edge
 			deleteGraphItem(draggingFrom.edge, graph, false);
 		}
@@ -363,6 +389,12 @@
 	}
 
 	function handleEdgeChanged(e) {
+		// console.log("handleEdgeChanged");
+		let edge = e.detail.source;
+		if (edge) {
+			deleteGraphItem(edge, graph, false);
+			addGraphVersionHistory(graph);
+		}
 		reRender();
 	}
 
@@ -399,17 +431,28 @@
 		reRender();
 	}
 
-	function panToNode(target){
+	function panToNode(target) {
 		// console.log("panning to node: ", target, "value: ", target.value, "cv:" , target.currentValue);
-		let node = graph.items.find(i => i.kind === "node" && i.label === target.value);
-		select(svgElement).transition().duration(1500).call(zoomer.transform, zoomIdentity.translate(500,500).scale(1.8).translate(0 - node.pos.x, 0 - node.pos.y));
+		let node = graph.items.find(
+			(i) => i.kind === "node" && i.label === target.value
+		);
+		select(svgElement)
+			.transition()
+			.duration(1500)
+			.call(
+				zoomer.transform,
+				zoomIdentity
+					.translate(500, 500)
+					.scale(1.8)
+					.translate(0 - node.pos.x, 0 - node.pos.y)
+			);
 	}
 
 	function getTagGroups(graph) {
 		if (!graph) return Object.entries({});
 		// get unique tags
 		let tags = graph.items
-		    .filter(i => ['node','edge'].includes(i.kind))
+			.filter((i) => ["node", "edge"].includes(i.kind))
 			.map((i) => i.tags)
 			.flat()
 			.filter((value, index, self) => self.indexOf(value) === index);
@@ -461,6 +504,8 @@
 			clearGraph();
 		} else if (value === "about") {
 			showAboutBox = true;
+		} else if (value === "help") {
+			showHelpBox = true;
 		}
 	}
 
@@ -474,15 +519,16 @@
 		};
 	}
 
-	const handle_keydown = e => {
-		if ((e.metaKey || e.ctrlKey) && e.which === 90) { // Z
+	const handle_keydown = (e) => {
+		if ((e.metaKey || e.ctrlKey) && e.which === 90) {
+			// Z
 			e.preventDefault();
 			(e.shiftKey ? redoGraph : undoGraph)();
 		}
 	};
 </script>
 
-<svelte:window on:keydown={handle_keydown}/>
+<svelte:window on:keydown={handle_keydown} />
 
 {#if graph}
 	<div class="container">
@@ -504,7 +550,8 @@
 				{#each itemsForRender as item (item.id)}
 					{#if item.kind === "node"}
 						<Node
-							{item} {graph}
+							{item}
+							{graph}
 							on:itemMouseDown={handleItemMouseDown}
 							on:itemMouseUp={handleItemMouseUp}
 							on:itemBadgeClick={handleItemBadgeClick}
@@ -514,7 +561,8 @@
 							on:itemcontrolmousedown={handleItemControlMouseDown}
 							theme={graph.theme}
 							isHighlighted={highlighted.includes(item.id)}
-							isHidden={highlighted.length > 0 && !highlighted.includes(item.id)}
+							isHidden={highlighted.length > 0 &&
+								!highlighted.includes(item.id)}
 						/>
 					{:else if item.kind === "edge"}
 						<Edge
@@ -568,32 +616,42 @@
 						<sl-menu-item
 							value="createchildnode"
 							on:click={(e) => createChildNode(e, selectedItem)}
-							>Create child node</sl-menu-item>
+							>Create child node</sl-menu-item
+						>
 
 						{#if selectedItem.parent}
 							<sl-menu-item
 								value="detach"
 								on:click={(e) => detachNode(selectedItem)}
-								>
+							>
 								Detach &quot;{selectedItem.label}&quot; from
 								&quot;{getGraphNode(selectedItem.parent, graph)
-									.label}&quot;</sl-menu-item>
+									.label}&quot;</sl-menu-item
+							>
 						{/if}
 						<sl-menu-item
 							value="deleteitemwithdependents"
 							on:click={(e) => deleteItem(selectedItem, true)}
 							>Delete &quot;{selectedItem.label}&quot; including
-							dependents</sl-menu-item>
+							dependents</sl-menu-item
+						>
 					{/if}
 					<sl-menu-item
 						value="deleteitem"
 						on:click={(e) => deleteItem(selectedItem, false)}
-						>Delete &quot;{selectedItem.label}&quot; {#if ["node","edge"].includes(selectedItem.kind) }leaving orphans{/if}</sl-menu-item
+						>Delete &quot;{selectedItem.label}&quot; {#if ["node", "edge"].includes(selectedItem.kind)}leaving
+							orphans{/if}</sl-menu-item
 					>
 				{:else}
-					<sl-menu-item value="createnode" on:click={createNode}>Create new Node</sl-menu-item>
-					<sl-menu-item value="createnote" on:click={createNote}>Create new Text Note</sl-menu-item>
-					<sl-menu-item value="cleargraph" on:click={clearGraph}>Clear Graph</sl-menu-item>
+					<sl-menu-item value="createnode" on:click={createNode}
+						>Create new Node</sl-menu-item
+					>
+					<sl-menu-item value="createnote" on:click={createNote}
+						>Create new Text Note</sl-menu-item
+					>
+					<sl-menu-item value="cleargraph" on:click={clearGraph}
+						>Clear Graph</sl-menu-item
+					>
 				{/if}
 			</sl-menu>
 		{/if}
@@ -625,52 +683,76 @@
 						</sl-menu-item>
 					{/if}
 					<sl-divider />
-					<sl-menu-item value="undo" disabled={graphHistory.current <= 0}>
+					<sl-menu-item
+						value="undo"
+						disabled={graphHistory.current <= 0}
+					>
 						Undo (⌘-Z or ⌃Z)
 						<sl-icon slot="prefix" name="arrow-counterclockwise" />
 					</sl-menu-item>
-					<sl-menu-item value="redo" disabled={graphHistory.versions[graphHistory.current + 1] === undefined}>
+					<sl-menu-item
+						value="redo"
+						disabled={graphHistory.versions[
+							graphHistory.current + 1
+						] === undefined}
+					>
 						Redo (⇧-⌘-Z or ⇧⌃Z)
 						<sl-icon slot="prefix" name="arrow-clockwise" />
 					</sl-menu-item>
-					<sl-menu-item value="clear" disabled={graph.items.length == 0}>Clear</sl-menu-item>
+					<sl-menu-item
+						value="clear"
+						disabled={graph.items.length == 0}>Clear</sl-menu-item
+					>
 					<sl-divider />
 					<sl-menu-label>Export as:</sl-menu-label>
 					{#if graph.exportsvg}
 						<sl-menu-item value="export.svg">SVG</sl-menu-item>
 					{/if}
 					{#if graph.exportcytoscape}
-						<sl-menu-item value="export.cytoscape">Cytoscape JSON</sl-menu-item>
+						<sl-menu-item value="export.cytoscape"
+							>Cytoscape JSON</sl-menu-item
+						>
 					{/if}
 					<sl-divider />
 					<sl-menu-label>Switch Theme To</sl-menu-label>
 					<sl-menu-item
 						value="theme.classic"
 						checked={graph.theme.name === "classic"}
-						>Classic</sl-menu-item>
+						>Classic</sl-menu-item
+					>
 					<sl-menu-item
 						value="theme.elegant"
 						checked={graph.theme.name === "elegant"}
-						>Elegant</sl-menu-item>
+						>Elegant</sl-menu-item
+					>
 					<sl-menu-item
 						value="theme.foresight"
 						checked={graph.theme.name === "foresight"}
-						>Foresight</sl-menu-item>
+						>Foresight</sl-menu-item
+					>
 					<sl-menu-item
 						value="theme.minimal"
 						checked={graph.theme.name === "minimal"}
-						>Minimal</sl-menu-item>
+						>Minimal</sl-menu-item
+					>
 					<sl-divider />
 					<sl-menu-item value="about">About Grapher...</sl-menu-item>
+					<sl-menu-item value="help">Help...</sl-menu-item>
 				</sl-menu>
 			</sl-dropdown>
 
 			{#if graph}
-			<fluent-combobox autocomplete="both" placeholder="Jump to node" on:change="{e => panToNode(e.target)}">
-				{#each onlyNodes as node (node.id)}
-				  <fluent-option value={node.id}>{node.label}</fluent-option>
-				{/each}
-			</fluent-combobox>
+				<fluent-combobox
+					autocomplete="both"
+					placeholder="Jump to node"
+					on:change={(e) => panToNode(e.target)}
+				>
+					{#each onlyNodes as node (node.id)}
+						<fluent-option value={node.id}
+							>{node.label}</fluent-option
+						>
+					{/each}
+				</fluent-combobox>
 			{/if}
 
 			<sl-select
@@ -688,7 +770,9 @@
 				{#each tagGroups as group (group[0])}
 					<sl-menu-label>{group[0]}</sl-menu-label>
 					{#each group[1] as tag (tag.value)}
-						<sl-menu-item value={tag.value}>{tag.label}</sl-menu-item>
+						<sl-menu-item value={tag.value}
+							>{tag.label}</sl-menu-item
+						>
 					{/each}
 					<sl-divider />
 				{/each}
@@ -697,22 +781,92 @@
 	</section>
 {/if}
 
-<sl-dialog 
-	open={showAboutBox} 
-	on:sl-hide={e => showAboutBox = false} 
-	on:sl-show={e => showAboutBox = true} 
-	label="About Grapher" 
+<sl-dialog
+	open={showAboutBox}
+	on:sl-hide={(e) => (showAboutBox = false)}
+	on:sl-show={(e) => (showAboutBox = true)}
+	label="About Grapher"
 	class="dialog-overview"
 >
 	<p>
-	This tool was created by <a href="https://github.com/nileshtrivedi" target="_blank">@nileshtrivedi</a> 
-	while being supported by <a href="https://foresight.org/tech-tree/" target="_blank">The Foresight Institute</a> who is using it for their 
-	<a href="https://github.com/foresight-org/LongevityTechTree" target="_blank">Nanotech, Neurotech, Healthspan, Space and Intelligent Cooperation tech trees</a>.
+		This tool was created by <a
+			href="https://github.com/nileshtrivedi"
+			target="_blank">@nileshtrivedi</a
+		>
+		while being supported by
+		<a href="https://foresight.org/tech-tree/" target="_blank"
+			>The Foresight Institute</a
+		>
+		who is using it for their
+		<a
+			href="https://github.com/foresight-org/LongevityTechTree"
+			target="_blank"
+			>Nanotech, Neurotech, Healthspan, Space and Intelligent Cooperation
+			tech trees</a
+		>.
 	</p>
 
-	<p>The code for this tool is <a href="https://codeberg.org/nilesh/grapher" target="_blank">available as open-source</a>.</p>
+	<p>
+		The code for this tool is <a
+			href="https://codeberg.org/nilesh/grapher"
+			target="_blank">available as open-source</a
+		>.
+	</p>
 
-	<sl-button slot="footer" variant="primary" on:click={e => showAboutBox = false}>Close</sl-button>
+	<sl-button
+		slot="footer"
+		variant="primary"
+		on:click={(e) => (showAboutBox = false)}>Close</sl-button
+	>
+</sl-dialog>
+
+<sl-dialog
+	open={showHelpBox}
+	on:sl-hide={(e) => (showHelpBox = false)}
+	on:sl-show={(e) => (showHelpBox = true)}
+	label="Help"
+	class="dialog-overview"
+>
+	<ul>
+		<li>
+			<b>To create a new node</b>: Right-click on empty area and select
+			"Create New Node".
+		</li>
+		<li>
+			<b>To create an edge</b>: Select source node by left-click, drag
+			from one of the control points: ⊕ and release when on top of target
+			node.
+		</li>
+		<li>
+			<b>To create both a new node and an edge</b>: Select source-node and
+			left-click on any of the control points: ⊕.
+		</li>
+		<li>
+			<b>To create a child node</b>: Right-click on the parent node and
+			choose "Create child node".
+		</li>
+		<li>
+			<b>To make one node child of another</b>: Drag it and drop it on
+			parent node.
+		</li>
+		<li>
+			<b>To delete node</b>: Right-click on the node and choose "Delete"
+			either "including dependents" or "leaving orphans".
+		</li>
+		<li>
+			<b>To detach child node from its parent</b>: Right-click on the
+			child node and choose "Detach _ from _".
+		</li>
+		<li>
+			<b>To add a comment on the graph</b>: Right-click on empty area and
+			choose "Create New Text Note".
+		</li>
+	</ul>
+	<sl-button
+		slot="footer"
+		variant="primary"
+		on:click={(e) => (showHelpBox = false)}>Close</sl-button
+	>
 </sl-dialog>
 
 <style>
