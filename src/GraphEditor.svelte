@@ -272,6 +272,14 @@
 		reRender();
 	}
 
+	function handleItemCollapserClick(e){
+		let item = e.detail.source;
+		if(item.kind === "node"){
+			item.is_collapsed = !item.is_collapsed;
+			reRender();
+		}
+	}
+
 	function deleteItem(item, deleteDependents) {
 		deleteGraphItem(item, graph, deleteDependents);
 		addGraphVersionHistory(graph);
@@ -413,6 +421,31 @@
 		contextMenuPosition = null;
 	}
 
+	function isAncestorCollapsed(item, graph){
+		if(item.kind === "edge"){
+			// Hide edge only if both its nodes are hidden
+			return isAncestorCollapsed(getGraphNode(item.fromId, graph), graph) && isAncestorCollapsed(getGraphNode(item.toId, graph), graph)
+		} else if (item.kind === "note") {
+			return false;
+		}
+
+		// Now handle nodes
+		let parent = item.parent
+		while(parent){
+			let parentNode = getGraphNode(parent, graph)
+			if(!parentNode){
+				console.error(`item ${item.label}'s parent ${parent} is missing`);
+				return false;
+			}
+			if(parentNode.is_collapsed){
+				return true;
+			} else {
+				parent = parentNode.parent; // keep checking higher
+			}
+		}
+		return false;
+	}
+
 	function getItemsForRender(graph, selectedItem) {
 		if (!graph) return [];
 		// draw selected edge on the top (at the end)
@@ -420,10 +453,11 @@
 			return [
 				...graph.items
 					.sort((a, b) => a.level - b.level)
-					.filter((i) => i.id !== selectedItem.id),
+					.filter((i) => i.id !== selectedItem.id)
+					.filter((i) => !isAncestorCollapsed(i, graph)),
 				...graph.items.filter((i) => i.id === selectedItem.id),
 			];
-		else return graph.items.sort((a, b) => a.level - b.level);
+		else return graph.items.sort((a, b) => a.level - b.level).filter((i) => !isAncestorCollapsed(i, graph));
 	}
 
 	function switchTheme(name) {
@@ -555,6 +589,7 @@
 							on:itemMouseDown={handleItemMouseDown}
 							on:itemMouseUp={handleItemMouseUp}
 							on:itemBadgeClick={handleItemBadgeClick}
+							on:itemCollapserClick={handleItemCollapserClick}
 							isSelected={item.id === selectedItem?.id}
 							on:nodeChanged={handleNodeChanged}
 							on:createnode={handleCreateNode}

@@ -187,7 +187,7 @@
     "theme": {
         "name": "classic",
         "bgfill": "#f3f3f3",
-        "grid": "cartesian",
+        "grid": false,
         "selectionColor": "blue",
         "highlightColor": "red",
         "font": "Balsamiq Sans",

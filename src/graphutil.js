@@ -99,7 +99,11 @@ export function resizeGraphNode(item, graph, svgForTextBBox, action) {
 
 	// console.log(item.id, {leftchild}, {rightchild});
 
-	item.width = 2 * Math.max(halfLabelAndNotesWidth, rightchild, leftchild) + 20;;
+	if(false){
+		item.width = 2 * halfLabelAndNotesWidth + 20;
+	} else {
+		item.width = 2 * Math.max(halfLabelAndNotesWidth, rightchild, leftchild) + 20;
+	}
 
 	// console.log("itemwidth", item.width);
 
@@ -126,7 +130,11 @@ export function resizeGraphNode(item, graph, svgForTextBBox, action) {
 
 	let upchild = item.pos.y - Math.min(...childUpExtents, item.pos.y);
 
-	item.height = 2 * Math.max(halfLabelAndNotesHeight, upchild, downchild) + 20;
+	if(false) {
+		item.height = 2 * halfLabelAndNotesHeight + 20;
+	} else {
+		item.height = 2 * Math.max(halfLabelAndNotesHeight, upchild, downchild) + 20;
+	}
 
 	// console.log(item.labelheight);
 	// console.log({halfLabelAndNotesHeight});
@@ -412,6 +420,7 @@ export function exportJson(graph) {
 				link: item.link,
 				tags: item.tags,
 				has_dynamic_notes: (item.has_dynamic_notes || false),
+				is_collapsed: (item.is_collapsed || false),
 				parent: item.parent,
 				pos: item.pos,
 				fill: item.fill,

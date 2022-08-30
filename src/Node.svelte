@@ -12,6 +12,8 @@
 	export let isHighlighted;
 	export let isHidden = false;
 
+	// $: item && item.is_collapsed && console.log(`Node ${item.label} is collapsed`)
+
 	function handleControlClicked(e){
 		let handle = parseInt(e.target.getAttribute('data-handle'));
 		// console.log(handle)
@@ -171,6 +173,28 @@
 			>{item.badge}</text>
 		{/if}
 	</g>
+	{/if}
+
+	{#if item.kind === "node" && item.children && item.children.length > 0}
+		<circle 
+				cx={item.pos.x + item.width/2 - 1} 
+				cy={item.pos.y - item.height/2 + 2} 
+				r={9}
+				fill="white" stroke="none"
+				on:mousedown|stopPropagation
+				on:mouseup|stopPropagation
+				on:click|stopPropagation={(e) => dispatch('itemCollapserClick', {source: item, rawEvent: e})}
+		/>
+		<text 
+				x={item.pos.x + item.width/2 - 10} 
+				y={item.pos.y - item.height/2 + 9} 
+				stroke={item.bordercolor || theme.nodeborder}
+				fill={item.bordercolor || theme.nodeborder}
+				font-size={20}
+				on:mousedown|stopPropagation
+				on:mouseup|stopPropagation
+				on:click|stopPropagation={(e) => dispatch('itemCollapserClick', {source: item, rawEvent: e})}
+		>{item.is_collapsed ? '⊕' : '⊖'}</text>
 	{/if}
 
 </g>
