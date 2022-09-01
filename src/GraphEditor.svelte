@@ -14,6 +14,7 @@
 		getGraphNode,
 		detachNodeFromParent,
 		findNodeAtPosition,
+		getParentAncestors,
 	} from "./graphutil.js";
 
 	import Node from "./Node.svelte";
@@ -43,6 +44,7 @@
 
 	$: window.graph = graph;
 	$: window.graphHistory = graphHistory;
+	$: window.gpa = getParentAncestors;
 	$: onlyNodes = graph
 		? graph.items
 				.filter((i) => i.kind === "node")
@@ -240,8 +242,8 @@
 			let destNode = findNodeAtPosition(svgPt, selectedItem, graph);
 			if (
 				destNode &&
-				selectedItem.parent != destNode.id &&
-				selectedItem.id != destNode.parent
+				(selectedItem.parent != destNode.id) &&
+				!getParentAncestors(graph, destNode).map((n) => n.id).includes(selectedItem.id)
 			) {
 				// prevent cyclic dependency
 				console.log(

@@ -402,7 +402,7 @@ export function getParentAncestors(graph, item) {
 	if (item.kind !== 'node') return [];
 	if (item.parent == null) return [];
 	let parent = getGraphNode(item.parent, graph);
-	return [...getParentAncestors(parent), parent];
+	return [...getParentAncestors(graph, parent), parent];
 }
 
 export function exportJson(graph) {
