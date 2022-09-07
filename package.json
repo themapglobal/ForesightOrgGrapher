@@ -19,6 +19,8 @@
     "svelte": "^3.0.0"
   },
   "dependencies": {
+    "@rollup/plugin-json": "^4.1.0",
+    "@themapglobal/themap-ocean.js": "https://github.com/themapglobal/themap-ocean.js.git",
     "d3-selection": "^3.0.0",
     "d3-zoom": "^3.0.0",
     "marked": "^4.0.17",
