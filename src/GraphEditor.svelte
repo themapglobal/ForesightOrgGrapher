@@ -26,6 +26,7 @@
 	import { onMount } from "svelte";
 	import { zoom, zoomIdentity } from "d3-zoom";
 	import { select } from "d3-selection";
+  import { NodeSearch } from "@themapglobal/themap-ocean.js";
 
 	export let graphjsonpath;
 	export let svgForTextBBox;
@@ -86,6 +87,9 @@
 	}
 
 	onMount(() => {
+    const search = new NodeSearch();
+    console.log(search);
+
 		graphjsonpath &&
 			fetch(graphjsonpath)
 				.then((r) => r.json())
