@@ -8,6 +8,11 @@ import json from "@rollup/plugin-json";
 
 const production = !process.env.ROLLUP_WATCH;
 
+const external = [
+  '@ethersproject/properties',
+  '@ethersproject/hash'
+];
+
 function serve() {
 	let server;
 
@@ -38,6 +43,7 @@ export default {
 		file: 'public/build/bundle.js'
 	},
 	inlineDynamicImports: true,
+  external,
 	plugins: [
 		svelte({
 			compilerOptions: {
