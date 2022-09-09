@@ -10,7 +10,8 @@ const production = !process.env.ROLLUP_WATCH;
 
 const external = [
   '@ethersproject/properties',
-  '@ethersproject/hash'
+  '@ethersproject/hash',
+  '@themapglobal/themap-ocean.js'
 ];
 
 function serve() {
