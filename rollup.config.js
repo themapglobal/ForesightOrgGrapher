@@ -5,8 +5,6 @@ import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 import css from 'rollup-plugin-css-only';
 import json from "@rollup/plugin-json";
-import globals from 'rollup-plugin-node-globals';
-import builtins from 'rollup-plugin-node-builtins';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -65,7 +63,9 @@ export default {
 		// consult the documentation for details:
 		// https://github.com/rollup/plugins/tree/master/packages/commonjs
 		resolve({
-			browser: true,
+			jsnext: true,   
+      main:true,
+      brower:true,  
 			dedupe: ['svelte']
 		}),
 		commonjs({
@@ -74,8 +74,6 @@ export default {
       transformMixedEsModules: true,
     }),
     json(),
-    globals(),
-    builtins(),
 
 		// In dev mode, call `npm run start` once
 		// the bundle has been generated
